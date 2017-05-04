@@ -55,7 +55,7 @@ public class BootApplication {
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:h2:~/data/yr", "sa", "sa");
+        DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:h2:~/data/yr", "yummy", "recipes");
         return dataSource;
     }
 
