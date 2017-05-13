@@ -23,7 +23,8 @@ public class IngredientsController {
 
     @PostConstruct
     public void init() {
-        ingredientsRepository.save(new Ingredients("Birne", IngredientType.FRUIT));
+        ingredientsRepository.deleteAll();
+        ingredientsRepository.save(new Ingredients("Birne", IngredientType.FRUIT, "/home/elie/birne.jpg"));
     }
 
 

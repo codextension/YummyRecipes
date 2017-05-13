@@ -6,5 +6,5 @@ package io.codextension.yr.model;
 public enum IngredientType {
     VEGETABLE,
     FRUIT,
-
+    MEAT
 }
