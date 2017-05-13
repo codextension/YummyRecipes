@@ -2,14 +2,11 @@ package io.codextension.yr.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.validator.constraints.URL;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.nio.file.Path;
 
 /**
  * Created by elie on 07.05.17.
