@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+
+$fa-font-path: '~font-awesome/fonts';
+@import "variables";
+@import "bootswatch";
+@import "~bootstrap/scss/bootstrap";
+@import "~font-awesome/scss/font-awesome";
+// General styles
+body {
+    padding-top: 5rem;
+}
+
+.starter-template {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+// End - General styles
