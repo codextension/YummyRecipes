@@ -15,28 +15,40 @@
         <ion-searchbar (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
         <ion-list>
             <ion-item *ngFor="let foundRecipe of foundRecipes">
-                {{ foundRecipe }}
+                <ion-thumbnail item-start>
+                    <img src="assets/imgs/falafel.jpg">
+                </ion-thumbnail>
+                <h2>{{foundRecipe}}</h2>
+                <p>Hayao Miyazaki • 1988</p>
             </ion-item>
         </ion-list>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding (tap)="tapEvent($event)">
     <ion-card>
         <img src="assets/imgs/falafel.jpg" />
         <ion-card-content>
             <ion-card-title>
-                {{ 'WELCOME' | translate}} Elie el Khoury
+                Falafel with Tahini
             </ion-card-title>
             <p>
                 The most popular industrial group ever, and largely responsible for bringing the music to a mass audience.
             </p>
+            <ion-badge color="secondary">Vegetarian</ion-badge>
+            <ion-badge color="secondary">Chickpees</ion-badge>
         </ion-card-content>
         <ion-row no-padding>
             <ion-col>
                 <button ion-button clear small color="info" icon-start>
           <ion-icon name='heart'></ion-icon>
           {{'FAVOURITE' | translate}}
+        </button>
+            </ion-col>
+            <ion-col text-center>
+                <button ion-button clear small color="info" icon-start>
+          <ion-icon name='arrow-dropdown-circle'></ion-icon>
+          {{'READ_MORE' | translate}}
         </button>
             </ion-col>
             <ion-col text-right>

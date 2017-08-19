@@ -17,15 +17,20 @@ export class HomePage {
   }
 
   toggleSearchbar() {
+    this.foundRecipes = null;
     this.showSearchbar = !this.showSearchbar;
   }
 
   findRecipes(ev: any) {
     var val = ev.target.value;
     if (val && val.trim() != "") {
-      this.foundRecipes = ["Falafel"];
+      this.foundRecipes = ["Falafel", "Baba Ghannouj"];
     } else {
       this.foundRecipes = null;
     }
+  }
+
+  tapEvent(e: Event) {
+    this.showSearchbar = false;
   }
 }
