@@ -1,26 +1,21 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { BrowserModule } from "@angular/platform-browser";
+import { ErrorHandler, NgModule } from "@angular/core";
+import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
 
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { SettingsPage } from '../pages/settings/settings';
-import { FavouritesPage } from '../pages/favourites/favourites';
+import { MyApp } from "./app.component";
+import { HomePage } from "../pages/home/home";
+import { SettingsPage } from "../pages/settings/settings";
+import { FavouritesPage } from "../pages/favourites/favourites";
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from "@ionic-native/status-bar";
+import { SplashScreen } from "@ionic-native/splash-screen";
 
-import { HttpModule, Http,JsonpModule } from '@angular/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from './http-loader';
+import { HttpModule, Http, JsonpModule } from "@angular/http";
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from "./http-loader";
 
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage,
-    SettingsPage,
-    FavouritesPage
-  ],
+  declarations: [MyApp, HomePage, SettingsPage, FavouritesPage],
   imports: [
     HttpModule,
     JsonpModule,
@@ -29,27 +24,21 @@ import { TranslateHttpLoader } from './http-loader';
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [Http]
       }
     })
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    SettingsPage,
-    FavouritesPage
-  ],
+  entryComponents: [MyApp, HomePage, SettingsPage, FavouritesPage],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule {}
 
-
 export function createTranslateLoader(http: Http) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }

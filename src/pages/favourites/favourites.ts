@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component } from "@angular/core";
+import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 /**
  * Generated class for the FavouritesPage page.
@@ -10,16 +10,13 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 @IonicPage()
 @Component({
-  selector: 'page-favourites',
-  templateUrl: 'favourites.html',
+  selector: "page-favourites",
+  templateUrl: "favourites.html"
 })
 export class FavouritesPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+  constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FavouritesPage');
+    console.log("ionViewDidLoad FavouritesPage");
   }
-
 }

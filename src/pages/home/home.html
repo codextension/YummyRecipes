@@ -1,55 +1,54 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
+    <ion-navbar>
+        <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>{{'APP_TITLE' | translate}}</ion-title>
-    <ion-buttons end>
-      <button ion-button (click)="toggleSearchbar()">
+        <ion-title>{{'APP_TITLE' | translate}}</ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="toggleSearchbar()">
         <ion-icon name="search" *ngIf="!showSearchbar"></ion-icon>
         <ion-icon name="close-circle" *ngIf="showSearchbar"></ion-icon>
       </button>
-    </ion-buttons>
-  </ion-navbar>
-  <ion-toolbar *ngIf="showSearchbar">
-    <ion-searchbar (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
-    <ion-list>
-      <ion-item *ngFor="let foundRecipe of foundRecipes">
-        {{ foundRecipe }}
-      </ion-item>
-    </ion-list>
-  </ion-toolbar>
+        </ion-buttons>
+    </ion-navbar>
+    <ion-toolbar *ngIf="showSearchbar">
+        <ion-searchbar (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
+        <ion-list>
+            <ion-item *ngFor="let foundRecipe of foundRecipes">
+                {{ foundRecipe }}
+            </ion-item>
+        </ion-list>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-card>
-    <img src="assets/imgs/falafel.jpg"/>
-    <ion-card-content>
-      <ion-card-title>
-        {{ 'WELCOME' | translate}} Elie el Khoury
-      </ion-card-title>
-      <p>
-        The most popular industrial group ever, and largely
-        responsible for bringing the music to a mass audience.
-      </p>
-    </ion-card-content>
-    <ion-row no-padding>
-      <ion-col>
-        <button ion-button clear small color="info" icon-start>
+    <ion-card>
+        <img src="assets/imgs/falafel.jpg" />
+        <ion-card-content>
+            <ion-card-title>
+                {{ 'WELCOME' | translate}} Elie el Khoury
+            </ion-card-title>
+            <p>
+                The most popular industrial group ever, and largely responsible for bringing the music to a mass audience.
+            </p>
+        </ion-card-content>
+        <ion-row no-padding>
+            <ion-col>
+                <button ion-button clear small color="info" icon-start>
           <ion-icon name='heart'></ion-icon>
           {{'FAVOURITE' | translate}}
         </button>
-      </ion-col>
-      <ion-col text-right>
-        <button ion-button clear small color="info" icon-start>
+            </ion-col>
+            <ion-col text-right>
+                <button ion-button clear small color="info" icon-start>
           <ion-icon name='share-alt'></ion-icon>
           {{'SHARE' | translate}}
         </button>
-      </ion-col>
-    </ion-row>
-  </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-card>
 
-  <ion-fab right bottom>
-    <button ion-fab><ion-icon name="add"></ion-icon></button>
-  </ion-fab>
+    <ion-fab right bottom>
+        <button ion-fab><ion-icon name="add"></ion-icon></button>
+    </ion-fab>
 </ion-content>
