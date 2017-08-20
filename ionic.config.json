@@ -2,5 +2,7 @@
   "name": "yummyrecipes",
   "app_id": "yr2017",
   "type": "ionic-angular",
-  "integrations": {}
+  "integrations": {
+    "cordova": {}
+  }
 }
