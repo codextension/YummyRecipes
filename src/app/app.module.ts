@@ -14,12 +14,15 @@ import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "./http-loader";
 
+import { DirectivesModule } from "../directives/directives.module";
+
 @NgModule({
   declarations: [MyApp, HomePage, SettingsPage, FavouritesPage],
   imports: [
     HttpModule,
     JsonpModule,
     BrowserModule,
+    DirectivesModule,
     IonicModule.forRoot(MyApp),
     TranslateModule.forRoot({
       loader: {
