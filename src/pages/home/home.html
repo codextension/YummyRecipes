@@ -27,35 +27,9 @@
 
 <ion-content padding (tap)="tapEvent($event)">
     <div card-group>
-        <ion-card>
-            <img src="assets/imgs/falafel.jpg" />
-            <ion-card-content (click)="showDetails($event)">
-                <ion-card-title>
-                    Falafel with Tahini
-                </ion-card-title>
-                <p>
-                    The most popular industrial group ever, and largely responsible for bringing the music to a mass audience.
-                </p>
-                <ion-badge color="primary">
-                    Vegetarian</ion-badge>
-                <ion-badge color="primary">Chickpees</ion-badge>
-            </ion-card-content>
-            <ion-row no-padding>
-                <ion-col>
-                    <button ion-button clear small color="info" icon-start>
-                                          <ion-icon name='heart'></ion-icon>
-                                          {{'FAVOURITE' | translate}}
-                    </button>
-                </ion-col>
-
-                <ion-col text-right>
-                    <button ion-button clear small color="info" icon-start>
-                                          <ion-icon name='share-alt'></ion-icon>
-                                          {{'SHARE' | translate}}
-                    </button>
-                </ion-col>
-            </ion-row>
-        </ion-card>
+        <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
+            <recipe [entity]=""></recipe>
+        </ng-template>
     </div>
     <ion-fab right bottom>
         <button ion-fab mini><ion-icon name="add"></ion-icon></button>

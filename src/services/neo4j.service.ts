@@ -1,11 +1,12 @@
 import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
+import { DaoService } from "./dao.service";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
 @Injectable()
-export class Neo4JService {
+export class Neo4JService implements DaoService {
   private restEntryPointUrl: string;
 
   constructor(private http: Http) {

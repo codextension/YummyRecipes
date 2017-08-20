@@ -15,6 +15,7 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "./http-loader";
 
 import { DirectivesModule } from "../directives/directives.module";
+import { ComponentsModule } from "../components/components.module";
 
 @NgModule({
   declarations: [MyApp, HomePage, SettingsPage, FavouritesPage],
@@ -23,6 +24,7 @@ import { DirectivesModule } from "../directives/directives.module";
     JsonpModule,
     BrowserModule,
     DirectivesModule,
+    ComponentsModule,
     IonicModule.forRoot(MyApp),
     TranslateModule.forRoot({
       loader: {

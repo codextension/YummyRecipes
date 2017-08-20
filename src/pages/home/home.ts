@@ -22,20 +22,21 @@ export class HomePage {
   toggleSearchbar() {
     this.foundRecipes = null;
     this.showSearchbar = !this.showSearchbar;
-
-    /*this.neo4jService
-      .select("MATCH (x)-[r:INGREDIENT]->(y) RETURN y.name,r.quantity, r.unit")
-      .then(value => {
-        console.info(value);
-      })
-      .catch(err => {
-        console.error(err);
-      });*/
   }
 
   findRecipes(e: any) {
     var val = e.target.value;
     if (val && val.trim() != "") {
+      this.neo4jService
+        .select(
+          "MATCH (x)-[r:INGREDIENT]->(y) where y.name='" + val + "' RETURN x"
+        )
+        .then(value => {
+          console.info(value);
+        })
+        .catch(err => {
+          console.error(err);
+        });
       this.foundRecipes = ["Falafel", "Baba Ghannouj"];
     } else {
       this.foundRecipes = null;
@@ -50,7 +51,11 @@ export class HomePage {
     e.srcElement;
   }
 
-  showDetails(e: MouseEvent) {
-    e.srcElement;
+  createRange(number) {
+    var items: number[] = [];
+    for (var i = 1; i <= number; i++) {
+      items.push(i);
+    }
+    return items;
   }
 }
