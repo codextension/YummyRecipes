@@ -24,9 +24,12 @@ export class HomePage {
     this.showSearchbar = !this.showSearchbar;
 
     this.neo4jService
-      .query("MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit")
-      .subscribe(value => {
+      .select("MATCH (x)-[r:INGREDIENT]->(y) RETURN y.name,r.quantity, r.unit")
+      .then(value => {
         console.info(value);
+      })
+      .catch(err => {
+        console.error(err);
       });
   }
 
