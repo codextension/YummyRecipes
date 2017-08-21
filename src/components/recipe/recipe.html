@@ -1,11 +1,11 @@
-<ion-card>
+<ion-card *ngIf="entity != null">
     <img src="assets/imgs/falafel.jpg" />
     <ion-card-content (click)="showDetails($event)">
         <ion-card-title>
-            Falafel with Tahini
+            {{entity.name}}
         </ion-card-title>
         <p>
-            The most popular industrial group ever, and largely responsible for bringing the music to a mass audience.
+            {{entity.description}}
         </p>
         <ion-badge color="primary">
             Vegetarian</ion-badge>
@@ -14,7 +14,7 @@
     <ion-row no-padding>
         <ion-col>
             <button ion-button clear small color="info" icon-start>
-                              <ion-icon name="heart-outline"></ion-icon>
+                              <ion-icon name="{{entity.favourite?'heart':'heart-outline'}}"></ion-icon>
                               {{'FAVOURITE' | translate}}
         </button>
         </ion-col>

@@ -13,9 +13,10 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 })
 export class RecipeComponent {
   @Input() entity: RecipeEntity;
+  @Input() preview: boolean;
 
   constructor() {
-    console.log("Hello RecipeComponent Component");
+    this.preview = true;
   }
 
   showDetails(e: MouseEvent) {
