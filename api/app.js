@@ -1,3 +1,6 @@
+const USERNAME = "elie";
+const PASSWORD = "pwd";
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require("fs");
@@ -8,8 +11,7 @@ var app = express();
 var passport = require("passport");
 var DigestStrategy = require("passport-http").DigestStrategy;
 var multer = require("multer");
-const USERNAME = "elie";
-const PASSWORD = "pwd";
+
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, "store/");
@@ -42,17 +44,19 @@ var upload = multer({
         fields: 2
     }
 });
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+);
 
 passport.use(
     new DigestStrategy({
             qop: "auth"
         },
         function(username, done) {
-
             if (username == USERNAME) {
                 return done(null, username, PASSWORD);
             } else {
