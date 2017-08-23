@@ -1,7 +1,7 @@
 var appRouter = function(app, passport, upload, fs) {
     app.get(
         "/images/get/:reference",
-        passport.authenticate("digest", { session: false }),
+        passport.authenticate("basic", { session: false }),
         function(req, res) {
             var reference = req.params.reference;
             res.sendFile(__dirname + "/store/" + reference);
@@ -10,7 +10,7 @@ var appRouter = function(app, passport, upload, fs) {
 
     app.post(
         "/images/upload",
-        passport.authenticate("digest", { session: false }),
+        passport.authenticate("basic", { session: false }),
         upload.single("recipe_img"),
         function(req, res, next) {
             res.json(req.file);
@@ -19,7 +19,7 @@ var appRouter = function(app, passport, upload, fs) {
 
     app.post(
         "/images/rm/:reference",
-        passport.authenticate("digest", { session: false }),
+        passport.authenticate("basic", { session: false }),
         function(req, res) {
             var fileUri = __dirname + "/store/" + req.params.reference;
             fs.unlink(fileUri, function(err) {

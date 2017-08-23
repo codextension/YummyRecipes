@@ -10,7 +10,7 @@ var util = require("util");
 var path = require("path");
 var app = express();
 var passport = require("passport");
-var DigestStrategy = require("passport-http").DigestStrategy;
+var BasicStrategy = require("passport-http").BasicStrategy;
 var multer = require("multer");
 
 var storage = multer.diskStorage({
@@ -54,21 +54,13 @@ app.use(
 );
 
 passport.use(
-    new DigestStrategy({
-            qop: "auth"
-        },
-        function(username, done) {
-            if (username == USERNAME) {
-                return done(null, username, PASSWORD);
-            } else {
-                return done("Wrong credentials.");
-            }
-        },
-        function(params, done) {
-            // validate nonces as necessary
-            done(null, true);
+    new BasicStrategy(function(username, password, done) {
+        if (username == USERNAME) {
+            return done(null, username, PASSWORD);
+        } else {
+            return done("Wrong credentials.");
         }
-    )
+    })
 );
 
 var routes = require("./routes.js")(app, passport, upload, fs);
