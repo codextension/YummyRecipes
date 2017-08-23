@@ -71,7 +71,7 @@ passport.use(
     )
 );
 
-var routes = require("./routes.js")(app, passport, upload);
+var routes = require("./routes.js")(app, passport, uploa, fs);
 
 var server = app.listen(3000, function() {
     console.log("Listening on port %s...", server.address().port);
