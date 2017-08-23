@@ -1,3 +1,4 @@
+//TODO find a better solution
 const USERNAME = "elie";
 const PASSWORD = "pwd";
 
