@@ -5,7 +5,12 @@ const PASSWORD = "pwd";
 var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require("fs");
-var http = require("http");
+var https = require("https"); // http://blog.mgechev.com/2014/02/19/create-https-tls-ssl-application-with-express-nodejs/
+var privateKey = fs.readFileSync("sslcert/server.key", "utf8");
+var certificate = fs.readFileSync("sslcert/server.crt", "utf8");
+
+var credentials = { key: privateKey, cert: certificate };
+
 var util = require("util");
 var path = require("path");
 var app = express();
@@ -63,8 +68,16 @@ passport.use(
     })
 );
 
-var routes = require("./routes.js")(app, passport, upload, fs);
+var neo4j = require("neo4j-driver").v1;
+var driver = neo4j.driver(
+    "bolt://localhost",
+    neo4j.auth.basic(USERNAME, PASSWORD)
+);
 
-var server = app.listen(3000, function() {
-    console.log("Listening on port %s...", server.address().port);
+var routes = require("./routes.js")(app, passport, upload, fs, driver);
+
+var httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(3443, function() {
+    console.log("Listening on port %s...", httpsServer.address().port);
 });
