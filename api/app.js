@@ -1,6 +1,11 @@
 //TODO find a better solution
-const USERNAME = "elie";
-const PASSWORD = "pwd";
+const API_USERNAME = "elie";
+const API_PASSWORD = "pwd";
+
+const NEO_USERNAME = "elie";
+const NEO_PASSWORD = "pwd";
+
+const API_PORT_NB = 3443;
 
 var express = require("express");
 var bodyParser = require("body-parser");
@@ -60,8 +65,8 @@ app.use(
 
 passport.use(
     new BasicStrategy(function(username, password, done) {
-        if (username == USERNAME) {
-            return done(null, username, PASSWORD);
+        if (username == API_USERNAME) {
+            return done(null, username, API_PASSWORD);
         } else {
             return done("Wrong credentials.");
         }
@@ -71,13 +76,13 @@ passport.use(
 var neo4j = require("neo4j-driver").v1;
 var driver = neo4j.driver(
     "bolt://localhost",
-    neo4j.auth.basic(USERNAME, PASSWORD)
+    neo4j.auth.basic(NEO_USERNAME, NEO_PASSWORD)
 );
 
 var routes = require("./routes.js")(app, passport, upload, fs, driver);
 
 var httpsServer = https.createServer(credentials, app);
 
-httpsServer.listen(3443, function() {
+httpsServer.listen(API_PORT_NB, function() {
     console.log("Listening on port %s...", httpsServer.address().port);
 });

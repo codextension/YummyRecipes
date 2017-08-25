@@ -36,16 +36,20 @@ var appRouter = function(app, passport, upload, fs, driver) {
         "/db/query",
         passport.authenticate("basic", { session: false }),
         function(req, res, next) {
-            var session = driver.session();
-            var resultPromise = session.writeTransaction(tx =>
-                tx.run(unescape(req.body.query).replace(/\+/g, " "))
-            );
+            var query = req.body.query;
+            if (query == null || query.trim().length == 0) {
+                res.json("{error: 'no query provided'}");
+            } else {
+                var session = driver.session();
+                var resultPromise = session.writeTransaction(
+                    tx => tx.run(query) // unescape(query).replace(/\+/g, " ")
+                );
 
-            resultPromise.then(result => {
-                session.close();
-
-                res.json(result.records);
-            });
+                resultPromise.then(result => {
+                    session.close();
+                    res.json(result.records);
+                });
+            }
         }
     );
 };
