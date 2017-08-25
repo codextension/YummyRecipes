@@ -6,5 +6,8 @@
     "SETTINGS": "Settings",
     "SEARCH": "Search",
     "SHARE": "Share",
-    "READ_MORE": "More ..."
+    "READ_MORE": "More ...",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SERVER_URL": "Server URL"
 }

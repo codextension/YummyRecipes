@@ -1,6 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
+import { IonicStorageModule } from "@ionic/storage";
 
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
@@ -26,6 +27,10 @@ import { ComponentsModule } from "../components/components.module";
     DirectivesModule,
     ComponentsModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot({
+      name: "__yr",
+      driverOrder: ["indexeddb", "sqlite", "websql"]
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

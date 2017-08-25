@@ -6,5 +6,8 @@
     "SETTINGS": "Einstellungen",
     "SEARCH": "Suchen",
     "SHARE": "Teilen",
-    "READ_MORE": "Mehr ..."
+    "READ_MORE": "Mehr ...",
+    "USERNAME": "Bentzername",
+    "PASSWORD": "Kennwort",
+    "SERVER_URL": "Servername"
 }
