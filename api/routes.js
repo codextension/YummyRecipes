@@ -44,12 +44,7 @@ var appRouter = function(app, passport, upload, fs, driver) {
             resultPromise.then(result => {
                 session.close();
 
-                const singleRecord = result.records[0];
-                const node = singleRecord.get(0);
-
-                console.log(node.properties.name);
-
-                res.json(node.properties);
+                res.json(result.records);
             });
         }
     );
