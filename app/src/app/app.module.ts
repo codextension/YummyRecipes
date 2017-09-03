@@ -2,11 +2,14 @@ import { BrowserModule } from "@angular/platform-browser";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
 import { IonicStorageModule } from "@ionic/storage";
+import { Camera } from "@ionic-native/camera";
+import { File } from "@ionic-native/file";
 
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
 import { SettingsPage } from "../pages/settings/settings";
 import { FavouritesPage } from "../pages/favourites/favourites";
+import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
 
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
@@ -19,7 +22,13 @@ import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
 
 @NgModule({
-  declarations: [MyApp, HomePage, SettingsPage, FavouritesPage],
+  declarations: [
+    MyApp,
+    HomePage,
+    SettingsPage,
+    FavouritesPage,
+    RecipeManagementPage
+  ],
   imports: [
     HttpModule,
     JsonpModule,
@@ -40,8 +49,16 @@ import { ComponentsModule } from "../components/components.module";
     })
   ],
   bootstrap: [IonicApp],
-  entryComponents: [MyApp, HomePage, SettingsPage, FavouritesPage],
+  entryComponents: [
+    MyApp,
+    HomePage,
+    SettingsPage,
+    FavouritesPage,
+    RecipeManagementPage
+  ],
   providers: [
+    Camera,
+    File,
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler }

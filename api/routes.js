@@ -3,7 +3,7 @@ var appRouter = function(app, passport, upload, fs, driver) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header(
             "Access-Control-Allow-Headers",
-            "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+            "Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, Content-Disposition"
         );
         next();
     });

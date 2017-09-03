@@ -3,19 +3,28 @@ import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
+import { Storage } from "@ionic/storage";
 
 @Injectable()
 export class Neo4JService {
   private restEntryPointUrl: string;
+  private authString: string;
 
-  constructor(private http: Http) {
-    this.restEntryPointUrl = "https://localhost:3443/db/query";
+  constructor(private http: Http, private storage: Storage) {
+    //this.restEntryPointUrl = "https://localhost:3443/db/query";
+    this.storage.get("settings").then(val => {
+      if (val != null) {
+        this.restEntryPointUrl = val.serverUrl + "/db/query";
+        this.authString =
+          "Basic " + window.btoa(val.username + ":" + val.password);
+      }
+    });
   }
 
   private query(q: string): Observable<string> {
     let _headers = new Headers({
       "Content-Type": "application/json",
-      authorization: "Basic " + window.btoa("elie:pwd")
+      authorization: this.authString
     });
     let options = new RequestOptions({
       headers: _headers
@@ -36,6 +45,7 @@ export class Neo4JService {
 
     return results;
   }
+
   private queryResuts(response: Response): string {
     return response.json();
   }

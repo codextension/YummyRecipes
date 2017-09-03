@@ -6,13 +6,15 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>RecipeManagement</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title *ngIf="newRecipe">{{'NEW_RECIPE' | translate}}</ion-title>
+        <ion-title *ngIf="!newRecipe">RECIPE_NAME_GOES_HERE</ion-title>
+    </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-
+    <button ion-button (click)="makeScreenshot()"></button>
+    <img [src]="base64Image" *ngIf="base64Image" />
 </ion-content>

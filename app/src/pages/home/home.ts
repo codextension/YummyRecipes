@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
+import { RecipeManagementPage } from "../recipe-management/recipe-management";
 
 @Component({
   selector: "page-home",
@@ -49,6 +50,10 @@ export class HomePage {
 
   showRecipe(e: MouseEvent) {
     e.srcElement;
+  }
+
+  newRecipe() {
+    this.navCtrl.push(RecipeManagementPage, { type: "new" });
   }
 
   createRange(number) {
