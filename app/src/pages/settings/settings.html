@@ -8,29 +8,28 @@
     <ion-navbar>
         <ion-title>{{'SETTINGS' | translate}}</ion-title>
         <ion-buttons end>
-            <button ion-button>
+            <button ion-button [disabled]="!settingsForm.valid" (click)="saveSettings()">
         <ion-icon name="checkmark"></ion-icon>
       </button>
         </ion-buttons>
     </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
-    <ion-list>
+    <form [formGroup]="settingsForm" class="list">
         <ion-item no-padding>
             <ion-label floating>{{'SERVER_URL' | translate}}</ion-label>
-            <ion-input type="url" value=""></ion-input>
+            <ion-input name="serverUrl" type="url" formControlName="serverUrl" required></ion-input>
         </ion-item>
 
         <ion-item no-padding>
             <ion-label floating>{{'USERNAME' | translate}}</ion-label>
-            <ion-input type="text" value=""></ion-input>
+            <ion-input type="text" name="username" formControlName="username"></ion-input>
         </ion-item>
 
         <ion-item no-padding>
             <ion-label floating>{{'PASSWORD' | translate}}</ion-label>
-            <ion-input type="password"></ion-input>
+            <ion-input type="password" name="password" formControlName="password"></ion-input>
         </ion-item>
-    </ion-list>
+    </form>
 </ion-content>

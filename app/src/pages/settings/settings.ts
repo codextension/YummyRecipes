@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
-import { NavController, NavParams } from "ionic-angular";
+import { NavController, NavParams, ToastController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
+
 /**
  * Generated class for the SettingsPage page.
  *
@@ -13,25 +16,61 @@ import { Storage } from "@ionic/storage";
   templateUrl: "settings.html"
 })
 export class SettingsPage {
+  private settingsForm: FormGroup;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private storage: Storage
+    private storage: Storage,
+    private formBuilder: FormBuilder,
+    public toastCtrl: ToastController,
+    private translate: TranslateService
   ) {
-    // set a key/aeluv;
-    this.storage.set("name", "Max");
-
-    // Or to get a key/value pair
-    this.storage.get("name").then(val => {
-      console.log("Your name is", val);
+    this.settingsForm = this.formBuilder.group({
+      serverUrl: ["", Validators.required],
+      username: [""],
+      password: [""]
+    });
+    this.storage.get("settings").then(val => {
+      if (val != null) {
+        this.settingsForm = this.formBuilder.group({
+          serverUrl: [val.serverUrl, Validators.required],
+          username: [val.username],
+          password: [val.password]
+        });
+      }
     });
   }
 
-  ionViewDidLoad() {
-    console.log("ionViewDidLoad SettingsPage");
+  showToast(msg: string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 5000,
+      position: "top"
+    });
+
+    toast.present(toast);
   }
+
+  ionViewDidLoad() {}
 
   back() {
     return this.navCtrl.getPrevious();
+  }
+
+  saveSettings() {
+    this.storage
+      .set("settings", this.settingsForm.value)
+      .then(() => {
+        this.translate.get("SETTINGS_SAVED_SUCCESS").subscribe(value => {
+          this.showToast(value);
+          return this.navCtrl.goToRoot(null);
+        });
+      })
+      .catch(err => {
+        this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
+          this.showToast(value);
+        });
+      });
   }
 }

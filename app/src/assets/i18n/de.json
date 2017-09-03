@@ -9,5 +9,7 @@
     "READ_MORE": "Mehr ...",
     "USERNAME": "Benutzername",
     "PASSWORD": "Kennwort",
-    "SERVER_URL": "Servername"
+    "SERVER_URL": "Servername",
+    "SETTINGS_SAVED_SUCCESS": "Einstellungen erfolgreich gespeichert!",
+    "SETTINGS_SAVED_FAILED": "Einstellungen nicht gespeichert!"
 }

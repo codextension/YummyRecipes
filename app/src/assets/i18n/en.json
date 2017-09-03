@@ -9,5 +9,7 @@
     "READ_MORE": "More ...",
     "USERNAME": "Username",
     "PASSWORD": "Password",
-    "SERVER_URL": "Server URL"
+    "SERVER_URL": "Server URL",
+    "SETTINGS_SAVED_SUCCESS": "Settings update with success!",
+    "SETTINGS_SAVED_FAILED": "Could not save settings!"
 }
