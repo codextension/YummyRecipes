@@ -1,4 +1,12 @@
 var appRouter = function(app, passport, upload, fs, driver) {
+    function uuidv4() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+            var r = (Math.random() * 16) | 0,
+                v = c == "x" ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
+    }
+
     app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header(
@@ -8,14 +16,10 @@ var appRouter = function(app, passport, upload, fs, driver) {
         next();
     });
 
-    app.get(
-        "/images/get/:reference",
-        passport.authenticate("basic", { session: false }),
-        function(req, res) {
-            var reference = req.params.reference;
-            res.sendFile(__dirname + "/store/" + reference);
-        }
-    );
+    app.get("/images/get/:reference", function(req, res) {
+        var reference = req.params.reference;
+        res.sendFile(__dirname + "/store/" + reference);
+    });
 
     app.post(
         "/images/upload",
@@ -23,6 +27,24 @@ var appRouter = function(app, passport, upload, fs, driver) {
         upload.single("recipe_img"),
         function(req, res, next) {
             res.json(req.file);
+        }
+    );
+
+    app.post(
+        "/images/save",
+        passport.authenticate("basic", { session: false }),
+        function(req, res, next) {
+            var data = req.body.data;
+            var filename = uuidv4() + ".jpg";
+            fs.writeFile(__dirname + "/store/" + filename, data, "base64", function(
+                err
+            ) {
+                if (err) {
+                    res.json({ error: err });
+                }
+
+                res.json({ name: filename });
+            });
         }
     );
 

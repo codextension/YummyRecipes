@@ -17,12 +17,23 @@ import { ImagesService } from "../../services/images.service";
 })
 export class RecipeManagementPage {
   public newRecipe: boolean;
-  public base64Image: string;
-  private options: CameraOptions = {
+  public base64ImageUrl: string;
+
+  private cameraOptions: CameraOptions = {
     quality: 60,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     correctOrientation: true,
+    destinationType: this.camera.DestinationType.DATA_URL,
+    cameraDirection: this.camera.Direction.BACK
+  };
+
+  private fileOptions: CameraOptions = {
+    quality: 60,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE,
+    correctOrientation: true,
+    sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
     destinationType: this.camera.DestinationType.DATA_URL,
     cameraDirection: this.camera.Direction.BACK
   };
@@ -41,11 +52,10 @@ export class RecipeManagementPage {
   }
 
   public makeScreenshot() {
-    this.camera.getPicture(this.options).then(
+    this.camera.getPicture(this.cameraOptions).then(
       imageData => {
-        this.base64Image = imageData; // "data:image/jpeg;base64," +
-        this.imagesService.save(this.base64Image).then(res => {
-          console.info(res);
+        this.imagesService.save(imageData).then(res => {
+          this.base64ImageUrl = res;
         });
       },
       err => {

@@ -24,25 +24,15 @@ export class ImagesService {
   public save(base64Image: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let _headers = new Headers({
-        "Content-Type": "multipart/form-data; boundary=AaB03x",
         authorization: this.authString
       });
       let options = new RequestOptions({
         headers: _headers
       });
       let results = this.http
-        .post(
-          this.restEntryPointUrl + "/upload",
-          "--AaB03x\n" +
-            'Content-Disposition: form-data; name="recipe_img"; filename="file1.jpg"\n' +
-            "Content-Type: image/jpeg\n\n" +
-            base64Image +
-            "\n" +
-            "--AaB03x--\n",
-          options
-        )
+        .post(this.restEntryPointUrl + "/save", { data: base64Image }, options)
         .subscribe(val => {
-          resolve(val.toString());
+          resolve(this.restEntryPointUrl + "/get/" + val.json().name);
         });
     });
   }
