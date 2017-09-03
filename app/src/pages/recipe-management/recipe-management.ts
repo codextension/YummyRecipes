@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { NavController, NavParams } from "ionic-angular";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { ImagesService } from "../../services/images.service";
+import { RecipeEntity } from "../../entities/recipe-entity";
 
 /**
  * Generated class for the RecipeManagementPage page.
@@ -18,6 +19,7 @@ import { ImagesService } from "../../services/images.service";
 export class RecipeManagementPage {
   public newRecipe: boolean;
   public base64ImageUrl: string;
+  public recipe: RecipeEntity;
 
   private cameraOptions: CameraOptions = {
     quality: 60,
@@ -45,6 +47,10 @@ export class RecipeManagementPage {
     private imagesService: ImagesService
   ) {
     this.newRecipe = this.navParams.get("type");
+
+    if (this.newRecipe) {
+      this.recipe = new RecipeEntity(null, null, null, false, [], [], null);
+    }
   }
 
   ionViewDidLoad() {

@@ -1,5 +1,4 @@
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
-import { Observable } from "rxjs/Rx";
+import { Http, RequestOptions, Headers } from "@angular/http";
 import { Injectable } from "@angular/core";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
@@ -29,7 +28,7 @@ export class ImagesService {
       let options = new RequestOptions({
         headers: _headers
       });
-      let results = this.http
+      this.http
         .post(this.restEntryPointUrl + "/save", { data: base64Image }, options)
         .subscribe(val => {
           resolve(this.restEntryPointUrl + "/get/" + val.json().name);

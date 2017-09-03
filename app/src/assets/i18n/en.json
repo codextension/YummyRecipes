@@ -11,5 +11,6 @@
     "PASSWORD": "Password",
     "SERVER_URL": "Server URL",
     "SETTINGS_SAVED_SUCCESS": "Settings update with success!",
-    "SETTINGS_SAVED_FAILED": "Could not save settings!"
+    "SETTINGS_SAVED_FAILED": "Could not save settings!",
+    "NEW_RECIPE": "New Recipe"
 }

@@ -1,5 +1,3 @@
-import { Instruction } from "./instruction";
-
 export class RecipeEntity {
   constructor(
     public reference: string,
@@ -10,4 +8,8 @@ export class RecipeEntity {
     public instructions: Instruction[],
     public imageUrl: string
   ) {}
+}
+
+export class Instruction {
+  constructor(public orderNb: number, public description: string) {}
 }

@@ -2,10 +2,10 @@
     <img src="assets/imgs/falafel.jpg" />
     <ion-card-content (click)="showDetails($event)">
         <ion-card-title>
-            {{entity.name}}
+            <ion-input required readonly="{{preview}}" type="text" [(ngModel)]="entity.name" placeholder="name"></ion-input>
         </ion-card-title>
         <p>
-            {{entity.description}}
+            <ion-textarea required readonly="{{preview}}" [(ngModel)]="entity.description" placeholder="description"></ion-textarea>
         </p>
         <ion-badge color="primary">
             Vegetarian</ion-badge>
