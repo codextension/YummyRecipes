@@ -2,7 +2,7 @@
 const API_USERNAME = "elie";
 const API_PASSWORD = "pwd";
 
-const NEO_USERNAME = "elie";
+const NEO_USERNAME = "neo4j";
 const NEO_PASSWORD = "pwd";
 
 const API_PORT_NB = 3443;
