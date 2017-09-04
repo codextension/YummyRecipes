@@ -18,6 +18,7 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 })
 export class RecipeManagementPage {
   public newRecipe: boolean;
+  public detailed: boolean;
   public base64ImageUrl: string;
   public recipe: RecipeEntity;
 
@@ -47,6 +48,7 @@ export class RecipeManagementPage {
     private imagesService: ImagesService
   ) {
     this.newRecipe = this.navParams.get("type");
+    this.detailed = this.navParams.get("detailed") || false;
 
     if (this.newRecipe) {
       this.recipe = new RecipeEntity(null, null, null, false, [], [], null);

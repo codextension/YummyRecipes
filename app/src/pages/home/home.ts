@@ -53,7 +53,7 @@ export class HomePage {
   }
 
   newRecipe() {
-    this.navCtrl.push(RecipeManagementPage, { type: "new" });
+    this.navCtrl.push(RecipeManagementPage, { type: "new", detailed: true });
   }
 
   createRange(number) {

@@ -28,7 +28,7 @@
 <ion-content padding (tap)="tapEvent($event)">
     <div card-group>
         <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
-            <recipe [entity]=""></recipe>
+            <recipe-preview [entity]=""></recipe-preview>
         </ng-template>
     </div>
     <ion-fab right bottom *ngIf="!showSearchbar">

@@ -1,5 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { RecipeEntity } from "../../entities/recipe-entity";
+import { PreperationTabComponent } from "../preperation-tab/preperation-tab";
+import { IngredientsTabComponent } from "../ingredients-tab/ingredients-tab";
+import { SummaryTabComponent } from "../summary-tab/summary-tab";
 
 /**
  * Generated class for the RecipeComponent component.
@@ -12,14 +15,11 @@ import { RecipeEntity } from "../../entities/recipe-entity";
   templateUrl: "recipe.html"
 })
 export class RecipeComponent {
+  public summaryTab = SummaryTabComponent;
+  public ingredientsTab = IngredientsTabComponent;
+  public preperationTab = PreperationTabComponent;
+
   @Input() entity: RecipeEntity;
-  @Input() preview: boolean;
 
-  constructor() {
-    this.preview = true;
-  }
-
-  showDetails(e: MouseEvent) {
-    e.srcElement;
-  }
+  constructor() {}
 }
