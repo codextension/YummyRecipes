@@ -1,22 +1,15 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
+import { NavParams } from "ionic-angular";
+import { RecipeEntity } from "../../entities/recipe-entity";
 
-/**
- * Generated class for the IngredientsTabComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
 @Component({
-  selector: 'ingredients-tab',
-  templateUrl: 'ingredients-tab.html'
+  selector: "ingredients-tab",
+  templateUrl: "ingredients-tab.html"
 })
 export class IngredientsTabComponent {
+  public entity: RecipeEntity;
 
-  text: string;
-
-  constructor() {
-    console.log('Hello IngredientsTabComponent Component');
-    this.text = 'Hello World';
+  constructor(params: NavParams) {
+    this.entity = params.data;
   }
-
 }

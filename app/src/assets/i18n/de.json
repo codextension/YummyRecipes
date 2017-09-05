@@ -12,5 +12,7 @@
     "SERVER_URL": "Servername",
     "SETTINGS_SAVED_SUCCESS": "Einstellungen erfolgreich gespeichert!",
     "SETTINGS_SAVED_FAILED": "Einstellungen nicht gespeichert!",
-    "NEW_RECIPE": "Neue Rezept"
+    "NEW_RECIPE": "Neue Rezept",
+    "DESCRIPTION": "beschreibung",
+    "NAME": "name"
 }

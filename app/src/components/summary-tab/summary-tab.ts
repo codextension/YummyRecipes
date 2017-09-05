@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component } from "@angular/core";
 import { NavParams } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
 
@@ -7,8 +7,6 @@ import { RecipeEntity } from "../../entities/recipe-entity";
   templateUrl: "summary-tab.html"
 })
 export class SummaryTabComponent {
-  @ViewChild("img") public img: any;
-
   public entity: RecipeEntity;
 
   constructor(params: NavParams) {

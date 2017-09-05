@@ -12,5 +12,7 @@
     "SERVER_URL": "Server URL",
     "SETTINGS_SAVED_SUCCESS": "Settings update with success!",
     "SETTINGS_SAVED_FAILED": "Could not save settings!",
-    "NEW_RECIPE": "New Recipe"
+    "NEW_RECIPE": "New Recipe",
+    "DESCRIPTION": "description",
+    "NAME": "name"
 }

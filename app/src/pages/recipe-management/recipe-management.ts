@@ -51,7 +51,7 @@ export class RecipeManagementPage {
     this.detailed = this.navParams.get("detailed") || false;
 
     if (this.newRecipe) {
-      this.recipe = new RecipeEntity(null, null, null, false, [], [], null);
+      this.recipe = new RecipeEntity(null, null, null, false, [], [], [], null);
     }
   }
 

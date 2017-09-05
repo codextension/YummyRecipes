@@ -3,19 +3,22 @@
     <ion-grid>
         <ion-row>
             <ion-col col-12>
-                <ion-img #img width="100%" style="display: table-row" src="{{entity.imageUrl || 'assets/imgs/falafel.jpg'}}"></ion-img>
+                <ion-img style="display: table-row;" width="100%" src="{{entity.imageUrl || 'assets/imgs/no_image.jpg'}}"></ion-img>
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-12>
-                <ion-input required type="text" [(ngModel)]="entity.name" placeholder="name"></ion-input>
+                <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
             </ion-col>
         </ion-row>
 
         <ion-row>
             <ion-col col-12>
-                <ion-textarea required [(ngModel)]="entity.description" placeholder="description"></ion-textarea>
+                <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
             </ion-col>
         </ion-row>
     </ion-grid>
+    <ion-fab right top>
+        <button ion-fab><ion-icon name="camera"></ion-icon></button>
+    </ion-fab>
 </ion-content>
