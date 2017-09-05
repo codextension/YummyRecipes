@@ -2,6 +2,7 @@ export class RecipeEntity {
   constructor(
     public reference: string,
     public name: string,
+    public duration: number,
     public description: string,
     public favourite: boolean,
     public tags: string[],

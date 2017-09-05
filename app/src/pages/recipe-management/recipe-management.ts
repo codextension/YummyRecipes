@@ -4,13 +4,6 @@ import { Camera, CameraOptions } from "@ionic-native/camera";
 import { ImagesService } from "../../services/images.service";
 import { RecipeEntity } from "../../entities/recipe-entity";
 
-/**
- * Generated class for the RecipeManagementPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-
 @Component({
   selector: "page-recipe-management",
   templateUrl: "recipe-management.html",
@@ -51,7 +44,17 @@ export class RecipeManagementPage {
     this.detailed = this.navParams.get("detailed") || false;
 
     if (this.newRecipe) {
-      this.recipe = new RecipeEntity(null, null, null, false, [], [], [], null);
+      this.recipe = new RecipeEntity(
+        null,
+        null,
+        null,
+        null,
+        false,
+        [],
+        [],
+        [],
+        null
+      );
     }
   }
 

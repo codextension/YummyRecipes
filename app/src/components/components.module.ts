@@ -8,6 +8,7 @@ import { RecipePreviewComponent } from "./recipe-preview/recipe-preview";
 import { SummaryTabComponent } from "./summary-tab/summary-tab";
 import { IngredientsTabComponent } from "./ingredients-tab/ingredients-tab";
 import { PreperationTabComponent } from "./preperation-tab/preperation-tab";
+import { CameraPopoverComponent } from "./camera-popover/camera-popover";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { PreperationTabComponent } from "./preperation-tab/preperation-tab";
     RecipePreviewComponent,
     SummaryTabComponent,
     IngredientsTabComponent,
-    PreperationTabComponent
+    PreperationTabComponent,
+    CameraPopoverComponent
   ],
   imports: [
     IonicModule,
@@ -32,14 +34,16 @@ import { PreperationTabComponent } from "./preperation-tab/preperation-tab";
   entryComponents: [
     SummaryTabComponent,
     IngredientsTabComponent,
-    PreperationTabComponent
+    PreperationTabComponent,
+    CameraPopoverComponent
   ],
   exports: [
     RecipeComponent,
     RecipePreviewComponent,
     SummaryTabComponent,
     IngredientsTabComponent,
-    PreperationTabComponent
+    PreperationTabComponent,
+    CameraPopoverComponent
   ]
 })
 export class ComponentsModule {}

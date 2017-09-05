@@ -11,7 +11,11 @@
                 <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
             </ion-col>
         </ion-row>
-
+        <ion-row>
+            <ion-col col-12>
+                <ion-input required type="text" [(ngModel)]="entity.duration" placeholder="{{'PREPARATION_TIME' | translate}}"></ion-input>
+            </ion-col>
+        </ion-row>
         <ion-row>
             <ion-col col-12>
                 <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
@@ -19,6 +23,6 @@
         </ion-row>
     </ion-grid>
     <ion-fab right top>
-        <button ion-fab><ion-icon name="camera"></ion-icon></button>
+        <button ion-fab (click)="presentPopover($event)"><ion-icon name="camera"></ion-icon></button>
     </ion-fab>
 </ion-content>
