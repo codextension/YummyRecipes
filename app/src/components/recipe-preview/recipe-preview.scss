@@ -1,3 +1,27 @@
 recipe-preview {
-
+    ion-card {
+        position: relative;
+    }
+    .card-fav {
+        position: absolute;
+        top: 20%;
+        left: 85%;
+        width: 100%;
+    }
+    .card-footer {
+        background-color: white;
+        opacity: 0.7;
+        position: absolute;
+        top: 85%;
+        width: 100%;
+    }
+    .text-bold {
+        font-weight: bold;
+    }
+    .align-left {
+        float: left;
+    }
+    .align-right {
+        float: right;
+    }
 }

@@ -1,18 +1,17 @@
 <ion-header>
-    <ion-navbar>
+    <ion-navbar *ngIf="!showSearchbar">
         <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
         <ion-title>{{'APP_TITLE' | translate}}</ion-title>
         <ion-buttons end>
             <button ion-button (click)="toggleSearchbar()">
-        <ion-icon name="search" *ngIf="!showSearchbar"></ion-icon>
-        <ion-icon name="close-circle" *ngIf="showSearchbar"></ion-icon>
+        <ion-icon name="search"></ion-icon>
       </button>
         </ion-buttons>
     </ion-navbar>
     <ion-toolbar *ngIf="showSearchbar">
-        <ion-searchbar (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
+        <ion-searchbar showCancelButton="true" (ionCancel)="toggleSearchbar()" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
         <ion-list>
             <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
                 <ion-thumbnail item-start>

@@ -1,29 +1,21 @@
-<ion-card *ngIf="entity != null">
-    <img src="assets/imgs/falafel.jpg" />
-    <ion-card-content (click)="showDetails($event)">
-        <ion-card-title>
-            {{entity.name}}
-        </ion-card-title>
-        <p>
-            {{entity.description}}
-        </p>
-        <ion-badge color="primary">
-            Vegetarian</ion-badge>
-        <ion-badge color="primary">Chickpees</ion-badge>
-    </ion-card-content>
-    <ion-row no-padding *ngIf="!preview">
-        <ion-col>
-            <button ion-button clear small color="info" icon-start>
-                            <ion-icon name="{{entity.favourite?'heart':'heart-outline'}}"></ion-icon>
-                            {{'FAVOURITE' | translate}}
-      </button>
-        </ion-col>
-
-        <ion-col text-right>
-            <button ion-button clear small color="info" icon-start>
-                            <ion-icon name='share-alt'></ion-icon>
-                            {{'SHARE' | translate}}
-      </button>
-        </ion-col>
-    </ion-row>
+<ion-card>
+    <ion-card-header class="text-bold">
+        Lebanese Falafel
+    </ion-card-header>
+    <img (click)="showDetailedRecipe()" [src]="entity.imageUrl" />
+    <div class="card-fav">
+        <button (click)="toggleFavourite()" ion-button clear color="info" icon-start>
+                    <ion-icon name="{{entity.favourite==true?'heart':'heart-outline'}}"></ion-icon>
+</button>
+    </div>
+    <div class="card-footer">
+        <button class="align-right" ion-button clear color="info" icon-start>
+            <ion-icon name='share-alt'></ion-icon>
+            {{'SHARE' | translate}}
+</button>
+        <div class="align-left" style="margin: 15px;">
+            <ion-icon name='time'></ion-icon>
+            <span style="top: -2px;position: relative;font-size: smaller">{{formatTime(entity.duration)}}</span>
+        </div>
+    </div>
 </ion-card>
