@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
 import { RecipeManagementPage } from "../recipe-management/recipe-management";
+import { RecipeEntity } from "../../entities/recipe-entity";
 
 @Component({
   selector: "page-home",
@@ -53,7 +54,19 @@ export class HomePage {
   }
 
   newRecipe() {
-    this.navCtrl.push(RecipeManagementPage, { type: "new", detailed: true });
+    let recipe: RecipeEntity = new RecipeEntity(
+      null,
+      null,
+      null,
+      null,
+      false,
+      [],
+      [],
+      [],
+      null
+    );
+
+    this.navCtrl.push(RecipeManagementPage, { entity: recipe });
   }
 
   createRange(number) {
