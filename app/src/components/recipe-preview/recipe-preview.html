@@ -1,7 +1,4 @@
 <ion-card>
-    <ion-card-header class="text-bold">
-        Lebanese Falafel
-    </ion-card-header>
     <img (click)="showDetailedRecipe()" [src]="entity.imageUrl" />
     <div class="card-fav">
         <button (click)="toggleFavourite()" ion-button clear color="info" icon-start>
@@ -9,6 +6,7 @@
 </button>
     </div>
     <div class="card-footer">
+        <div>Lebanese Falafel</div>
         <button class="align-right" ion-button clear color="info" icon-start>
             <ion-icon name='share-alt'></ion-icon>
             {{'SHARE' | translate}}
