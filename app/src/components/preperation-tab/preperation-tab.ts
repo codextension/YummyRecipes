@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-
+import { Component } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { NavParams } from "ionic-angular";
+import { RecipeEntity } from "../../entities/recipe-entity";
 /**
  * Generated class for the PreperationTabComponent component.
  *
@@ -7,16 +9,17 @@ import { Component } from '@angular/core';
  * for more info on Angular Components.
  */
 @Component({
-  selector: 'preperation-tab',
-  templateUrl: 'preperation-tab.html'
+  selector: "preperation-tab",
+  templateUrl: "preperation-tab.html"
 })
 export class PreperationTabComponent {
+  public entity: RecipeEntity;
 
-  text: string;
-
-  constructor() {
-    console.log('Hello PreperationTabComponent Component');
-    this.text = 'Hello World';
+  constructor(params: NavParams, private sanitizer: DomSanitizer) {
+    this.entity = params.data;
   }
 
+  getBackground(image) {
+    return this.sanitizer.bypassSecurityTrustStyle(`url(${image})`);
+  }
 }

@@ -3,23 +3,21 @@
     <ion-grid>
         <ion-row>
             <ion-col col-12>
-                <ion-img style="display: table-row;" width="100%" src="{{entity.imageUrl || 'assets/imgs/no_image.jpg'}}"></ion-img>
+                <div class="square" [style.background-image]="getBackground(entity.imageUrl)"></div>
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col col-12>
-                <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col col-12>
-                <ion-input required type="text" [(ngModel)]="entity.duration" placeholder="{{'PREPARATION_TIME' | translate}}"></ion-input>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col col-12>
-                <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
-            </ion-col>
+            <ion-list>
+                <ion-item>
+                    <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-input required type="text" [(ngModel)]="entity.duration" placeholder="{{'PREPARATION_TIME' | translate}}"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
+                </ion-item>
+            </ion-list>
         </ion-row>
     </ion-grid>
     <ion-fab right top>

@@ -14,5 +14,6 @@
     "SETTINGS_SAVED_FAILED": "Einstellungen nicht gespeichert!",
     "NEW_RECIPE": "Neue Rezept",
     "DESCRIPTION": "beschreibung",
-    "NAME": "name"
+    "NAME": "name",
+    "PREPARATION_TIME": "dauert"
 }

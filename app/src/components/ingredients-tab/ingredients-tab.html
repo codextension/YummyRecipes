@@ -2,6 +2,11 @@
 <ion-content padding>
     <ion-grid>
         <ion-row>
+            <ion-col col-12>
+                <div class="rectangle" [style.background-image]="getBackground(entity.imageUrl)"></div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
             <ion-col col-7>
                 <ion-input type="text" placeholder="ingredient"></ion-input>
             </ion-col>

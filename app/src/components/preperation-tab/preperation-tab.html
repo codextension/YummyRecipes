@@ -1,4 +1,14 @@
-<!-- Generated template for the IngredientsTabComponent component -->
 <ion-content padding>
-    <ion-textarea width="100%" class="height-large" placeholder="preparation"> </ion-textarea>
+    <ion-grid>
+        <ion-row>
+            <ion-col col-12>
+                <div class="rectangle" [style.background-image]="getBackground(entity.imageUrl)"></div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-12>
+                <ion-textarea width="100%" class="height-large" placeholder="preparation"> </ion-textarea>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

@@ -12,6 +12,7 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 export class HomePage {
   public showSearchbar: boolean;
   public foundRecipes: any;
+  public recipe: RecipeEntity;
 
   constructor(
     public navCtrl: NavController,
@@ -19,6 +20,17 @@ export class HomePage {
     private neo4jService: Neo4JService
   ) {
     this.showSearchbar = false;
+    this.recipe = new RecipeEntity(
+      "",
+      "",
+      90,
+      "",
+      true,
+      [],
+      [],
+      [],
+      "assets/imgs/no_image.jpg"
+    );
   }
 
   toggleSearchbar() {
@@ -54,19 +66,7 @@ export class HomePage {
   }
 
   newRecipe() {
-    let recipe: RecipeEntity = new RecipeEntity(
-      null,
-      null,
-      null,
-      null,
-      false,
-      [],
-      [],
-      [],
-      null
-    );
-
-    this.navCtrl.push(RecipeManagementPage, { entity: recipe });
+    this.navCtrl.push(RecipeManagementPage, { entity: this.recipe });
   }
 
   createRange(number) {

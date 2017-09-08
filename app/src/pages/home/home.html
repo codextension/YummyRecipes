@@ -10,7 +10,7 @@
       </button>
         </ion-buttons>
     </ion-navbar>
-    <ion-toolbar *ngIf="showSearchbar">
+    <ion-toolbar *ngIf="showSearchbar" class="fadein">
         <ion-searchbar showCancelButton="true" (ionCancel)="toggleSearchbar()" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
         <ion-list>
             <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
@@ -24,10 +24,11 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding (tap)="tapEvent($event)">
+<ion-content padding>
+    <ion-backdrop style="opacity:0.35;" class="show-backdrop" (tap)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
     <div card-group>
         <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
-            <recipe-preview [entity]=""></recipe-preview>
+            <recipe-preview [entity]="recipe"></recipe-preview>
         </ng-template>
     </div>
     <ion-fab right bottom *ngIf="!showSearchbar">
