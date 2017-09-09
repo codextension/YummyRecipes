@@ -37,8 +37,8 @@ import { DomSanitizer } from "@angular/platform-browser";
           "padding-bottom": "100vh"
         })
       ),
-      transition("shrink => expand", animate("100ms ease-in")),
-      transition("expand => shrink", animate("100ms ease-out"))
+      transition("shrink => expand", animate("300ms ease-in")),
+      transition("expand => shrink", animate("300ms ease-out"))
     ])
   ]
 })

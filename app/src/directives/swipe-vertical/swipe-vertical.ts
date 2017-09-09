@@ -36,13 +36,18 @@ export class SwipeVerticalDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.swipeGesture = new Gesture(this.el, {
-      recognizers: [[Hammer.Swipe, { direction: Hammer.DIRECTION_VERTICAL }]]
+      recognizers: [
+        [
+          Hammer.Pan,
+          { direction: Hammer.DIRECTION_VERTICAL, threshold: 5, pointers: 0 }
+        ]
+      ]
     });
     this.swipeGesture.listen();
-    this.swipeGesture.on("swipeup", e => {
+    this.swipeGesture.on("panup", e => {
       this.swipeUp.emit(e);
     });
-    this.swipeGesture.on("swipedown", e => {
+    this.swipeGesture.on("pandown", e => {
       this.swipeDown.emit(e);
     });
   }

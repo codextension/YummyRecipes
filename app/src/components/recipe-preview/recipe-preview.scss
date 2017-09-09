@@ -10,8 +10,11 @@ recipe-preview {
     .card-fav {
         position: absolute;
         top: 10px;
-        left: calc(100% - 60px);
+        left: calc(100% - 50px);
         width: 100%;
+        background-color: white;
+        border-radius: 25px;
+        opacity: 0.8;
     }
     .square {
         width: 100%;
