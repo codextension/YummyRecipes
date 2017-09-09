@@ -23,10 +23,10 @@
         </ion-list>
     </ion-toolbar>
 </ion-header>
-<ion-backdrop style="opacity:0.35;" class="show-backdrop" (tap)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
+<ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
 <ion-content>
     <div card-group>
-        <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
+        <ng-template ngFor let-item [ngForOf]="items" let-currentElementIndex="index+1">
             <recipe-preview [entity]="recipe"></recipe-preview>
         </ng-template>
     </div>

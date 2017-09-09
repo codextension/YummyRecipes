@@ -13,6 +13,7 @@ export class HomePage {
   public showSearchbar: boolean;
   public foundRecipes: any;
   public recipe: RecipeEntity;
+  public items: any[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -31,6 +32,10 @@ export class HomePage {
       [],
       "assets/img/no_image.jpg"
     );
+
+    for (var i = 1; i <= 50; i++) {
+      this.items.push(i);
+    }
   }
 
   toggleSearchbar() {
@@ -67,13 +72,5 @@ export class HomePage {
 
   newRecipe() {
     this.navCtrl.push(RecipeManagementPage, { entity: this.recipe });
-  }
-
-  createRange(number) {
-    var items: number[] = [];
-    for (var i = 1; i <= number; i++) {
-      items.push(i);
-    }
-    return items;
   }
 }
