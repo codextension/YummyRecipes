@@ -7,9 +7,10 @@ recipe {
         background-position: center;
         background-repeat: no-repeat;
     }
-    .fill {
+    .square {
         width: 100%;
         height: 0px;
+        padding-bottom: 50%;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

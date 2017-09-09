@@ -15,38 +15,11 @@ import { DomSanitizer } from "@angular/platform-browser";
 export class RecipeComponent {
   @Input() entity: RecipeEntity;
   @Input() readonly: boolean;
-  public paddingBottom: number;
+  @Input() showImage: boolean;
 
-  constructor(private sanitizer: DomSanitizer, public zone: NgZone) {
-    this.paddingBottom = 100;
-  }
+  constructor(private sanitizer: DomSanitizer, public zone: NgZone) {}
 
   getBackground(image) {
     return this.sanitizer.bypassSecurityTrustStyle(`url(${image})`);
-  }
-
-  scrollHandler(event) {
-    if (event.directionY == "down") {
-      if (
-        this.paddingBottom > 50 &&
-        event.scrollHeight - event.contentHeight - event.scrollTop > 0
-      ) {
-        this.paddingBottom--;
-        console.log(
-          "padding: " + this.paddingBottom + " (" + event.scrollTop + ")"
-        );
-      }
-    } else {
-      if (this.paddingBottom < 100) {
-        this.paddingBottom++;
-        console.log(
-          "padding: " + this.paddingBottom + " (" + event.scrollTop + ")"
-        );
-      }
-      if (event.scrollTop == 0) {
-        this.paddingBottom = 100;
-      }
-    }
-    this.zone.run(() => {});
   }
 }

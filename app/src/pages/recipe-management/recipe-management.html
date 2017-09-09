@@ -11,9 +11,10 @@
 
         </ion-buttons>
     </ion-navbar>
+    <div class="fill" [style.padding-bottom]="dynamicHeight + 'vh'" swipe-vertical (swipeUp)="onSwipeUp($event)" (swipeDown)="onSwipeDown($event)" [style.background-image]="getBackground(recipe.imageUrl)"></div>
 </ion-header>
 
 
 <ion-content>
-    <recipe [entity]="recipe"></recipe>
+    <recipe [showImage]="false" [entity]="recipe"></recipe>
 </ion-content>

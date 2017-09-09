@@ -4,25 +4,23 @@
     <ion-tab tabIcon="book" [root]="preperationTab" [rootParams]="entity"></ion-tab>
 </ion-tabs>-->
 
-<ion-content (ionScroll)="scrollHandler($event)">
-    <div class="fill" [style.padding-bottom]="paddingBottom+'vh'" [style.background-image]="getBackground(entity.imageUrl)"></div>
-    <ion-grid>
 
-        <ion-row>
-            <ion-list>
-                <ion-item>
-                    <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
-                </ion-item>
-                <ion-item>
-                    <ion-input required type="text" [(ngModel)]="entity.duration" placeholder="{{'PREPARATION_TIME' | translate}}"></ion-input>
-                </ion-item>
-                <ion-item>
-                    <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
-                </ion-item>
-            </ion-list>
-        </ion-row>
-    </ion-grid>
-    <!--    <ion-fab right top>
+<div class="square" *ngIf="showImage != null && showImage" [style.background-image]="getBackground(entity.imageUrl)"></div>
+<ion-grid>
+    <ion-row>
+        <ion-list>
+            <ion-item>
+                <ion-input required type="text" [(ngModel)]="entity.name" placeholder="{{'NAME' | translate}}"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input required type="text" [(ngModel)]="entity.duration" placeholder="{{'PREPARATION_TIME' | translate}}"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-textarea required [(ngModel)]="entity.description" placeholder="{{'DESCRIPTION' | translate}}"></ion-textarea>
+            </ion-item>
+        </ion-list>
+    </ion-row>
+</ion-grid>
+<!--    <ion-fab right top>
         <button ion-fab (click)="presentPopover($event)"><ion-icon name="camera"></ion-icon></button>
     </ion-fab>-->
-</ion-content>
