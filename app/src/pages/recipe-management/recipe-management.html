@@ -11,7 +11,7 @@
 
         </ion-buttons>
     </ion-navbar>
-    <div class="fill" [style.padding-bottom]="dynamicHeight + 'vh'" swipe-vertical (swipeUp)="onSwipeUp($event)" (swipeDown)="onSwipeDown($event)" [style.background-image]="getBackground(recipe.imageUrl)"></div>
+    <div class="fill" [@resizeImg]='imgState' swipe-vertical (@resizeImg.done)="content.resize()" (swipeUp)="onSwipeUp($event)" (swipeDown)="onSwipeDown($event)" [style.background-image]="getBackground(recipe.imageUrl)"></div>
 </ion-header>
 
 

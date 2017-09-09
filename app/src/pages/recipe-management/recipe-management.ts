@@ -1,4 +1,12 @@
-import { Component, ViewChild } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from "@angular/core";
 import {
   NavController,
   NavParams,
@@ -14,12 +22,31 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "page-recipe-management",
   templateUrl: "recipe-management.html",
-  providers: [ImagesService]
+  providers: [ImagesService],
+  animations: [
+    trigger("resizeImg", [
+      state(
+        "shrink",
+        style({
+          "padding-bottom": "30vh"
+        })
+      ),
+      state(
+        "expand",
+        style({
+          "padding-bottom": "100vh"
+        })
+      ),
+      transition("shrink => expand", animate("100ms ease-in")),
+      transition("expand => shrink", animate("100ms ease-out"))
+    ])
+  ]
 })
 export class RecipeManagementPage {
   public base64ImageUrl: string;
   public recipe: RecipeEntity;
   public dynamicHeight: number;
+  public imgState: string;
 
   @ViewChild(Content) content: Content;
 
@@ -52,6 +79,7 @@ export class RecipeManagementPage {
   ) {
     this.recipe = this.navParams.get("entity");
     this.dynamicHeight = 100;
+    this.imgState = "expand";
   }
 
   ionViewDidLoad() {
@@ -81,12 +109,10 @@ export class RecipeManagementPage {
   }
 
   onSwipeUp(event) {
-    this.dynamicHeight = 20;
-    this.content.resize();
+    this.imgState = "shrink";
   }
 
   onSwipeDown(event) {
-    this.dynamicHeight = 100;
-    this.content.resize();
+    this.imgState = "expand";
   }
 }

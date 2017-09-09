@@ -4,7 +4,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
 import { IonicStorageModule } from "@ionic/storage";
 import { Camera } from "@ionic-native/camera";
 import { File } from "@ionic-native/file";
-
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MyApp } from "./app.component";
 import { HomePage } from "../pages/home/home";
 import { SettingsPage } from "../pages/settings/settings";
@@ -33,6 +33,7 @@ import { ComponentsModule } from "../components/components.module";
     HttpModule,
     JsonpModule,
     BrowserModule,
+    BrowserAnimationsModule,
     DirectivesModule,
     ComponentsModule,
     IonicModule.forRoot(MyApp),
