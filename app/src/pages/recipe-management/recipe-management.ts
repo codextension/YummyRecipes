@@ -48,6 +48,9 @@ export class RecipeManagementPage {
   public dynamicHeight: number;
   public imgState: string;
 
+  private swipeCoord?: [number, number];
+  private swipeTime?: number;
+
   @ViewChild(Content) content: Content;
 
   private cameraOptions: CameraOptions = {
@@ -108,11 +111,37 @@ export class RecipeManagementPage {
     popover.present({ ev: event });
   }
 
-  onSwipeUp(event) {
-    this.imgState = "shrink";
-  }
+  swipe(e: TouchEvent, when: string): void {
+    const coord: [number, number] = [
+      e.changedTouches[0].pageX,
+      e.changedTouches[0].pageY
+    ];
+    const time = new Date().getTime();
 
-  onSwipeDown(event) {
-    this.imgState = "expand";
+    if (when === "start") {
+      this.swipeCoord = coord;
+      this.swipeTime = time;
+    } else if (when === "end") {
+      const direction = [
+        coord[0] - this.swipeCoord[0],
+        coord[1] - this.swipeCoord[1]
+      ];
+      const duration = time - this.swipeTime;
+
+      if (
+        duration < 1000 && //Short enough
+        Math.abs(direction[0]) < Math.abs(direction[1]) && //Vertical enough
+        Math.abs(direction[1]) > 10
+      ) {
+        //Long enough
+        const swipe = direction[1] < 0 ? "up" : "down";
+
+        if (swipe == "up") {
+          this.imgState = "shrink";
+        } else {
+          this.imgState = "expand";
+        }
+      }
+    }
   }
 }

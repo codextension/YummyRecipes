@@ -1,12 +1,9 @@
 import { NgModule } from "@angular/core";
 import { CardGroupDirective } from "./card-group/card-group";
 import { FocuserDirective } from "./focuser/focuser";
-import { SwipeVerticalDirective } from './swipe-vertical/swipe-vertical';
 @NgModule({
-  declarations: [CardGroupDirective, FocuserDirective,
-    SwipeVerticalDirective],
+  declarations: [CardGroupDirective, FocuserDirective],
   imports: [],
-  exports: [CardGroupDirective, FocuserDirective,
-    SwipeVerticalDirective]
+  exports: [CardGroupDirective, FocuserDirective]
 })
 export class DirectivesModule {}

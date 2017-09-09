@@ -1,4 +1,8 @@
-import { BrowserModule } from "@angular/platform-browser";
+import {
+  BrowserModule,
+  HammerGestureConfig,
+  HAMMER_GESTURE_CONFIG
+} from "@angular/platform-browser";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
 import { IonicStorageModule } from "@ionic/storage";
@@ -10,7 +14,6 @@ import { HomePage } from "../pages/home/home";
 import { SettingsPage } from "../pages/settings/settings";
 import { FavouritesPage } from "../pages/favourites/favourites";
 import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
-
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
 
@@ -20,7 +23,11 @@ import { TranslateHttpLoader } from "./http-loader";
 
 import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
-
+export class MyHammerConfig extends HammerGestureConfig {
+  overrides = <any>{
+    swipe: { velocity: 0.4, threshold: 20 } // override default settings
+  };
+}
 @NgModule({
   declarations: [
     MyApp,
@@ -60,6 +67,7 @@ import { ComponentsModule } from "../components/components.module";
   providers: [
     Camera,
     File,
+    { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
