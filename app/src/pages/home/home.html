@@ -10,12 +10,12 @@
       </button>
         </ion-buttons>
     </ion-navbar>
-    <ion-toolbar *ngIf="showSearchbar" class="fadein">
-        <ion-searchbar showCancelButton="true" (ionCancel)="toggleSearchbar()" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
+    <ion-toolbar *ngIf="showSearchbar">
+        <ion-searchbar showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
         <ion-list>
             <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
                 <ion-thumbnail item-start>
-                    <img src="assets/imgs/falafel.jpg">
+                    <img src="assets/img/falafel.jpg">
                 </ion-thumbnail>
                 <h2>{{foundRecipe}}</h2>
                 <p>Hayao Miyazaki • 1988</p>
@@ -23,9 +23,8 @@
         </ion-list>
     </ion-toolbar>
 </ion-header>
-
-<ion-content padding>
-    <ion-backdrop style="opacity:0.35;" class="show-backdrop" (tap)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
+<ion-backdrop style="opacity:0.35;" class="show-backdrop" (tap)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
+<ion-content>
     <div card-group>
         <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
             <recipe-preview [entity]="recipe"></recipe-preview>

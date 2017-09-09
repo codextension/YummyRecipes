@@ -1,9 +1,8 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, NgZone } from "@angular/core";
 import { RecipeEntity } from "../../entities/recipe-entity";
-import { PreperationTabComponent } from "../preperation-tab/preperation-tab";
-import { IngredientsTabComponent } from "../ingredients-tab/ingredients-tab";
-import { SummaryTabComponent } from "../summary-tab/summary-tab";
-
+import { NavParams, PopoverController } from "ionic-angular";
+import { CameraPopoverComponent } from "../camera-popover/camera-popover";
+import { DomSanitizer } from "@angular/platform-browser";
 /**
  * Generated class for the RecipeComponent component.
  *
@@ -15,11 +14,40 @@ import { SummaryTabComponent } from "../summary-tab/summary-tab";
   templateUrl: "recipe.html"
 })
 export class RecipeComponent {
-  public summaryTab = SummaryTabComponent;
-  public ingredientsTab = IngredientsTabComponent;
-  public preperationTab = PreperationTabComponent;
-
   @Input() entity: RecipeEntity;
+  @Input() readonly: boolean;
+  public paddingBottom: number;
 
-  constructor() {}
+  constructor(
+    private popoverCtrl: PopoverController,
+    private sanitizer: DomSanitizer,
+    public zone: NgZone
+  ) {
+    this.paddingBottom = 100;
+  }
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(CameraPopoverComponent);
+    popover.present({ ev: event });
+  }
+
+  getBackground(image) {
+    return this.sanitizer.bypassSecurityTrustStyle(`url(${image})`);
+  }
+
+  scrollHandler(event) {
+    if (event.directionY == "down") {
+      if (this.paddingBottom > 50) {
+        this.paddingBottom--;
+      }
+    } else {
+      if (this.paddingBottom < 100) {
+        this.paddingBottom++;
+      }
+      if (event.scrollTop == 0) {
+        this.paddingBottom = 100;
+      }
+    }
+    this.zone.run(() => {});
+  }
 }

@@ -29,7 +29,7 @@ export class HomePage {
       [],
       [],
       [],
-      "assets/imgs/no_image.jpg"
+      "assets/img/no_image.jpg"
     );
   }
 
