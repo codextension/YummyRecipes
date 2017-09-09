@@ -1,6 +1,6 @@
 import { Component, Input, NgZone } from "@angular/core";
 import { RecipeEntity } from "../../entities/recipe-entity";
-import { NavParams, PopoverController } from "ionic-angular";
+import { PopoverController } from "ionic-angular";
 import { CameraPopoverComponent } from "../camera-popover/camera-popover";
 import { DomSanitizer } from "@angular/platform-browser";
 /**
@@ -37,12 +37,21 @@ export class RecipeComponent {
 
   scrollHandler(event) {
     if (event.directionY == "down") {
-      if (this.paddingBottom > 50) {
+      if (
+        this.paddingBottom > 50 &&
+        event.scrollHeight - event.contentHeight - event.scrollTop > 0
+      ) {
         this.paddingBottom--;
+        console.log(
+          "padding: " + this.paddingBottom + " (" + event.scrollTop + ")"
+        );
       }
     } else {
       if (this.paddingBottom < 100) {
         this.paddingBottom++;
+        console.log(
+          "padding: " + this.paddingBottom + " (" + event.scrollTop + ")"
+        );
       }
       if (event.scrollTop == 0) {
         this.paddingBottom = 100;

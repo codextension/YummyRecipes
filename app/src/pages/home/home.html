@@ -11,7 +11,7 @@
         </ion-buttons>
     </ion-navbar>
     <ion-toolbar *ngIf="showSearchbar">
-        <ion-searchbar showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
+        <ion-searchbar focuser showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
         <ion-list>
             <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
                 <ion-thumbnail item-start>
