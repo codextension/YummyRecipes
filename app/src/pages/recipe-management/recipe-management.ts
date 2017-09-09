@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
-import { NavController, NavParams } from "ionic-angular";
+import { NavController, NavParams, PopoverController } from "ionic-angular";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { ImagesService } from "../../services/images.service";
 import { RecipeEntity } from "../../entities/recipe-entity";
+import { CameraPopoverComponent } from "../../components/camera-popover/camera-popover";
 
 @Component({
   selector: "page-recipe-management",
@@ -36,6 +37,7 @@ export class RecipeManagementPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private camera: Camera,
+    private popoverCtrl: PopoverController,
     private imagesService: ImagesService
   ) {
     this.recipe = this.navParams.get("entity");
@@ -56,5 +58,10 @@ export class RecipeManagementPage {
         // Handle error
       }
     );
+  }
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(CameraPopoverComponent);
+    popover.present({ ev: event });
   }
 }

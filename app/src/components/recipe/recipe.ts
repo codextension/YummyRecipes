@@ -1,7 +1,6 @@
 import { Component, Input, NgZone } from "@angular/core";
 import { RecipeEntity } from "../../entities/recipe-entity";
-import { PopoverController } from "ionic-angular";
-import { CameraPopoverComponent } from "../camera-popover/camera-popover";
+
 import { DomSanitizer } from "@angular/platform-browser";
 /**
  * Generated class for the RecipeComponent component.
@@ -18,17 +17,8 @@ export class RecipeComponent {
   @Input() readonly: boolean;
   public paddingBottom: number;
 
-  constructor(
-    private popoverCtrl: PopoverController,
-    private sanitizer: DomSanitizer,
-    public zone: NgZone
-  ) {
+  constructor(private sanitizer: DomSanitizer, public zone: NgZone) {
     this.paddingBottom = 100;
-  }
-
-  presentPopover(event) {
-    let popover = this.popoverCtrl.create(CameraPopoverComponent);
-    popover.present({ ev: event });
   }
 
   getBackground(image) {
