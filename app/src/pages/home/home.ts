@@ -30,7 +30,7 @@ export class HomePage {
       [],
       [],
       [],
-      "assets/img/no_image.jpg"
+      "assets/imgs/no_image.jpg"
     );
 
     for (var i = 1; i <= 50; i++) {

@@ -1,22 +1,57 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
+import { Camera, CameraOptions } from "@ionic-native/camera";
+import { ImagesService } from "../../services/images.service";
 
-/**
- * Generated class for the CameraPopoverComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
 @Component({
-  selector: 'camera-popover',
-  templateUrl: 'camera-popover.html'
+  selector: "camera-popover",
+  providers: [ImagesService],
+  templateUrl: "camera-popover.html"
 })
 export class CameraPopoverComponent {
+  private cameraOptions: CameraOptions = {
+    quality: 60,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE,
+    correctOrientation: true,
+    destinationType: this.camera.DestinationType.DATA_URL,
+    cameraDirection: this.camera.Direction.BACK
+  };
 
-  text: string;
+  private fileOptions: CameraOptions = {
+    quality: 60,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE,
+    correctOrientation: true,
+    sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+    destinationType: this.camera.DestinationType.DATA_URL,
+    cameraDirection: this.camera.Direction.BACK
+  };
 
-  constructor() {
-    console.log('Hello CameraPopoverComponent Component');
-    this.text = 'Hello World';
+  constructor(private camera: Camera, private imagesService: ImagesService) {}
+
+  public makeScreenshot() {
+    this.camera.getPicture(this.cameraOptions).then(
+      imageData => {
+        this.imagesService.save(imageData).then(res => {
+          //do something with the results
+        });
+      },
+      err => {
+        // Handle error
+      }
+    );
   }
 
+  public uploadFromLibrary() {
+    this.camera.getPicture(this.fileOptions).then(
+      imageData => {
+        this.imagesService.save(imageData).then(res => {
+          //do something with the results
+        });
+      },
+      err => {
+        // Handle error
+      }
+    );
+  }
 }

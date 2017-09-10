@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>YummyRecipes</name>
+<widget id="io.codextension.laziza" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Laziza</name>
     <description>Store and manage your own recipes</description>
     <author email="elie@el-khoury.net" href="http://www.codextension.io">Codextension Team</author>
     <content src="index.html" />

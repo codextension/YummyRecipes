@@ -1,6 +1,6 @@
 {
-    "name": "laziz",
-    "version": "0.0.1",
+    "name": "laziza",
+    "version": "1.0.0",
     "author": "Elie el Khoury",
     "homepage": "http://codextension.io/",
     "private": true,
@@ -65,6 +65,8 @@
             "cordova-plugin-camera": {},
             "cordova-plugin-file": {}
         },
-        "platforms": ["android"]
+        "platforms": [
+            "android"
+        ]
     }
 }

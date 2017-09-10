@@ -15,6 +15,11 @@ export class TranslateHttpLoader implements TranslateLoader {
    * @returns {any}
    */
   public getTranslation(lang: string): any {
+    if (lang.indexOf("en") >= 0) {
+      lang = "en-US";
+    } else if (lang.indexOf("de") >= 0) {
+      lang = "de-DE";
+    }
     return this.http
       .get(`${this.prefix}${lang}${this.suffix}`)
       .map((res: Response) => res.json());
