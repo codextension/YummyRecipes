@@ -1,23 +1,22 @@
 import { NgModule } from "@angular/core";
-import { RecipeComponent } from "./recipe/recipe";
 import { IonicModule } from "ionic-angular";
 import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "../app/http-loader";
-import { RecipePreviewComponent } from "./recipe-preview/recipe-preview";
-import { CameraPopoverComponent } from "./camera-popover/camera-popover";
 import { PipesModule } from "../pipes/pipes.module";
+import { HomePage } from "../pages/home/home";
+import { SettingsPage } from "../pages/settings/settings";
+import { FavouritesPage } from "../pages/favourites/favourites";
+import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
+import { ComponentsModule } from "../components/components.module";
 
 @NgModule({
-  declarations: [
-    RecipeComponent,
-    RecipePreviewComponent,
-    CameraPopoverComponent
-  ],
+  declarations: [HomePage, SettingsPage, RecipeManagementPage, FavouritesPage],
   imports: [
     PipesModule,
     IonicModule,
     HttpModule,
+    ComponentsModule,
     JsonpModule,
     TranslateModule.forRoot({
       loader: {
@@ -27,10 +26,15 @@ import { PipesModule } from "../pipes/pipes.module";
       }
     })
   ],
-  entryComponents: [CameraPopoverComponent],
-  exports: [RecipeComponent, RecipePreviewComponent, CameraPopoverComponent]
+  entryComponents: [
+    HomePage,
+    SettingsPage,
+    RecipeManagementPage,
+    FavouritesPage
+  ],
+  exports: [HomePage, SettingsPage, RecipeManagementPage, FavouritesPage]
 })
-export class ComponentsModule {}
+export class PagesModule {}
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");

@@ -28,13 +28,4 @@ export class RecipePreviewComponent {
   toggleFavourite() {
     this.entity.favourite = !this.entity.favourite;
   }
-
-  formatTime(minutes: number): string {
-    let min = minutes % 60;
-    let hr = Math.floor(minutes / 60);
-    if (hr == 0) {
-      return min + " min";
-    }
-    return hr + " h:" + min + " min";
-  }
 }

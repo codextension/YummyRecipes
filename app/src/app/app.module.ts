@@ -10,17 +10,13 @@ import { Camera } from "@ionic-native/camera";
 import { File } from "@ionic-native/file";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MyApp } from "./app.component";
-import { HomePage } from "../pages/home/home";
-import { SettingsPage } from "../pages/settings/settings";
-import { FavouritesPage } from "../pages/favourites/favourites";
-import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
-
+import { PagesModule } from "../pages/pages.module";
 import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "./http-loader";
-
+import { PipesModule } from "../pipes/pipes.module";
 import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
 export class MyHammerConfig extends HammerGestureConfig {
@@ -29,20 +25,16 @@ export class MyHammerConfig extends HammerGestureConfig {
   };
 }
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage,
-    SettingsPage,
-    FavouritesPage,
-    RecipeManagementPage
-  ],
+  declarations: [MyApp],
   imports: [
     HttpModule,
     JsonpModule,
+    PagesModule,
     BrowserModule,
     BrowserAnimationsModule,
     DirectivesModule,
     ComponentsModule,
+    PipesModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot({
       name: "__yr",
@@ -57,13 +49,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     })
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    SettingsPage,
-    FavouritesPage,
-    RecipeManagementPage
-  ],
+  entryComponents: [MyApp],
   providers: [
     Camera,
     File,

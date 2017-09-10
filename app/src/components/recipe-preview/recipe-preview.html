@@ -14,7 +14,7 @@
 </button>
         <div class="align-left">
             <ion-icon name='time'></ion-icon>
-            <span style="top: -2px;position: relative;font-size: smaller">{{formatTime(entity.duration)}}</span>
+            <span style="top: -2px;position: relative;font-size: smaller">{{entity.duration | time}}</span>
         </div>
     </div>
 </ion-card>
