@@ -13,8 +13,9 @@
     "SETTINGS_SAVED_SUCCESS": "Einstellungen erfolgreich gespeichert!",
     "SETTINGS_SAVED_FAILED": "Einstellungen nicht gespeichert!",
     "NEW_RECIPE": "Neue Rezept",
-    "DESCRIPTION": "beschreibung",
+    "DESCRIPTION": "Beschreibung",
     "NAME": "name",
     "PREPARATION_TIME": "dauert",
-    "LOADING_MORE": "Rezepte werden geladen ..."
+    "LOADING_MORE": "Rezepte werden geladen ...",
+    "SERVINGS": "Portionen"
 }

@@ -8,7 +8,8 @@ export class RecipeEntity {
     public tags: string[],
     public instructions: Instruction[],
     public ingredients: Ingredients[],
-    public imageUrl: string
+    public imageUrl: string,
+    public servings: number
   ) {}
 }
 

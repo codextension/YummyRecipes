@@ -13,8 +13,9 @@
     "SETTINGS_SAVED_SUCCESS": "Settings update with success!",
     "SETTINGS_SAVED_FAILED": "Could not save settings!",
     "NEW_RECIPE": "New Recipe",
-    "DESCRIPTION": "description",
+    "DESCRIPTION": "Description",
     "NAME": "name",
     "PREPARATION_TIME": "duration",
-    "LOADING_MORE": "Loading more recipes..."
+    "LOADING_MORE": "Loading more recipes...",
+    "SERVINGS": "Servings"
 }

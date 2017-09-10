@@ -30,4 +30,22 @@ page-recipe-management {
     .text-white {
         color: white;
     }
+    .label {
+        padding-left: 2px;
+        top: -1px;
+        position: relative;
+    }
+    .img-details {
+        position: absolute;
+        top: 90%;
+        left: calc(100% - 50px);
+        width: 100%;
+        background-color: white;
+        border-radius: 25px;
+        opacity: 0.8;
+    }
+    .no-padding {
+        margin: 0px;
+        width: calc(100%);
+    }
 }

@@ -11,11 +11,13 @@ import {
   NavController,
   NavParams,
   PopoverController,
-  Content
+  Content,
+  Haptic
 } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
 import { CameraPopoverComponent } from "../../components/camera-popover/camera-popover";
 import { DomSanitizer } from "@angular/platform-browser";
+import { DeviceFeedback } from "@ionic-native/device-feedback";
 
 @Component({
   selector: "page-recipe-management",
@@ -44,6 +46,7 @@ export class RecipeManagementPage {
   public recipe: RecipeEntity;
   public dynamicHeight: number;
   public imgState: string;
+  public editMode: boolean;
 
   private swipeCoord?: [number, number];
   private swipeTime?: number;
@@ -54,16 +57,17 @@ export class RecipeManagementPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private popoverCtrl: PopoverController,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private haptic: Haptic,
+    private deviceFeedback: DeviceFeedback
   ) {
     this.recipe = this.navParams.get("entity");
     this.dynamicHeight = 100;
     this.imgState = "expand";
+    this.editMode = false;
   }
 
-  ionViewDidLoad() {
-    console.log("ionViewDidLoad RecipeManagementPage");
-  }
+  ionViewDidLoad() {}
 
   getBackground(image) {
     return this.sanitizer.bypassSecurityTrustStyle(`url(${image})`);
@@ -74,6 +78,12 @@ export class RecipeManagementPage {
       recipe: this.recipe
     });
     popover.present({ ev: event });
+  }
+
+  toggleMode(mode: boolean) {
+    this.editMode = mode;
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1); // Android
   }
 
   swipe(e: TouchEvent, when: string): void {

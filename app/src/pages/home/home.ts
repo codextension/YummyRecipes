@@ -22,15 +22,16 @@ export class HomePage {
   ) {
     this.showSearchbar = false;
     this.recipe = new RecipeEntity(
-      "",
-      "",
+      null,
+      null,
       90,
-      "",
+      null,
       true,
       [],
       [],
       [],
-      "assets/imgs/no_image.jpg"
+      "assets/imgs/no_image.jpg",
+      0
     );
 
     for (var i = 1; i <= 5; i++) {
