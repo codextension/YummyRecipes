@@ -16,6 +16,7 @@ import { PagesModule } from "../pages/pages.module";
 import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "./http-loader";
+import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { PipesModule } from "../pipes/pipes.module";
 import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
@@ -52,6 +53,7 @@ export class MyHammerConfig extends HammerGestureConfig {
   entryComponents: [MyApp],
   providers: [
     Camera,
+    DeviceFeedback,
     File,
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     StatusBar,
