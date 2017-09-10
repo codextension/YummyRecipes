@@ -17,5 +17,7 @@
     "NAME": "name",
     "PREPARATION_TIME": "duration",
     "LOADING_MORE": "Loading more recipes...",
-    "SERVINGS": "Servings"
+    "SERVINGS": "Servings",
+    "INGREDIENTS": "Ingredients",
+    "INSTRUCIONS": "Instructions"
 }

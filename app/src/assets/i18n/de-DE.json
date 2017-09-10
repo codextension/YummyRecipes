@@ -17,5 +17,7 @@
     "NAME": "name",
     "PREPARATION_TIME": "dauert",
     "LOADING_MORE": "Rezepte werden geladen ...",
-    "SERVINGS": "Portionen"
+    "SERVINGS": "Portionen",
+    "INGREDIENTS": "Zutaten",
+    "INSTRUCIONS": "Zubereitung"
 }

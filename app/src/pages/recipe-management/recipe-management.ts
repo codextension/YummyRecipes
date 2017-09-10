@@ -27,7 +27,7 @@ import { DeviceFeedback } from "@ionic-native/device-feedback";
       state(
         "shrink",
         style({
-          "padding-bottom": "30vh"
+          "padding-bottom": "20vh"
         })
       ),
       state(
