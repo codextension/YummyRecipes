@@ -15,5 +15,6 @@
     "NEW_RECIPE": "New Recipe",
     "DESCRIPTION": "description",
     "NAME": "name",
-    "PREPARATION_TIME": "duration"
+    "PREPARATION_TIME": "duration",
+    "LOADING_MORE": "Loading more recipes..."
 }

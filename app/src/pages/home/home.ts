@@ -33,7 +33,7 @@ export class HomePage {
       "assets/imgs/no_image.jpg"
     );
 
-    for (var i = 1; i <= 50; i++) {
+    for (var i = 1; i <= 5; i++) {
       this.items.push(i);
     }
   }
@@ -72,5 +72,16 @@ export class HomePage {
 
   newRecipe() {
     this.navCtrl.push(RecipeManagementPage, { entity: this.recipe });
+  }
+
+  poll(event) {
+    setTimeout(() => {
+      for (var i = 1; i <= 5; i++) {
+        this.items.push(i);
+      }
+      event.complete();
+      //event.enable(false);
+      //event.enable(shouldEnable)
+    }, 500);
   }
 }

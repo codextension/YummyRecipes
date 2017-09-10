@@ -15,5 +15,6 @@
     "NEW_RECIPE": "Neue Rezept",
     "DESCRIPTION": "beschreibung",
     "NAME": "name",
-    "PREPARATION_TIME": "dauert"
+    "PREPARATION_TIME": "dauert",
+    "LOADING_MORE": "Rezepte werden geladen ..."
 }

@@ -1,23 +1,20 @@
 import { NgModule } from "@angular/core";
-import { RecipeComponent } from "./recipe/recipe";
 import { IonicModule } from "ionic-angular";
 import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "../app/http-loader";
 import { RecipePreviewComponent } from "./recipe-preview/recipe-preview";
 import { CameraPopoverComponent } from "./camera-popover/camera-popover";
+import { DirectivesModule } from "../directives/directives.module";
 import { PipesModule } from "../pipes/pipes.module";
 
 @NgModule({
-  declarations: [
-    RecipeComponent,
-    RecipePreviewComponent,
-    CameraPopoverComponent
-  ],
+  declarations: [RecipePreviewComponent, CameraPopoverComponent],
   imports: [
     PipesModule,
     IonicModule,
     HttpModule,
+    DirectivesModule,
     JsonpModule,
     TranslateModule.forRoot({
       loader: {
@@ -28,7 +25,7 @@ import { PipesModule } from "../pipes/pipes.module";
     })
   ],
   entryComponents: [CameraPopoverComponent],
-  exports: [RecipeComponent, RecipePreviewComponent, CameraPopoverComponent]
+  exports: [RecipePreviewComponent, CameraPopoverComponent]
 })
 export class ComponentsModule {}
 
