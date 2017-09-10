@@ -70,7 +70,9 @@ export class RecipeManagementPage {
   }
 
   presentPopover(event) {
-    let popover = this.popoverCtrl.create(CameraPopoverComponent);
+    let popover = this.popoverCtrl.create(CameraPopoverComponent, {
+      recipe: this.recipe
+    });
     popover.present({ ev: event });
   }
 
