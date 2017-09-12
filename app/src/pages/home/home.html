@@ -25,12 +25,16 @@
 </ion-header>
 <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="tapEvent($event)" *ngIf="showSearchbar"></ion-backdrop>
 <ion-content>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
     <div card-group>
         <ng-template ngFor let-item [ngForOf]="items" let-currentElementIndex="index+1">
             <recipe-preview [entity]="recipe"></recipe-preview>
         </ng-template>
         <ion-infinite-scroll (ionInfinite)="poll($event)">
-            <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'LOADING_MORE' | translate}}">
+            <ion-infinite-scroll-content>
             </ion-infinite-scroll-content>
         </ion-infinite-scroll>
     </div>
