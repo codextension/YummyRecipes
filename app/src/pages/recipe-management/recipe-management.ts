@@ -47,6 +47,7 @@ export class RecipeManagementPage {
   public dynamicHeight: number;
   public imgState: string;
   public editMode: boolean;
+  public inputRef: string;
 
   private swipeCoord?: [number, number];
   private swipeTime?: number;
@@ -84,6 +85,11 @@ export class RecipeManagementPage {
     this.editMode = mode;
     this.haptic.selection(); //iOs
     this.deviceFeedback.haptic(1); // Android
+  }
+
+  showInput(mode, input) {
+    this.toggleMode(mode);
+    this.inputRef = input;
   }
 
   swipe(e: TouchEvent, when: string): void {
