@@ -3,7 +3,7 @@ import { NavController, NavParams, ToastController } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-
+import { ScreenOrientation } from "@ionic-native/screen-orientation";
 /**
  * Generated class for the SettingsPage page.
  *
@@ -24,8 +24,10 @@ export class SettingsPage {
     private storage: Storage,
     private formBuilder: FormBuilder,
     public toastCtrl: ToastController,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private screenOrientation: ScreenOrientation
   ) {
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     this.settingsForm = this.formBuilder.group({
       serverUrl: ["", Validators.required],
       username: [""],

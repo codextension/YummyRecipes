@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MyApp } from "./app.component";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
+import { ScreenOrientation } from "@ionic-native/screen-orientation";
 import { PagesModule } from "../pages/pages.module";
 import { HttpModule, Http, JsonpModule } from "@angular/http";
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
@@ -53,6 +54,7 @@ export class MyHammerConfig extends HammerGestureConfig {
   entryComponents: [MyApp],
   providers: [
     Camera,
+    ScreenOrientation,
     DeviceFeedback,
     File,
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
