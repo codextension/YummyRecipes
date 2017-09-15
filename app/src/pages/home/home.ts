@@ -3,7 +3,6 @@ import { NavController, AlertController } from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
 import { RecipeManagementPage } from "../recipe-management/recipe-management";
 import { RecipeEntity } from "../../entities/recipe-entity";
-import { ScreenOrientation } from "@ionic-native/screen-orientation";
 
 @Component({
   selector: "page-home",
@@ -19,10 +18,8 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
-    private neo4jService: Neo4JService,
-    private screenOrientation: ScreenOrientation
+    private neo4jService: Neo4JService
   ) {
-    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     this.showSearchbar = false;
     this.recipe = new RecipeEntity(
       null,

@@ -18,7 +18,6 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 import { CameraPopoverComponent } from "../../components/camera-popover/camera-popover";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
-import { ScreenOrientation } from "@ionic-native/screen-orientation";
 
 @Component({
   selector: "page-recipe-management",
@@ -61,13 +60,11 @@ export class RecipeManagementPage {
     private popoverCtrl: PopoverController,
     private sanitizer: DomSanitizer,
     private haptic: Haptic,
-    private deviceFeedback: DeviceFeedback,
-    private screenOrientation: ScreenOrientation
+    private deviceFeedback: DeviceFeedback
   ) {
-    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     this.recipe = this.navParams.get("entity");
-    this.dynamicHeight = 100;
-    this.imgState = "expand";
+    this.dynamicHeight = 30;
+    this.imgState = "shrink";
     this.editMode = false;
   }
 

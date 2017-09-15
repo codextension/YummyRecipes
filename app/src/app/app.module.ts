@@ -63,7 +63,13 @@ export class MyHammerConfig extends HammerGestureConfig {
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(public screenOrientation: ScreenOrientation) {
+    screenOrientation.lock(screenOrientation.ORIENTATIONS.PORTRAIT).catch(e => {
+      console.warn("cannot lock the screen rotation");
+    });
+  }
+}
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
