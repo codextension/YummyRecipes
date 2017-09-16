@@ -54,6 +54,7 @@ export class RecipeManagementPage {
   public inputRef: string;
   public recipeContent: string;
   public selectedIngredient: Ingredients;
+  public selectedInstruction: Instruction;
 
   private swipeCoord?: [number, number];
   private swipeTime?: number;
@@ -106,13 +107,17 @@ export class RecipeManagementPage {
     this.inputRef = input;
   }
 
-  edit(item: Ingredients) {
-    this.inputRef = "ingredients";
+  edit(item: any, itemType: string) {
+    this.inputRef = itemType;
     this.toggleMode(true);
-    this.selectedIngredient = item;
+    if (itemType == "ingredients") {
+      this.selectedIngredient = item;
+    } else {
+      this.selectedInstruction = item;
+    }
   }
 
-  delete(item: Ingredients) {}
+  delete(item: any, itemType: string) {}
 
   swipe(e: TouchEvent, when: string): void {
     const coord: [number, number] = [

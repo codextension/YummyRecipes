@@ -42,17 +42,31 @@
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
-                                <ion-item>{{ ingredient.toString() }}</ion-item>
+                                <ion-item>
+                                    <ion-grid>
+                                        <ion-row>
+                                            <ion-col col-1>
+                                                {{ingredient.quantity}}
+                                            </ion-col>
+                                            <ion-col col-3>
+                                                {{ingredient.unit}}
+                                            </ion-col>
+                                            <ion-col col-8>
+                                                {{ingredient.name}}
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-grid>
+                                </ion-item>
                                 <ion-item-options side="left">
-                                    <button ion-button color="secondary" (click)="edit(ingredient)">
+                                    <button ion-button color="secondary" (click)="edit(ingredient,'ingredients')">
                                             <ion-icon name="create"></ion-icon>
-                                            Edit
+                                            
                                           </button>
                                 </ion-item-options>
                                 <ion-item-options side="right">
-                                    <button ion-button color="danger" (click)="delete(ingredient)">
+                                    <button ion-button color="danger" (click)="delete(ingredient,'ingredients')">
                                             <ion-icon name="trash"></ion-icon>
-                                            Delete
+                                            
                                           </button>
                                 </ion-item-options>
                             </ion-item-sliding>
@@ -61,11 +75,29 @@
                     <ion-list *ngSwitchCase="'instructions'">
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let instruction of recipe.instructions">
-                                <ion-item>{{ instruction.description }}</ion-item>
+                                <ion-item>
+                                    <ion-grid>
+                                        <ion-row>
+                                            <ion-col col-1>
+                                                {{instruction.orderNb}}
+                                            </ion-col>
+                                            <ion-col col-11>
+                                                {{instruction.description}}
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-grid>
+                                </ion-item>
+                                <ion-item-options side="left">
+                                    <button ion-button color="secondary" (click)="edit(instruction,'instructions')">
+                                                <ion-icon name="create"></ion-icon>
+                                                
+                                              </button>
+                                </ion-item-options>
                                 <ion-item-options side="right">
-                                    <button ion-button expandable>
-                                                                              <ion-icon name="delete"></ion-icon>
-                                                                            </button>
+                                    <button ion-button color="danger" (click)="delete(instruction,'instructions')">
+                                                <ion-icon name="trash"></ion-icon>
+                                                
+                                              </button>
                                 </ion-item-options>
                             </ion-item-sliding>
                         </ion-item-group>
@@ -90,7 +122,29 @@
         <ion-input *ngIf="inputRef=='name'" [(ngModel)]="recipe.name" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="recipe.duration" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="recipe.servings" class="text-white" autofocus></ion-input>
-        <ion-input *ngIf="inputRef=='ingredients'" [(ngModel)]="selectedIngredient.name" class="text-white" autofocus></ion-input>
+        <ion-grid *ngIf="inputRef=='ingredients'">
+            <ion-row>
+                <ion-col col-2>
+                    <ion-input type="number" [(ngModel)]="selectedIngredient.quantity" class="text-white"></ion-input>
+                </ion-col>
+                <ion-col col-2>
+                    <ion-input [(ngModel)]="selectedIngredient.unit" class="text-white"></ion-input>
+                </ion-col>
+                <ion-col col-8>
+                    <ion-input [(ngModel)]="selectedIngredient.name" class="text-white" autofocus></ion-input>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-grid *ngIf="inputRef=='instructions'">
+            <ion-row>
+                <ion-col col-1>
+                    <ion-input type="number" [(ngModel)]="selectedInstruction.orderNb" class="text-white"></ion-input>
+                </ion-col>
+                <ion-col col-11>
+                    <ion-input [(ngModel)]="selectedInstruction.description" class="text-white" autofocus></ion-input>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
         <ion-buttons end>
             <button ion-button (click)="toggleMode(false)">
                     <ion-icon name="checkmark"></ion-icon>
