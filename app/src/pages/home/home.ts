@@ -12,7 +12,7 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 export class HomePage {
   public showSearchbar: boolean;
   public foundRecipes: any;
-  public recipe: RecipeEntity;
+
   public items: any[] = [];
 
   constructor(
@@ -21,18 +21,6 @@ export class HomePage {
     private neo4jService: Neo4JService
   ) {
     this.showSearchbar = false;
-    this.recipe = new RecipeEntity(
-      null,
-      null,
-      90,
-      null,
-      true,
-      [],
-      [],
-      [],
-      "assets/imgs/no_image.jpg",
-      0
-    );
 
     for (var i = 1; i <= 5; i++) {
       this.items.push(i);
@@ -81,7 +69,20 @@ export class HomePage {
   }
 
   newRecipe() {
-    this.navCtrl.push(RecipeManagementPage, { entity: this.recipe });
+    let recipe: RecipeEntity;
+    recipe = new RecipeEntity(
+      null,
+      null,
+      null,
+      null,
+      true,
+      [],
+      [],
+      [],
+      "assets/imgs/no_image.jpg",
+      null
+    );
+    this.navCtrl.push(RecipeManagementPage, { entity: recipe });
   }
 
   poll(event) {

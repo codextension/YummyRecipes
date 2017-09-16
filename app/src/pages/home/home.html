@@ -31,7 +31,7 @@
 
     <div card-group>
         <ng-template ngFor let-item [ngForOf]="items" let-currentElementIndex="index+1">
-            <recipe-preview [entity]="recipe"></recipe-preview>
+            <recipe-preview [entity]=""></recipe-preview>
         </ng-template>
         <ion-infinite-scroll (ionInfinite)="poll($event)">
             <ion-infinite-scroll-content>

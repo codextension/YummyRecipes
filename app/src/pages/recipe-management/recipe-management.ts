@@ -74,13 +74,6 @@ export class RecipeManagementPage {
     this.dynamicHeight = 30;
     this.imgState = "shrink";
     this.editMode = false;
-
-    if (this.recipe.instructions.length == 0) {
-      this.recipe.instructions.push(new Instruction(1, "xxx"));
-    }
-    if (this.recipe.ingredients.length == 0) {
-      this.recipe.ingredients.push(new Ingredients("xxx", 1, "xxx"));
-    }
   }
 
   ionViewDidLoad() {}
@@ -117,7 +110,31 @@ export class RecipeManagementPage {
     }
   }
 
-  delete(item: any, itemType: string) {}
+  add(itemType: string) {
+    let item: any;
+    if (itemType == "ingredients") {
+      item = new Ingredients("", null, "");
+      this.recipe.ingredients.push(item);
+    } else {
+      item = new Instruction(null, "");
+      this.recipe.instructions.push(item);
+    }
+    this.edit(item, itemType);
+  }
+
+  delete(item: any, itemType: string) {
+    if (itemType == "ingredients") {
+      let index: number = this.recipe.ingredients.indexOf(item, 0);
+      if (index > -1) {
+        this.recipe.ingredients.splice(index, 1);
+      }
+    } else {
+      let index: number = this.recipe.instructions.indexOf(item, 0);
+      if (index > -1) {
+        this.recipe.instructions.splice(index, 1);
+      }
+    }
+  }
 
   swipe(e: TouchEvent, when: string): void {
     const coord: [number, number] = [
