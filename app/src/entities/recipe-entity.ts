@@ -11,6 +11,20 @@ export class RecipeEntity {
     public imageUrl: string,
     public servings: number
   ) {}
+
+  public toString(): string {
+    let output: string = "";
+    output +=
+      "Duration :" +
+      this.duration +
+      "min, servings: " +
+      this.servings +
+      "ppl\n";
+    output += "Ingredients\n";
+    output += "Instructions\n";
+
+    return output;
+  }
 }
 
 export class Instruction {

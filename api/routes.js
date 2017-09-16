@@ -7,6 +7,14 @@ var appRouter = function(app, passport, upload, fs, driver) {
         });
     }
 
+    app.post(
+        "/ping",
+        passport.authenticate("basic", { session: false }),
+        function(req, res, next) {
+            res.json({ answer: "pong" });
+        }
+    );
+
     app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header(

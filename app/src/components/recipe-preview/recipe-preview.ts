@@ -4,6 +4,7 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 import { RecipeManagementPage } from "../../pages/recipe-management/recipe-management";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
+import { SocialSharing } from "@ionic-native/social-sharing";
 @Component({
   selector: "recipe-preview",
   templateUrl: "recipe-preview.html"
@@ -15,7 +16,8 @@ export class RecipePreviewComponent {
     public navCtrl: NavController,
     private sanitizer: DomSanitizer,
     private haptic: Haptic,
-    private deviceFeedback: DeviceFeedback
+    private deviceFeedback: DeviceFeedback,
+    private socialSharing: SocialSharing
   ) {}
 
   showDetails(e: MouseEvent) {
@@ -34,5 +36,16 @@ export class RecipePreviewComponent {
 
   toggleFavourite() {
     this.entity.favourite = !this.entity.favourite;
+  }
+
+  share(recipe: RecipeEntity) {
+    this.socialSharing
+      .share(recipe.toString(), "Recipe: " + recipe.name)
+      .then(() => {
+        console.info("successfully shared");
+      })
+      .catch(() => {
+        console.error("cannot share this recipe, i keep it a secret");
+      });
   }
 }

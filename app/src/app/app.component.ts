@@ -5,7 +5,6 @@ import { SplashScreen } from "@ionic-native/splash-screen";
 import { TranslateService } from "@ngx-translate/core";
 
 import { HomePage } from "../pages/home/home";
-import { FavouritesPage } from "../pages/favourites/favourites";
 import { SettingsPage } from "../pages/settings/settings";
 
 @Component({
@@ -30,7 +29,7 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: "HOME", icon: "home", component: HomePage },
-      { title: "FAVOURITE", icon: "heart", component: FavouritesPage },
+      { title: "FAVOURITE", icon: "heart", component: HomePage },
       { title: "SETTINGS", icon: "settings", component: SettingsPage }
     ];
   }
@@ -49,7 +48,7 @@ export class MyApp {
     if (page.component == HomePage) {
       this.nav.setRoot(page.component);
     } else {
-      this.nav.push(page.component);
+      this.nav.push(page.component, { query: "favourites" });
     }
   }
 }

@@ -21,6 +21,9 @@ import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { PipesModule } from "../pipes/pipes.module";
 import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
+import { SecureStorage } from "@ionic-native/secure-storage";
+import { SocialSharing } from "@ionic-native/social-sharing";
+
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any>{
     swipe: { velocity: 0.4, threshold: 20 } // override default settings
@@ -56,6 +59,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     Camera,
     ScreenOrientation,
     DeviceFeedback,
+    SecureStorage,
+    SocialSharing,
     File,
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     StatusBar,

@@ -6,12 +6,11 @@ import { TranslateHttpLoader } from "../app/http-loader";
 import { PipesModule } from "../pipes/pipes.module";
 import { HomePage } from "../pages/home/home";
 import { SettingsPage } from "../pages/settings/settings";
-import { FavouritesPage } from "../pages/favourites/favourites";
 import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
 import { ComponentsModule } from "../components/components.module";
 
 @NgModule({
-  declarations: [HomePage, SettingsPage, RecipeManagementPage, FavouritesPage],
+  declarations: [HomePage, SettingsPage, RecipeManagementPage],
   imports: [
     PipesModule,
     IonicModule,
@@ -26,13 +25,8 @@ import { ComponentsModule } from "../components/components.module";
       }
     })
   ],
-  entryComponents: [
-    HomePage,
-    SettingsPage,
-    RecipeManagementPage,
-    FavouritesPage
-  ],
-  exports: [HomePage, SettingsPage, RecipeManagementPage, FavouritesPage]
+  entryComponents: [HomePage, SettingsPage, RecipeManagementPage],
+  exports: [HomePage, SettingsPage, RecipeManagementPage]
 })
 export class PagesModule {}
 
