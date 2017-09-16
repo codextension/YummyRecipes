@@ -41,7 +41,7 @@ export class CameraPopoverComponent {
     this.camera.getPicture(this.cameraOptions).then(
       imageData => {
         this.imagesService.save(imageData).then(res => {
-          //do something with the results
+          this.recipe.imageUrl = res;
         });
       },
       err => {
@@ -54,7 +54,7 @@ export class CameraPopoverComponent {
     this.camera.getPicture(this.fileOptions).then(
       imageData => {
         this.imagesService.save(imageData).then(res => {
-          //do something with the results
+          this.recipe.imageUrl = res;
         });
       },
       err => {

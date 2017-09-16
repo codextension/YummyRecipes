@@ -28,10 +28,10 @@
 
             <ion-col col-4>
                 <ion-icon name='time'></ion-icon>
-                <span class="label" (click)="showInput(true, 'duration')">{{recipe.duration==null?('PREPARATION_TIME' | translate):(recipe.duration|time)}}</span>
+                <span class="label" (click)="showInput(true, 'duration')">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
             </ion-col>
             <ion-col col-3>
-                <span class="label" (click)="showInput(true, 'servings')">{{recipe.servings==null?('SERVINGS' | translate):recipe.servings}}</span>
+                <span class="label" (click)="showInput(true, 'servings')">{{recipe.servings==null?'--':recipe.servings}}</span>
                 <ion-icon name='people'></ion-icon>
             </ion-col>
         </ion-row>
@@ -45,13 +45,13 @@
                                 <ion-item>
                                     <ion-grid>
                                         <ion-row>
-                                            <ion-col col-1>
+                                            <ion-col col-2>
                                                 {{ingredient.quantity}}
                                             </ion-col>
                                             <ion-col col-3>
                                                 {{ingredient.unit}}
                                             </ion-col>
-                                            <ion-col col-8>
+                                            <ion-col col-7>
                                                 {{ingredient.name}}
                                             </ion-col>
                                         </ion-row>
@@ -76,16 +76,8 @@
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let instruction of recipe.instructions">
                                 <ion-item>
-                                    <ion-grid>
-                                        <ion-row>
-                                            <ion-col col-1>
-                                                {{instruction.orderNb}}
-                                            </ion-col>
-                                            <ion-col col-11>
-                                                {{instruction.description}}
-                                            </ion-col>
-                                        </ion-row>
-                                    </ion-grid>
+                                    <span style="float:left">{{instruction.orderNb}}</span>
+                                    <span style="white-space: pre-line">{{instruction.description}}</span>
                                 </ion-item>
                                 <ion-item-options side="left">
                                     <button ion-button color="secondary" (click)="edit(instruction,'instructions')">
@@ -107,10 +99,10 @@
         </ion-row>
     </ion-grid>
     <ion-fab right bottom *ngIf="recipeContent=='instructions' && !editMode">
-        <button mini ion-fab (click)="add('instructions')"><ion-icon name="add"></ion-icon></button>
+        <button ion-fab (click)="add('instructions')"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
     <ion-fab right bottom *ngIf="recipeContent=='ingredients' && !editMode">
-        <button mini ion-fab (click)="add('ingredients')"><ion-icon name="add"></ion-icon></button>
+        <button ion-fab (click)="add('ingredients')"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
 </ion-content>
 <ion-footer>
@@ -131,23 +123,20 @@
         <ion-grid *ngIf="inputRef=='ingredients'">
             <ion-row>
                 <ion-col col-2>
-                    <ion-input type="number" [(ngModel)]="selectedIngredient.quantity" class="text-white" autofocus></ion-input>
+                    <ion-input type="number" placeholder="__" [(ngModel)]="selectedIngredient.quantity" class="text-white" autofocus></ion-input>
                 </ion-col>
                 <ion-col col-2>
-                    <ion-input [(ngModel)]="selectedIngredient.unit" class="text-white"></ion-input>
+                    <ion-input placeholder="__" [(ngModel)]="selectedIngredient.unit" class="text-white"></ion-input>
                 </ion-col>
                 <ion-col col-8>
-                    <ion-input [(ngModel)]="selectedIngredient.name" class="text-white"></ion-input>
+                    <ion-input placeholder="_______" [(ngModel)]="selectedIngredient.name" class="text-white"></ion-input>
                 </ion-col>
             </ion-row>
         </ion-grid>
         <ion-grid *ngIf="inputRef=='instructions'">
             <ion-row>
-                <ion-col col-1>
-                    <ion-input type="number" [(ngModel)]="selectedInstruction.orderNb" class="text-white" autofocus></ion-input>
-                </ion-col>
-                <ion-col col-11>
-                    <ion-input [(ngModel)]="selectedInstruction.description" class="text-white"></ion-input>
+                <ion-col col-12>
+                    <ion-textarea [(ngModel)]="selectedInstruction.description" class="text-white" autofocus></ion-textarea>
                 </ion-col>
             </ion-row>
         </ion-grid>

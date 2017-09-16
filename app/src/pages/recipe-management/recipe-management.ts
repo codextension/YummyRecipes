@@ -31,7 +31,7 @@ import { DeviceFeedback } from "@ionic-native/device-feedback";
       state(
         "shrink",
         style({
-          "padding-bottom": "20vh"
+          "padding-bottom": "100px"
         })
       ),
       state(
@@ -48,7 +48,6 @@ import { DeviceFeedback } from "@ionic-native/device-feedback";
 export class RecipeManagementPage {
   public base64ImageUrl: string;
   public recipe: RecipeEntity;
-  public dynamicHeight: number;
   public imgState: string;
   public editMode: boolean;
   public inputRef: string;
@@ -71,7 +70,6 @@ export class RecipeManagementPage {
   ) {
     this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
-    this.dynamicHeight = 30;
     this.imgState = "shrink";
     this.editMode = false;
   }
