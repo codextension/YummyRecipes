@@ -16,8 +16,10 @@ export class TimePipe implements PipeTransform {
     let min = value % 60;
     let hr = Math.floor(value / 60);
     if (hr == 0) {
-      return min + " min";
+      return (min < 10 ? "0" + min : min) + " min";
+    } else if (min == 0) {
+      return hr + "h";
     }
-    return hr + " h:" + min + " min";
+    return hr + " h:" + (min < 10 ? "0" + min : min) + " min";
   }
 }

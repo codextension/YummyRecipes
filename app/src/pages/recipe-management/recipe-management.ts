@@ -14,7 +14,11 @@ import {
   Content,
   Haptic
 } from "ionic-angular";
-import { RecipeEntity } from "../../entities/recipe-entity";
+import {
+  RecipeEntity,
+  Ingredients,
+  Instruction
+} from "../../entities/recipe-entity";
 import { CameraPopoverComponent } from "../../components/camera-popover/camera-popover";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
@@ -48,6 +52,8 @@ export class RecipeManagementPage {
   public imgState: string;
   public editMode: boolean;
   public inputRef: string;
+  public recipeContent: string;
+  public selectedIngredient: Ingredients;
 
   private swipeCoord?: [number, number];
   private swipeTime?: number;
@@ -62,10 +68,18 @@ export class RecipeManagementPage {
     private haptic: Haptic,
     private deviceFeedback: DeviceFeedback
   ) {
+    this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
     this.dynamicHeight = 30;
     this.imgState = "shrink";
     this.editMode = false;
+
+    if (this.recipe.instructions.length == 0) {
+      this.recipe.instructions.push(new Instruction(1, "xxx"));
+    }
+    if (this.recipe.ingredients.length == 0) {
+      this.recipe.ingredients.push(new Ingredients("xxx", 1, "xxx"));
+    }
   }
 
   ionViewDidLoad() {}
@@ -91,6 +105,14 @@ export class RecipeManagementPage {
     this.toggleMode(mode);
     this.inputRef = input;
   }
+
+  edit(item: Ingredients) {
+    this.inputRef = "ingredients";
+    this.toggleMode(true);
+    this.selectedIngredient = item;
+  }
+
+  delete(item: Ingredients) {}
 
   swipe(e: TouchEvent, when: string): void {
     const coord: [number, number] = [

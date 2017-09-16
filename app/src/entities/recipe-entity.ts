@@ -37,4 +37,17 @@ export class Ingredients {
     public quantity: number,
     public unit: string
   ) {}
+
+  public toString(): string {
+    let output: string = "";
+    if (this.quantity != null && this.quantity > 0) {
+      output += this.quantity;
+      if (this.unit != null) {
+        output += " " + this.unit;
+      }
+    }
+    output += "  " + this.name;
+
+    return output;
+  }
 }

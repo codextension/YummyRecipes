@@ -35,50 +35,62 @@
                 <ion-icon name='people'></ion-icon>
             </ion-col>
         </ion-row>
+
         <ion-row>
             <ion-col col-12>
-                {{recipe.description}}
-            </ion-col>
-        </ion-row>
-        <ion-row style="height: 60vh">
-            <ion-col col-12>
-                <ion-slides pager>
-                    <ion-slide>
-                        <ion-card style="height: 56vh;">
-                            <ion-card-header>
-                                <ion-icon name='basket'></ion-icon>
-                                {{'INGREDIENTS' | translate}}
-                            </ion-card-header>
-                            <ion-card-content>
-                                <ion-scroll scrollY="true">
-                                    The British use the term "header", but the American term "head-shot" the English simply refuse to adopt.
-                                </ion-scroll>
-                            </ion-card-content>
-                        </ion-card>
-                    </ion-slide>
-                    <ion-slide>
-                        <ion-card style="height: 56vh;">
-                            <ion-card-header>
-                                <ion-icon name='list'></ion-icon>
-                                {{'INSTRUCIONS' | translate}}
-                            </ion-card-header>
-                            <ion-card-content>
-                                <ion-scroll scrollY="true">
-                                    The British use the term "header", but the American term "head-shot" the English simply refuse to adopt.
-                                </ion-scroll>
-                            </ion-card-content>
-                        </ion-card>
-                    </ion-slide>
-                </ion-slides>
+                <div [ngSwitch]="recipeContent">
+                    <ion-list *ngSwitchCase="'ingredients'">
+                        <ion-item-group>
+                            <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
+                                <ion-item>{{ ingredient.toString() }}</ion-item>
+                                <ion-item-options side="left">
+                                    <button ion-button color="secondary" (click)="edit(ingredient)">
+                                            <ion-icon name="create"></ion-icon>
+                                            Edit
+                                          </button>
+                                </ion-item-options>
+                                <ion-item-options side="right">
+                                    <button ion-button color="danger" (click)="delete(ingredient)">
+                                            <ion-icon name="trash"></ion-icon>
+                                            Delete
+                                          </button>
+                                </ion-item-options>
+                            </ion-item-sliding>
+                        </ion-item-group>
+                    </ion-list>
+                    <ion-list *ngSwitchCase="'instructions'">
+                        <ion-item-group>
+                            <ion-item-sliding *ngFor="let instruction of recipe.instructions">
+                                <ion-item>{{ instruction.description }}</ion-item>
+                                <ion-item-options side="right">
+                                    <button ion-button expandable>
+                                                                              <ion-icon name="delete"></ion-icon>
+                                                                            </button>
+                                </ion-item-options>
+                            </ion-item-sliding>
+                        </ion-item-group>
+                    </ion-list>
+                </div>
             </ion-col>
         </ion-row>
     </ion-grid>
 </ion-content>
-<ion-footer *ngIf="editMode">
-    <ion-toolbar>
+<ion-footer>
+    <div padding *ngIf="!editMode">
+        <ion-segment [(ngModel)]="recipeContent">
+            <ion-segment-button value="ingredients">
+                {{'INGREDIENTS' | translate}}
+            </ion-segment-button>
+            <ion-segment-button value="instructions">
+                {{'INSTRUCIONS' | translate}}
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+    <ion-toolbar *ngIf="editMode">
         <ion-input *ngIf="inputRef=='name'" [(ngModel)]="recipe.name" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="recipe.duration" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="recipe.servings" class="text-white" autofocus></ion-input>
+        <ion-input *ngIf="inputRef=='ingredients'" [(ngModel)]="selectedIngredient.name" class="text-white" autofocus></ion-input>
         <ion-buttons end>
             <button ion-button (click)="toggleMode(false)">
                     <ion-icon name="checkmark"></ion-icon>
