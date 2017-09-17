@@ -154,6 +154,7 @@ export class RecipeManagementPage {
     } else if (inputRef == "ingredients") {
       this.recipe.ingredients.push(this.selectedIngredient);
     } else if (inputRef == "instructions") {
+      this.selectedInstruction.orderNb = this.recipe.instructions.length + 1;
       this.recipe.instructions.push(this.selectedInstruction);
     }
     this.toggleMode(false);

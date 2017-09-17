@@ -77,7 +77,7 @@
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let instruction of recipe.instructions">
                                 <ion-item>
-                                    <span style="float:left">{{instruction.orderNb}}</span>
+                                    <ion-badge style="margin-right:5px">{{instruction.orderNb|| '-'}}</ion-badge>
                                     <span style="white-space: pre-line">{{instruction.description}}</span>
                                 </ion-item>
                                 <ion-item-options side="left">
