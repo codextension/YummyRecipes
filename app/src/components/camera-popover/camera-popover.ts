@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { ImagesService } from "../../services/images.service";
-import { NavParams } from "ionic-angular";
+import { NavParams, ViewController } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
 
 @Component({
@@ -33,7 +33,8 @@ export class CameraPopoverComponent {
   constructor(
     private camera: Camera,
     private imagesService: ImagesService,
-    private navParams: NavParams
+    private navParams: NavParams,
+    public view: ViewController
   ) {
     this.recipe = navParams.data.recipe;
   }
@@ -48,6 +49,7 @@ export class CameraPopoverComponent {
         // Handle error
       }
     );
+    this.view.dismiss(null);
   }
 
   public uploadFromLibrary() {
@@ -61,5 +63,6 @@ export class CameraPopoverComponent {
         // Handle error
       }
     );
+    this.view.dismiss(null);
   }
 }
