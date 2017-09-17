@@ -121,14 +121,14 @@ export class RecipeManagementPage {
     this.actionMode = EditModeType.UPDATE;
     if (itemType == "ingredients") {
       this.selectedIngredient = new Ingredients(
-        0,
+        item.id,
         item.name,
         item.quantity,
         item.unit
       );
     } else {
       this.selectedInstruction = new Instruction(
-        0,
+        item.id,
         item.orderNb,
         item.description
       );
@@ -139,9 +139,9 @@ export class RecipeManagementPage {
     let item: any;
 
     if (itemType == "ingredients") {
-      item = new Ingredients(0, "", null, "");
+      item = new Ingredients(new Date().getTime(), "", null, "");
     } else {
-      item = new Instruction(0, null, "");
+      item = new Instruction(new Date().getTime(), null, "");
     }
     this.edit(item, itemType);
 
