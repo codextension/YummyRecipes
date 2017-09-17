@@ -1,12 +1,10 @@
 <ion-header>
-    <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="editMode"></ion-backdrop>
+    <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>
 
     <ion-navbar>
-        <ion-title (click)="showInput(true, 'name')">{{recipe.name || ('NEW_RECIPE' | translate)}}</ion-title>
-        <ion-buttons end>
-            <button ion-button>
-                        <ion-icon name="checkmark"></ion-icon>
-                      </button>
+        <ion-title (click)="editMode?showInput(true, 'name'):false">{{recipe.name || ('NEW_RECIPE' | translate)}}</ion-title>
+        <ion-buttons end *ngIf="editMode">
+
             <button ion-button icon-only (click)="presentPopover($event)">
                         <ion-icon name="more"></ion-icon>
                       </button>
@@ -17,10 +15,13 @@
         <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" [style.background-image]="getBackground(recipe.imageUrl)">
         </div>
     </ion-card>
+    <ion-fab bottom left edge>
+        <button ion-fab mini (click)="saveOrEdit()"><ion-icon [name]="editMode?'checkmark':'create'"></ion-icon></button>
+    </ion-fab>
 </ion-header>
-<ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="editMode"></ion-backdrop>
+<ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>
 <ion-content>
-    <ion-grid *ngIf="!editMode">
+    <ion-grid *ngIf="!inputMode">
         <ion-row>
             <ion-col col-5>
 
@@ -28,10 +29,10 @@
 
             <ion-col col-4>
                 <ion-icon name='time'></ion-icon>
-                <span class="label" (click)="showInput(true, 'duration')">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
+                <span class="label" (click)="editMode?showInput(true, 'duration'):false">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
             </ion-col>
             <ion-col col-3>
-                <span class="label" (click)="showInput(true, 'servings')">{{recipe.servings==null?'--':recipe.servings}}</span>
+                <span class="label" (click)="editMode?showInput(true, 'servings'):false">{{recipe.servings==null?'--':recipe.servings}}</span>
                 <ion-icon name='people'></ion-icon>
             </ion-col>
         </ion-row>
@@ -98,15 +99,15 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <ion-fab right bottom *ngIf="recipeContent=='instructions' && !editMode">
-        <button ion-fab (click)="add('instructions')"><ion-icon name="add"></ion-icon></button>
+    <ion-fab right bottom *ngIf="recipeContent=='instructions' && editMode && !inputMode">
+        <button mini ion-fab (click)="add('instructions')"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
-    <ion-fab right bottom *ngIf="recipeContent=='ingredients' && !editMode">
-        <button ion-fab (click)="add('ingredients')"><ion-icon name="add"></ion-icon></button>
+    <ion-fab right bottom *ngIf="recipeContent=='ingredients' && editMode && !inputMode">
+        <button mini ion-fab (click)="add('ingredients')"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
 </ion-content>
 <ion-footer>
-    <div padding *ngIf="!editMode">
+    <div padding *ngIf="!inputMode && imgState!='expand'">
         <ion-segment [(ngModel)]="recipeContent">
             <ion-segment-button value="ingredients">
                 {{'INGREDIENTS' | translate}}
@@ -116,7 +117,7 @@
             </ion-segment-button>
         </ion-segment>
     </div>
-    <ion-toolbar *ngIf="editMode">
+    <ion-toolbar *ngIf="editMode && inputMode">
         <ion-input *ngIf="inputRef=='name'" [(ngModel)]="recipe.name" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="recipe.duration" class="text-white" autofocus></ion-input>
         <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="recipe.servings" class="text-white" autofocus></ion-input>

@@ -26,10 +26,10 @@ export class ImagesService {
                 0,
                 val.serverUrl.length - 1
               );
-              this.restEntryPointUrl = val.serverUrl + "/images";
-              this.authString =
-                "Basic " + window.btoa(val.username + ":" + val.password);
             }
+            this.restEntryPointUrl = val.serverUrl + "/images";
+            this.authString =
+              "Basic " + window.btoa(val.username + ":" + val.password);
           }
         });
       })

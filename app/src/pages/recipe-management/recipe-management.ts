@@ -50,6 +50,7 @@ export class RecipeManagementPage {
   public recipe: RecipeEntity;
   public imgState: string;
   public editMode: boolean;
+  public inputMode: boolean;
   public inputRef: string;
   public recipeContent: string;
   public selectedIngredient: Ingredients;
@@ -71,7 +72,8 @@ export class RecipeManagementPage {
     this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
     this.imgState = "shrink";
-    this.editMode = false;
+    this.inputMode = false;
+    this.editMode = this.recipe.reference == null;
   }
 
   ionViewDidLoad() {}
@@ -88,7 +90,7 @@ export class RecipeManagementPage {
   }
 
   toggleMode(mode: boolean) {
-    this.editMode = mode;
+    this.inputMode = mode;
     this.haptic.selection(); //iOs
     this.deviceFeedback.haptic(1); // Android
   }
@@ -120,6 +122,9 @@ export class RecipeManagementPage {
     this.edit(item, itemType);
   }
 
+  saveOrEdit() {
+    this.editMode = !this.editMode;
+  }
   delete(item: any, itemType: string) {
     if (itemType == "ingredients") {
       let index: number = this.recipe.ingredients.indexOf(item, 0);
