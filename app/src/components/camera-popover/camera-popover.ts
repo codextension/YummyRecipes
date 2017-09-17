@@ -18,7 +18,8 @@ export class CameraPopoverComponent {
     mediaType: this.camera.MediaType.PICTURE,
     correctOrientation: true,
     destinationType: this.camera.DestinationType.DATA_URL,
-    cameraDirection: this.camera.Direction.BACK
+    cameraDirection: this.camera.Direction.BACK,
+    saveToPhotoAlbum: true
   };
 
   private fileOptions: CameraOptions = {
