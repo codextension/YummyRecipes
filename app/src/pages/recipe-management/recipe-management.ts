@@ -55,6 +55,7 @@ export class RecipeManagementPage {
   public recipeContent: string;
   public selectedIngredient: Ingredients;
   public selectedInstruction: Instruction;
+  public tempRecipe: RecipeEntity;
 
   private swipeCoord?: [number, number];
   private swipeTime?: number;
@@ -95,18 +96,37 @@ export class RecipeManagementPage {
     this.deviceFeedback.haptic(1); // Android
   }
 
-  showInput(mode, input) {
+  showInput(mode: boolean, input: string) {
     this.toggleMode(mode);
     this.inputRef = input;
+    this.tempRecipe = new RecipeEntity(
+      this.recipe.reference,
+      this.recipe.name,
+      this.recipe.duration,
+      this.recipe.description,
+      this.recipe.favourite,
+      this.recipe.tags,
+      this.recipe.instructions,
+      this.recipe.ingredients,
+      this.recipe.imageUrl,
+      this.recipe.servings
+    );
   }
 
   edit(item: any, itemType: string) {
     this.inputRef = itemType;
     this.toggleMode(true);
     if (itemType == "ingredients") {
-      this.selectedIngredient = item;
+      this.selectedIngredient = new Ingredients(
+        item.name,
+        item.quantity,
+        item.unit
+      );
     } else {
-      this.selectedInstruction = item;
+      this.selectedInstruction = new Instruction(
+        item.orderNb,
+        item.description
+      );
     }
   }
 
@@ -114,10 +134,8 @@ export class RecipeManagementPage {
     let item: any;
     if (itemType == "ingredients") {
       item = new Ingredients("", null, "");
-      this.recipe.ingredients.push(item);
     } else {
       item = new Instruction(null, "");
-      this.recipe.instructions.push(item);
     }
     this.edit(item, itemType);
   }
@@ -125,6 +143,22 @@ export class RecipeManagementPage {
   saveOrEdit() {
     this.editMode = !this.editMode;
   }
+
+  apply(inputRef: string) {
+    if (inputRef == "name") {
+      this.recipe.name = this.tempRecipe.name;
+    } else if (inputRef == "duration") {
+      this.recipe.duration = this.tempRecipe.duration;
+    } else if (inputRef == "servings") {
+      this.recipe.servings = this.tempRecipe.servings;
+    } else if (inputRef == "ingredients") {
+      this.recipe.ingredients.push(this.selectedIngredient);
+    } else if (inputRef == "instructions") {
+      this.recipe.instructions.push(this.selectedInstruction);
+    }
+    this.toggleMode(false);
+  }
+
   delete(item: any, itemType: string) {
     if (itemType == "ingredients") {
       let index: number = this.recipe.ingredients.indexOf(item, 0);

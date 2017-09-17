@@ -23,6 +23,7 @@ import { DirectivesModule } from "../directives/directives.module";
 import { ComponentsModule } from "../components/components.module";
 import { SecureStorage } from "@ionic-native/secure-storage";
 import { SocialSharing } from "@ionic-native/social-sharing";
+import { FileTransfer } from "@ionic-native/file-transfer";
 
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -62,6 +63,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     SecureStorage,
     SocialSharing,
     File,
+    FileTransfer,
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     StatusBar,
     SplashScreen,

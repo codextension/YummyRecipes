@@ -16,10 +16,10 @@ export class CameraPopoverComponent {
     quality: 60,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
+    sourceType: this.camera.PictureSourceType.CAMERA,
     correctOrientation: true,
-    destinationType: this.camera.DestinationType.DATA_URL,
-    cameraDirection: this.camera.Direction.BACK,
-    saveToPhotoAlbum: true
+    destinationType: this.camera.DestinationType.FILE_URI,
+    cameraDirection: this.camera.Direction.BACK
   };
 
   private fileOptions: CameraOptions = {
@@ -28,7 +28,7 @@ export class CameraPopoverComponent {
     mediaType: this.camera.MediaType.PICTURE,
     correctOrientation: true,
     sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-    destinationType: this.camera.DestinationType.DATA_URL,
+    destinationType: this.camera.DestinationType.FILE_URI,
     cameraDirection: this.camera.Direction.BACK
   };
   constructor(

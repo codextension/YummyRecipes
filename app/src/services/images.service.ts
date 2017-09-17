@@ -6,14 +6,26 @@ import {
   SecureStorage,
   SecureStorageObject
 } from "@ionic-native/secure-storage";
+import {
+  FileTransfer,
+  FileUploadOptions,
+  FileTransferObject
+} from "@ionic-native/file-transfer";
+import { File, FileEntry } from "@ionic-native/file";
 
 @Injectable()
 export class ImagesService {
   private restEntryPointUrl: string;
   private authString: string;
+  private fileTransfer: FileTransferObject;
 
-  constructor(private http: Http, private secureStorage: SecureStorage) {
-    // this.restEntryPointUrl = "https://localhost:3443/images";
+  constructor(
+    private transfer: FileTransfer,
+    private file: File,
+    private http: Http,
+    private secureStorage: SecureStorage
+  ) {
+    this.fileTransfer = this.transfer.create();
 
     this.secureStorage
       .create("laziz")
@@ -35,22 +47,41 @@ export class ImagesService {
       })
       .catch(err => {
         console.error("Cannot load the secure storage engine");
+        this.restEntryPointUrl = "https://localhost:3443/images";
+        this.authString = "Basic " + window.btoa("elie:pwd");
       });
   }
 
-  public save(base64Image: string): Promise<string> {
+  public save(fileUri: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      let _headers = new Headers({
-        authorization: this.authString
-      });
-      let options = new RequestOptions({
-        headers: _headers
-      });
-      this.http
-        .post(this.restEntryPointUrl + "/save", { data: base64Image }, options)
-        .subscribe(val => {
-          resolve(this.restEntryPointUrl + "/get/" + val.json().name);
+      window.resolveLocalFileSystemURL(fileUri, (fileEntry: FileEntry) => {
+        fileEntry.file(success => {
+          console.log(success.localURL);
         });
+        this.fileTransfer
+          .upload(
+            fileEntry.toInternalURL(),
+            this.restEntryPointUrl + "/upload",
+            {
+              headers: { authorization: this.authString },
+              chunkedMode: true,
+              fileKey: "recipe_img",
+              fileName: fileEntry.name
+            },
+            true
+          )
+          .then(res => {
+            console.info(res);
+            let imgUrl =
+              this.restEntryPointUrl +
+              "/get/" +
+              JSON.parse(res.response).originalname;
+            resolve(imgUrl);
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
     });
   }
 }

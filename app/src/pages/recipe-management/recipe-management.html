@@ -58,13 +58,13 @@
                                         </ion-row>
                                     </ion-grid>
                                 </ion-item>
-                                <ion-item-options side="left">
+                                <ion-item-options *ngIf="editMode" side="left">
                                     <button ion-button color="secondary" (click)="edit(ingredient,'ingredients')">
                                             <ion-icon name="create"></ion-icon>
                                             
                                           </button>
                                 </ion-item-options>
-                                <ion-item-options side="right">
+                                <ion-item-options *ngIf="editMode" side="right">
                                     <button ion-button color="danger" (click)="delete(ingredient,'ingredients')">
                                             <ion-icon name="trash"></ion-icon>
                                             
@@ -118,9 +118,9 @@
         </ion-segment>
     </div>
     <ion-toolbar *ngIf="editMode && inputMode">
-        <ion-input *ngIf="inputRef=='name'" [(ngModel)]="recipe.name" class="text-white" autofocus></ion-input>
-        <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="recipe.duration" class="text-white" autofocus></ion-input>
-        <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="recipe.servings" class="text-white" autofocus></ion-input>
+        <ion-input *ngIf="inputRef=='name'" [(ngModel)]="tempRecipe.name" class="text-white" autofocus></ion-input>
+        <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="tempRecipe.duration" class="text-white" autofocus></ion-input>
+        <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="tempRecipe.servings" class="text-white" autofocus></ion-input>
         <ion-grid *ngIf="inputRef=='ingredients'">
             <ion-row>
                 <ion-col col-2>
@@ -142,7 +142,7 @@
             </ion-row>
         </ion-grid>
         <ion-buttons end>
-            <button ion-button (click)="toggleMode(false)">
+            <button ion-button (click)="apply(inputRef)">
                     <ion-icon name="checkmark"></ion-icon>
                   </button>
         </ion-buttons>
