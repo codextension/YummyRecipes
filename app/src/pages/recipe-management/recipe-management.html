@@ -27,12 +27,12 @@
 
             </ion-col>
 
-            <ion-col col-4>
+            <ion-col col-4 (click)="editMode?showInput(true, 'duration'):false">
                 <ion-icon name='time'></ion-icon>
-                <span class="label" (click)="editMode?showInput(true, 'duration'):false">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
+                <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
             </ion-col>
-            <ion-col col-3>
-                <span class="label" (click)="editMode?showInput(true, 'servings'):false">{{recipe.servings==null?'--':recipe.servings}}</span>
+            <ion-col col-3 (click)="editMode?showInput(true, 'servings'):false">
+                <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
                 <ion-icon name='people'></ion-icon>
             </ion-col>
         </ion-row>
@@ -46,26 +46,23 @@
                                 <ion-item>
                                     <ion-grid>
                                         <ion-row>
-                                            <ion-col col-2>
-                                                {{ingredient.quantity}}
+                                            <ion-col col-4 class="weight-info">
+                                                {{ingredient.quantity + ' ' + ingredient.unit}}
                                             </ion-col>
-                                            <ion-col col-3>
-                                                {{ingredient.unit}}
-                                            </ion-col>
-                                            <ion-col col-7>
+                                            <ion-col col-8>
                                                 {{ingredient.name}}
                                             </ion-col>
                                         </ion-row>
                                     </ion-grid>
                                 </ion-item>
-                                <ion-item-options *ngIf="editMode" side="left">
-                                    <button ion-button color="secondary" (click)="edit(ingredient,'ingredients')">
+                                <ion-item-options side="left">
+                                    <button *ngIf="editMode" ion-button color="secondary" (click)="edit(ingredient,'ingredients')">
                                             <ion-icon name="create"></ion-icon>
                                             
                                           </button>
                                 </ion-item-options>
-                                <ion-item-options *ngIf="editMode" side="right">
-                                    <button ion-button color="danger" (click)="delete(ingredient,'ingredients')">
+                                <ion-item-options side="right">
+                                    <button *ngIf="editMode" ion-button color="danger" (click)="delete(ingredient,'ingredients')">
                                             <ion-icon name="trash"></ion-icon>
                                             
                                           </button>
@@ -80,13 +77,13 @@
                                     <ion-badge style="margin-right:5px">{{instruction.orderNb|| '-'}}</ion-badge>
                                     <span style="white-space: pre-line">{{instruction.description}}</span>
                                 </ion-item>
-                                <ion-item-options side="left">
+                                <ion-item-options *ngIf="editMode" side="left">
                                     <button ion-button color="secondary" (click)="edit(instruction,'instructions')">
                                                 <ion-icon name="create"></ion-icon>
                                                 
                                               </button>
                                 </ion-item-options>
-                                <ion-item-options side="right">
+                                <ion-item-options *ngIf="editMode" side="right">
                                     <button ion-button color="danger" (click)="delete(instruction,'instructions')">
                                                 <ion-icon name="trash"></ion-icon>
                                                 

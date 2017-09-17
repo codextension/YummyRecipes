@@ -57,6 +57,7 @@ export class RecipeManagementPage {
   public selectedInstruction: Instruction;
   public tempRecipe: RecipeEntity;
 
+  private actionMode: EditModeType;
   private swipeCoord?: [number, number];
   private swipeTime?: number;
 
@@ -100,6 +101,7 @@ export class RecipeManagementPage {
     this.toggleMode(mode);
     this.inputRef = input;
     this.tempRecipe = new RecipeEntity(
+      0,
       this.recipe.reference,
       this.recipe.name,
       this.recipe.duration,
@@ -116,14 +118,17 @@ export class RecipeManagementPage {
   edit(item: any, itemType: string) {
     this.inputRef = itemType;
     this.toggleMode(true);
+    this.actionMode = EditModeType.UPDATE;
     if (itemType == "ingredients") {
       this.selectedIngredient = new Ingredients(
+        0,
         item.name,
         item.quantity,
         item.unit
       );
     } else {
       this.selectedInstruction = new Instruction(
+        0,
         item.orderNb,
         item.description
       );
@@ -132,16 +137,21 @@ export class RecipeManagementPage {
 
   add(itemType: string) {
     let item: any;
+
     if (itemType == "ingredients") {
-      item = new Ingredients("", null, "");
+      item = new Ingredients(0, "", null, "");
     } else {
-      item = new Instruction(null, "");
+      item = new Instruction(0, null, "");
     }
     this.edit(item, itemType);
+
+    this.actionMode = EditModeType.NEW;
   }
 
   saveOrEdit() {
     this.editMode = !this.editMode;
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1);
   }
 
   apply(inputRef: string) {
@@ -152,12 +162,36 @@ export class RecipeManagementPage {
     } else if (inputRef == "servings") {
       this.recipe.servings = this.tempRecipe.servings;
     } else if (inputRef == "ingredients") {
-      this.recipe.ingredients.push(this.selectedIngredient);
+      if (this.actionMode == EditModeType.UPDATE) {
+        let index: number = this.indexOf(
+          this.recipe.ingredients,
+          this.selectedIngredient.id
+        );
+        this.recipe.ingredients[index] = this.selectedIngredient;
+      } else {
+        this.recipe.ingredients.push(this.selectedIngredient);
+      }
     } else if (inputRef == "instructions") {
-      this.selectedInstruction.orderNb = this.recipe.instructions.length + 1;
-      this.recipe.instructions.push(this.selectedInstruction);
+      if (this.actionMode == EditModeType.UPDATE) {
+        let index: number = this.indexOf(
+          this.recipe.instructions,
+          this.selectedInstruction.id
+        );
+        this.recipe.instructions[index] = this.selectedInstruction;
+      } else {
+        this.selectedInstruction.orderNb = this.recipe.instructions.length + 1;
+        this.recipe.instructions.push(this.selectedInstruction);
+      }
     }
     this.toggleMode(false);
+  }
+
+  private indexOf(objs: any[], id: number) {
+    for (let i = 0; i < objs.length; i++) {
+      if (objs[i].id == id) {
+        return i;
+      }
+    }
   }
 
   delete(item: any, itemType: string) {
@@ -170,6 +204,10 @@ export class RecipeManagementPage {
       let index: number = this.recipe.instructions.indexOf(item, 0);
       if (index > -1) {
         this.recipe.instructions.splice(index, 1);
+
+        for (let i = 0; i < this.recipe.instructions.length; i++) {
+          this.recipe.instructions[i].orderNb = i + 1;
+        }
       }
     }
   }
@@ -207,4 +245,9 @@ export class RecipeManagementPage {
       }
     }
   }
+}
+
+enum EditModeType {
+  NEW = 1,
+  UPDATE
 }

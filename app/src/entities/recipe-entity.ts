@@ -1,5 +1,6 @@
 export class RecipeEntity {
   constructor(
+    public id: number,
     public reference: string,
     public name: string,
     public duration: number,
@@ -28,11 +29,16 @@ export class RecipeEntity {
 }
 
 export class Instruction {
-  constructor(public orderNb: number, public description: string) {}
+  constructor(
+    public id: number,
+    public orderNb: number,
+    public description: string
+  ) {}
 }
 
 export class Ingredients {
   constructor(
+    public id: number,
     public name: string,
     public quantity: number,
     public unit: string

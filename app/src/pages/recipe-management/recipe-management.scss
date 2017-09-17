@@ -54,4 +54,11 @@ page-recipe-management {
     ion-item-sliding ion-item {
         padding-left: 0px !important;
     }
+    .weight-info {
+        font-weight: bold;
+        text-align: right;
+    }
+    .label {
+        margin: 0px;
+    }
 }

@@ -71,6 +71,7 @@ export class HomePage {
   newRecipe() {
     let recipe: RecipeEntity;
     recipe = new RecipeEntity(
+      0,
       null,
       null,
       null,
