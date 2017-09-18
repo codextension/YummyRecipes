@@ -47,7 +47,7 @@
                                     <ion-grid>
                                         <ion-row>
                                             <ion-col col-4 class="weight-info">
-                                                {{ingredient.quantity + ' ' + ingredient.unit}}
+                                                {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') + ingredient.unit}}
                                             </ion-col>
                                             <ion-col col-8>
                                                 {{ingredient.name}}
