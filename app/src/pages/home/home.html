@@ -5,11 +5,11 @@
     </button>
         <ion-title *ngIf="!showSearchbar">{{'APP_TITLE' | translate}}</ion-title>
         <ion-buttons end *ngIf="!showSearchbar">
-            <button ion-button (click)="toggleSearchbar()">
+            <button ion-button (click)="toggleSearchbar($event)">
         <ion-icon name="search"></ion-icon>
       </button>
         </ion-buttons>
-        <ion-searchbar *ngIf="showSearchbar" focuser showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
+        <ion-searchbar *ngIf="showSearchbar" showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500" (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}" focuser></ion-searchbar>
     </ion-navbar>
 
 </ion-header>

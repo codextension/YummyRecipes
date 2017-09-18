@@ -36,7 +36,7 @@ export class HomePage {
     }, 2000);
   }
 
-  toggleSearchbar() {
+  toggleSearchbar(event) {
     this.foundRecipes = null;
     this.showSearchbar = !this.showSearchbar;
   }
