@@ -53,7 +53,7 @@ export class SettingsPage {
   showToast(msg: string) {
     let toast = this.toastCtrl.create({
       message: msg,
-      duration: 5000,
+      duration: 3000,
       position: "top"
     });
 
