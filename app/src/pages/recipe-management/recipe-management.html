@@ -2,7 +2,7 @@
     <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>
 
     <ion-navbar>
-        <ion-title (click)="editMode?showInput(true, 'name'):false">{{recipe.name || ('NEW_RECIPE' | translate)}}</ion-title>
+        <ion-title (click)="editMode?showInput(recipe.name,'name',2):false">{{recipe.name || ('NEW_RECIPE' | translate)}}</ion-title>
         <ion-buttons end *ngIf="editMode">
 
             <button ion-button icon-only (click)="presentPopover($event)">
@@ -16,7 +16,7 @@
         </div>
     </ion-card>
     <ion-fab bottom left edge>
-        <button ion-fab mini (click)="saveOrEdit()"><ion-icon [name]="editMode?'checkmark':'create'"></ion-icon></button>
+        <button ion-fab mini (click)="save()"><ion-icon [name]="editMode?'checkmark':'create'"></ion-icon></button>
     </ion-fab>
 </ion-header>
 <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>
@@ -27,11 +27,11 @@
 
             </ion-col>
 
-            <ion-col col-4 (click)="editMode?showInput(true, 'duration'):false">
+            <ion-col col-4 (click)="editMode?showInput(recipe.duration,'duration',2):false">
                 <ion-icon name='time'></ion-icon>
                 <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
             </ion-col>
-            <ion-col col-3 (click)="editMode?showInput(true, 'servings'):false">
+            <ion-col col-3 (click)="editMode?showInput(recipe.servings,'servings',2):false">
                 <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
                 <ion-icon name='people'></ion-icon>
             </ion-col>
@@ -47,7 +47,7 @@
                                     <ion-grid>
                                         <ion-row>
                                             <ion-col col-4 class="weight-info">
-                                                {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') + ingredient.unit}}
+                                                {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') + (ingredient.unit!=null? ingredient.unit + ' ':'')}}
                                             </ion-col>
                                             <ion-col col-8>
                                                 {{ingredient.name}}
@@ -56,7 +56,7 @@
                                     </ion-grid>
                                 </ion-item>
                                 <ion-item-options side="left">
-                                    <button *ngIf="editMode" ion-button color="secondary" (click)="edit(ingredient,'ingredients')">
+                                    <button *ngIf="editMode" ion-button color="secondary" (click)="showInput(ingredient,'ingredients',2)">
                                             <ion-icon name="create"></ion-icon>
                                             
                                           </button>
@@ -78,7 +78,7 @@
                                     <span style="white-space: pre-line">{{instruction.description}}</span>
                                 </ion-item>
                                 <ion-item-options *ngIf="editMode" side="left">
-                                    <button ion-button color="secondary" (click)="edit(instruction,'instructions')">
+                                    <button ion-button color="secondary" (click)="showInput(instruction,'instructions',2)">
                                                 <ion-icon name="create"></ion-icon>
                                                 
                                               </button>
@@ -96,11 +96,11 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <ion-fab right bottom *ngIf="recipeContent=='instructions' && editMode && !inputMode">
-        <button mini ion-fab (click)="add('instructions')"><ion-icon name="add"></ion-icon></button>
+    <ion-fab right bottom *ngIf="recipeContent=='instructions' && editMode && !inputMode && imgState!='expand'">
+        <button mini ion-fab (click)="showInput([],'instructions',1)"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
-    <ion-fab right bottom *ngIf="recipeContent=='ingredients' && editMode && !inputMode">
-        <button mini ion-fab (click)="add('ingredients')"><ion-icon name="add"></ion-icon></button>
+    <ion-fab right bottom *ngIf="recipeContent=='ingredients' && editMode && !inputMode && imgState!='expand'">
+        <button mini ion-fab (click)="showInput([],'ingredients',1)"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
 </ion-content>
 <ion-footer>
@@ -114,34 +114,37 @@
             </ion-segment-button>
         </ion-segment>
     </div>
-    <ion-toolbar *ngIf="editMode && inputMode">
-        <ion-input *ngIf="inputRef=='name'" [(ngModel)]="tempRecipe.name" class="text-white" autofocus></ion-input>
-        <ion-input *ngIf="inputRef=='duration'" type="number" [(ngModel)]="tempRecipe.duration" class="text-white" autofocus></ion-input>
-        <ion-input *ngIf="inputRef=='servings'" type="number" [(ngModel)]="tempRecipe.servings" class="text-white" autofocus></ion-input>
-        <ion-grid *ngIf="inputRef=='ingredients'">
-            <ion-row>
-                <ion-col col-2>
-                    <ion-input type="number" placeholder="__" [(ngModel)]="selectedIngredient.quantity" class="text-white" autofocus></ion-input>
-                </ion-col>
-                <ion-col col-2>
-                    <ion-input placeholder="__" [(ngModel)]="selectedIngredient.unit" class="text-white"></ion-input>
-                </ion-col>
-                <ion-col col-8>
-                    <ion-input placeholder="_______" [(ngModel)]="selectedIngredient.name" class="text-white"></ion-input>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        <ion-grid *ngIf="inputRef=='instructions'">
-            <ion-row>
-                <ion-col col-12>
-                    <ion-textarea [(ngModel)]="selectedInstruction.description" class="text-white" autofocus></ion-textarea>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        <ion-buttons end>
-            <button ion-button (click)="apply(inputRef)">
+    <form [formGroup]="recipeForm" *ngIf="editMode && inputMode">
+        <ion-toolbar *ngIf="editMode && inputMode">
+            <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white" autofocus></ion-input>
+            <ion-input *ngIf="inputRef=='duration'" type="number" formControlName="duration" class="text-white" autofocus></ion-input>
+            <ion-input *ngIf="inputRef=='servings'" type="number" formControlName="servings" class="text-white" autofocus></ion-input>
+            <ion-grid *ngIf="inputRef=='ingredients'">
+                <ion-row>
+                    <ion-col col-2>
+                        <ion-input type="number" placeholder="__" formControlName="quantity" class="text-white" autofocus></ion-input>
+                    </ion-col>
+                    <ion-col col-2>
+                        <ion-input placeholder="__" formControlName="unit" class="text-white"></ion-input>
+                    </ion-col>
+                    <ion-col col-8>
+                        <ion-input required placeholder="_______" formControlName="name" class="text-white"></ion-input>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-grid *ngIf="inputRef=='instructions'">
+                <ion-row>
+                    <ion-col col-12>
+                        <ion-textarea required formControlName="description" class="text-white" autofocus></ion-textarea>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-buttons end>
+                <button type="button" ion-button [disabled]="!recipeForm.valid" (click)="apply(inputRef)">
                     <ion-icon name="checkmark"></ion-icon>
                   </button>
-        </ion-buttons>
-    </ion-toolbar>
+            </ion-buttons>
+        </ion-toolbar>
+    </form>
+
 </ion-footer>

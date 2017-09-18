@@ -47,8 +47,6 @@ export class ImagesService {
       })
       .catch(err => {
         console.error("Cannot load the secure storage engine");
-        this.restEntryPointUrl = "https://localhost:3443/images";
-        this.authString = "Basic " + window.btoa("elie:pwd");
       });
   }
 

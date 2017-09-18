@@ -18,17 +18,7 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
-    <ion-list *ngIf="showSearchbar">
-        <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
-            <ion-thumbnail item-start>
-                <img src="assets/img/falafel.jpg">
-            </ion-thumbnail>
-            <h2>{{foundRecipe}}</h2>
-            <p>Hayao Miyazaki • 1988</p>
-        </ion-item>
-    </ion-list>
-
-    <div card-group *ngIf="!showSearchbar">
+    <div card-group>
         <ng-template ngFor let-item [ngForOf]="items" let-currentElementIndex="index+1">
             <recipe-preview [entity]=""></recipe-preview>
         </ng-template>

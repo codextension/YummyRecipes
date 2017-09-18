@@ -82,6 +82,7 @@
     <allow-navigation href="http://192.168.0.33:8103" />
     <allow-navigation href="http://192.168.0.33:8104" />
     <allow-navigation href="http://192.168.0.33:8100" />
+    <hook src="copy-fonts.js" type="after_prepare" />
     <engine name="android" spec="^6.2.3" />
     <plugin name="cordova-plugin-camera" spec="^2.4.1" />
     <plugin name="cordova-plugin-console" spec="^1.0.7" />

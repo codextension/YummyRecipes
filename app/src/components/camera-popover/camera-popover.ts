@@ -1,12 +1,10 @@
 import { Component } from "@angular/core";
 import { Camera, CameraOptions } from "@ionic-native/camera";
-import { ImagesService } from "../../services/images.service";
 import { NavParams, ViewController } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
 
 @Component({
   selector: "camera-popover",
-  providers: [ImagesService],
   templateUrl: "camera-popover.html"
 })
 export class CameraPopoverComponent {
@@ -33,7 +31,6 @@ export class CameraPopoverComponent {
   };
   constructor(
     private camera: Camera,
-    private imagesService: ImagesService,
     private navParams: NavParams,
     public view: ViewController
   ) {
@@ -42,28 +39,22 @@ export class CameraPopoverComponent {
   public makeScreenshot() {
     this.camera.getPicture(this.cameraOptions).then(
       imageData => {
-        this.imagesService.save(imageData).then(res => {
-          this.recipe.imageUrl = res;
-        });
+        this.view.dismiss(imageData);
       },
       err => {
-        // Handle error
+        this.view.dismiss(null);
       }
     );
-    this.view.dismiss(null);
   }
 
   public uploadFromLibrary() {
     this.camera.getPicture(this.fileOptions).then(
       imageData => {
-        this.imagesService.save(imageData).then(res => {
-          this.recipe.imageUrl = res;
-        });
+        this.view.dismiss(imageData);
       },
       err => {
-        // Handle error
+        this.view.dismiss(null);
       }
     );
-    this.view.dismiss(null);
   }
 }

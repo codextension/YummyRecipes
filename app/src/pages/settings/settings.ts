@@ -14,7 +14,7 @@ import {
   providers: [Neo4JService]
 })
 export class SettingsPage {
-  private settingsForm: FormGroup;
+  public settingsForm: FormGroup;
 
   constructor(
     public navCtrl: NavController,
