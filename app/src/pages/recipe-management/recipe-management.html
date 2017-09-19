@@ -114,7 +114,7 @@
             </ion-segment-button>
         </ion-segment>
     </div>
-    <form [formGroup]="recipeForm" *ngIf="editMode && inputMode">
+    <form [formGroup]="recipeForm" *ngIf="editMode && inputMode" (ngSubmit)="apply(inputRef, recipeForm.value)">
         <ion-toolbar *ngIf="editMode && inputMode">
             <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white" autofocus></ion-input>
             <ion-input *ngIf="inputRef=='duration'" type="number" formControlName="duration" class="text-white" autofocus></ion-input>
@@ -140,7 +140,7 @@
                 </ion-row>
             </ion-grid>
             <ion-buttons end>
-                <button type="button" ion-button [disabled]="!recipeForm.valid" (click)="apply(inputRef)">
+                <button type="submit" [disabled]="!recipeForm.valid" ion-button>
                     <ion-icon name="checkmark"></ion-icon>
                   </button>
             </ion-buttons>

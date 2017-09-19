@@ -159,33 +159,27 @@ export class RecipeManagementPage {
     });
   }
 
-  apply(inputRef: string) {
+  apply(inputRef: string, form: any) {
     if (inputRef == "name") {
-      this.recipe.name = this.recipeForm.value.name;
+      this.recipe.name = form.name;
     } else if (inputRef == "duration") {
-      this.recipe.duration = this.recipeForm.value.duration;
+      this.recipe.duration = form.duration;
     } else if (inputRef == "servings") {
-      this.recipe.servings = this.recipeForm.value.servings;
+      this.recipe.servings = form.servings;
     } else if (inputRef == "ingredients") {
       if (this.actionMode == EditModeType.UPDATE) {
-        let index: number = this.indexOf(
-          this.recipe.ingredients,
-          this.recipeForm.value.id
-        );
-        this.recipe.ingredients[index] = this.recipeForm.value;
+        let index: number = this.indexOf(this.recipe.ingredients, form.id);
+        this.recipe.ingredients[index] = form;
       } else {
-        this.recipe.ingredients.push(this.recipeForm.value);
+        this.recipe.ingredients.push(form);
       }
     } else if (inputRef == "instructions") {
       if (this.actionMode == EditModeType.UPDATE) {
-        let index: number = this.indexOf(
-          this.recipe.instructions,
-          this.recipeForm.value.id
-        );
-        this.recipe.instructions[index] = this.recipeForm.value;
+        let index: number = this.indexOf(this.recipe.instructions, form.id);
+        this.recipe.instructions[index] = form;
       } else {
-        this.recipeForm.value.orderNb = this.recipe.instructions.length + 1;
-        this.recipe.instructions.push(this.recipeForm.value);
+        form.orderNb = this.recipe.instructions.length + 1;
+        this.recipe.instructions.push(form);
       }
     }
     this.toggleMode(false);
