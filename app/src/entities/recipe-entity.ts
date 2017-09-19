@@ -7,7 +7,7 @@ export class RecipeEntity {
     public description: string,
     public favourite: boolean,
     public tags: string[],
-    public instructions: Instruction[],
+    public instructions: string[],
     public ingredients: Ingredients[],
     public imageUrl: string,
     public servings: number
@@ -26,14 +26,6 @@ export class RecipeEntity {
 
     return output;
   }
-}
-
-export class Instruction {
-  constructor(
-    public id: number,
-    public orderNb: number,
-    public description: string
-  ) {}
 }
 
 export class Ingredients {

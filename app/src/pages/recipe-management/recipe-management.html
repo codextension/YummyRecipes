@@ -72,13 +72,13 @@
                     </ion-list>
                     <ion-list *ngSwitchCase="'instructions'">
                         <ion-item-group>
-                            <ion-item-sliding *ngFor="let instruction of recipe.instructions">
+                            <ion-item-sliding *ngFor="let instruction of recipe.instructions; let i = index">
                                 <ion-item>
-                                    <ion-badge style="margin-right:5px">{{instruction.orderNb|| '-'}}</ion-badge>
-                                    <span style="white-space: pre-line">{{instruction.description}}</span>
+                                    <ion-badge style="margin-right:5px">{{i+1}}</ion-badge>
+                                    <span style="white-space: pre-line">{{instruction}}</span>
                                 </ion-item>
                                 <ion-item-options *ngIf="editMode" side="left">
-                                    <button ion-button color="secondary" (click)="showInput(instruction,'instructions',2)">
+                                    <button ion-button color="secondary" (click)="showInput([instruction,i],'instructions',2)">
                                                 <ion-icon name="create"></ion-icon>
                                                 
                                               </button>
@@ -97,7 +97,7 @@
         </ion-row>
     </ion-grid>
     <ion-fab right bottom *ngIf="recipeContent=='instructions' && editMode && !inputMode && imgState!='expand'">
-        <button mini ion-fab (click)="showInput([],'instructions',1)"><ion-icon name="add"></ion-icon></button>
+        <button mini ion-fab (click)="showInput(['',-1],'instructions',1)"><ion-icon name="add"></ion-icon></button>
     </ion-fab>
     <ion-fab right bottom *ngIf="recipeContent=='ingredients' && editMode && !inputMode && imgState!='expand'">
         <button mini ion-fab (click)="showInput([],'ingredients',1)"><ion-icon name="add"></ion-icon></button>

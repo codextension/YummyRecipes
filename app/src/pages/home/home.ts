@@ -11,29 +11,33 @@ import { RecipeEntity } from "../../entities/recipe-entity";
 })
 export class HomePage {
   public showSearchbar: boolean;
-  public foundRecipes: any;
-
-  public items: any[] = [];
+  public foundRecipes: RecipeEntity[];
+  private pageNumber: number = 0;
+  public scrollEnabled: boolean;
 
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     private neo4jService: Neo4JService
   ) {
+    this.scrollEnabled = true;
     this.showSearchbar = false;
+  }
 
-    for (var i = 1; i <= 5; i++) {
-      this.items.push(i);
-    }
+  ionViewDidLoad() {
+    this.neo4jService.findRecipes(0).then(recipes => {
+      this.foundRecipes = recipes;
+    });
   }
 
   doRefresh(refresher) {
-    console.log("Begin async operation", refresher);
-
     setTimeout(() => {
-      console.log("Async operation has ended");
+      this.neo4jService.findRecipes(0).then(recipes => {
+        this.foundRecipes = recipes;
+        this.scrollEnabled = true;
+      });
       refresher.complete();
-    }, 2000);
+    }, 500);
   }
 
   toggleSearchbar(event) {
@@ -54,7 +58,6 @@ export class HomePage {
         .catch(err => {
           console.error(err);
         });
-      this.foundRecipes = ["Falafel", "Baba Ghannouj"];
     } else {
       this.foundRecipes = null;
     }
@@ -76,7 +79,7 @@ export class HomePage {
       null,
       null,
       null,
-      true,
+      false,
       [],
       [],
       [],
@@ -88,12 +91,14 @@ export class HomePage {
 
   poll(event) {
     setTimeout(() => {
-      for (var i = 1; i <= 5; i++) {
-        this.items.push(i);
-      }
-      event.complete();
-      //event.enable(false);
-      //event.enable(shouldEnable)
+      this.neo4jService.findRecipes(++this.pageNumber).then(recipes => {
+        if (recipes.length == 0) {
+          this.scrollEnabled = false;
+        } else {
+          this.foundRecipes = recipes;
+        }
+        event.complete();
+      });
     }, 500);
   }
 }

@@ -21,11 +21,12 @@ import { CameraPopoverComponent } from "../../components/camera-popover/camera-p
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { ImagesService } from "../../services/images.service";
+import { Neo4JService } from "../../services/neo4j.service";
 
 @Component({
   selector: "page-recipe-management",
   templateUrl: "recipe-management.html",
-  providers: [ImagesService],
+  providers: [ImagesService, Neo4JService],
   animations: [
     trigger("resizeImg", [
       state(
@@ -69,7 +70,8 @@ export class RecipeManagementPage {
     private haptic: Haptic,
     private deviceFeedback: DeviceFeedback,
     private formBuilder: FormBuilder,
-    private imagesService: ImagesService
+    private imagesService: ImagesService,
+    private neo4jService: Neo4JService
   ) {
     this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
@@ -139,9 +141,8 @@ export class RecipeManagementPage {
       }
       case "instructions": {
         this.recipeForm = this.formBuilder.group({
-          id: [item.id ? new Date().getTime() : item.id],
-          orderNb: [item.orderNb],
-          description: [item.description, Validators.required]
+          order: [item[1]],
+          description: [item[0], Validators.required]
         });
         break;
       }
@@ -154,8 +155,16 @@ export class RecipeManagementPage {
 
     this.editMode = !this.editMode;
 
-    this.imagesService.save(this.recipe.imageUrl).then(res => {
-      this.recipe.imageUrl = res;
+    //    this.imagesService.save(this.recipe.imageUrl).then(res => {
+    //      this.recipe.imageUrl = res;
+    //    });
+
+    if (this.recipe.reference == null) {
+      this.recipe.reference = this.recipe.name.toLowerCase().replace(/ /g, "_");
+    }
+
+    this.neo4jService.addRecipe(this.recipe).then(v => {
+      this.recipe.id = v;
     });
   }
 
@@ -175,11 +184,9 @@ export class RecipeManagementPage {
       }
     } else if (inputRef == "instructions") {
       if (this.actionMode == EditModeType.UPDATE) {
-        let index: number = this.indexOf(this.recipe.instructions, form.id);
-        this.recipe.instructions[index] = form;
+        this.recipe.instructions[form.order] = form.description;
       } else {
-        form.orderNb = this.recipe.instructions.length + 1;
-        this.recipe.instructions.push(form);
+        this.recipe.instructions.push(form.description);
       }
     }
     this.toggleMode(false);
@@ -203,10 +210,6 @@ export class RecipeManagementPage {
       let index: number = this.recipe.instructions.indexOf(item, 0);
       if (index > -1) {
         this.recipe.instructions.splice(index, 1);
-
-        for (let i = 0; i < this.recipe.instructions.length; i++) {
-          this.recipe.instructions[i].orderNb = i + 1;
-        }
       }
     }
   }

@@ -19,6 +19,8 @@ export class TranslateHttpLoader implements TranslateLoader {
       lang = "en-US";
     } else if (lang.indexOf("de") >= 0) {
       lang = "de-DE";
+    } else {
+      lang = "en-US";
     }
     return this.http
       .get(`${this.prefix}${lang}${this.suffix}`)
