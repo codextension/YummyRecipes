@@ -50,7 +50,7 @@ export class HomePage {
     if (val && val.trim() != "") {
       this.neo4jService
         .select(
-          "MATCH (x)-[r:INGREDIENT]->(y) where y.name='" + val + "' RETURN x"
+        "MATCH (x)-[r:INGREDIENT]->(y) where y.name='" + val + "' RETURN x"
         )
         .then(value => {
           console.info(value);
@@ -74,8 +74,7 @@ export class HomePage {
   newRecipe() {
     let recipe: RecipeEntity;
     recipe = new RecipeEntity(
-      0,
-      null,
+      -1,
       null,
       null,
       null,

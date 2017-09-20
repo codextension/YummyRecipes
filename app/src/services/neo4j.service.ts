@@ -52,12 +52,12 @@ export class Neo4JService {
     });
     let results = this.http
       .post(
-        val.serverUrl + "/db/query",
-        {
-          query: q
-          //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
-        },
-        options
+      val.serverUrl + "/db/query",
+      {
+        query: q
+        //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
+      },
+      options
       )
       .map(this.queryResuts)
       .catch((err: any) => {
@@ -112,11 +112,21 @@ export class Neo4JService {
     });
   }
 
-  public addRecipe(entity: RecipeEntity): Promise<number> {
-    let query: string = `create(r:Recipe {name:"${entity.name}", reference:"${entity.reference}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
+  public saveRecipe(entity: RecipeEntity): Promise<number> {
+    let query: string;
+
+    let insertQuery: string = `create(r:Recipe {name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
       ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:[${'"' +
       entity.instructions.join('","') +
       '"'}]}) return ID(r)`;
+    let updateQuery: string = `match(r:Recipe) where ID(r)=${entity.id} set r.servings=${entity.servings} and r.duration=${entity.duration} and r.favourite=${entity.favourite} and r.imageUrl="${entity.imageUrl}" and r.instructions=[${'"' + entity.instructions.join('","') + '"'}] and r.name="${entity.name}"  return ID(r)`;
+
+    if (entity.id > -1) {
+      query = updateQuery;
+    } else {
+      query = insertQuery;
+    }
+
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
         if (queryResults == undefined) {
@@ -136,11 +146,10 @@ export class Neo4JService {
         if (queryResults == undefined) {
           reject(-1);
         } else {
-          let output: RecipeEntity[] = []; 
+          let output: RecipeEntity[] = [];
           for (let res of queryResults) {
             let re: RecipeEntity = new RecipeEntity(
               Number(res._fields[0].identity.low),
-              res._fields[0].properties.reference,
               res._fields[0].properties.name,
               res._fields[0].properties.duration.low,
               res._fields[0].properties.description,

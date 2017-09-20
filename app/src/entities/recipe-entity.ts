@@ -1,7 +1,6 @@
 export class RecipeEntity {
   constructor(
     public id: number,
-    public reference: string,
     public name: string,
     public duration: number,
     public description: string,
@@ -11,7 +10,7 @@ export class RecipeEntity {
     public ingredients: Ingredients[],
     public imageUrl: string,
     public servings: number
-  ) {}
+  ) { }
 
   public toString(): string {
     let output: string = "";
@@ -34,7 +33,7 @@ export class Ingredients {
     public name: string,
     public quantity: number,
     public unit: string
-  ) {}
+  ) { }
 
   public toString(): string {
     let output: string = "";
