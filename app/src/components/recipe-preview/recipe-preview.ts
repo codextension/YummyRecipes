@@ -50,7 +50,7 @@ export class RecipePreviewComponent {
 
   toggleFavourite() {
     this.neo4jService
-      .setFavourite(this.entity.reference, !this.entity.favourite)
+      .setFavourite(this.entity.id, !this.entity.favourite)
       .then(v => {
         this.entity.favourite = v;
       });

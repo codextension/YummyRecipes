@@ -98,8 +98,8 @@ export class Neo4JService {
     });
   }
 
-  public setFavourite(reference: string, value: boolean): Promise<boolean> {
-    let query: string = `MATCH (r:Recipe {reference:'${reference}'}) set r.favourite=${value} return r.favourite`;
+  public setFavourite(id: number, value: boolean): Promise<boolean> {
+    let query: string = `MATCH (r:Recipe) where ID(r)=${id} set r.favourite=${value} return r.favourite`;
 
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
@@ -136,7 +136,7 @@ export class Neo4JService {
         if (queryResults == undefined) {
           reject(-1);
         } else {
-          let output: RecipeEntity[] = [];
+          let output: RecipeEntity[] = []; 
           for (let res of queryResults) {
             let re: RecipeEntity = new RecipeEntity(
               Number(res._fields[0].identity.low),
