@@ -16,7 +16,7 @@
         </div>
     </ion-card>
     <ion-fab bottom left edge>
-        <button ion-fab mini (click)="save()"><ion-icon [name]="editMode?'checkmark':'create'"></ion-icon></button>
+        <button ion-fab mini (click)="editMode?save():edit()"><ion-icon [name]="editMode?'checkmark':'create'"></ion-icon></button>
     </ion-fab>
 </ion-header>
 <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>

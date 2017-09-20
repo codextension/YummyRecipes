@@ -5,9 +5,11 @@ import { RecipeManagementPage } from "../../pages/recipe-management/recipe-manag
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { SocialSharing } from "@ionic-native/social-sharing";
+import { Neo4JService } from "../../services/neo4j.service";
 @Component({
   selector: "recipe-preview",
-  templateUrl: "recipe-preview.html"
+  templateUrl: "recipe-preview.html",
+  providers: [Neo4JService]
 })
 export class RecipePreviewComponent {
   @Input() entity: RecipeEntity;
@@ -17,7 +19,8 @@ export class RecipePreviewComponent {
     private sanitizer: DomSanitizer,
     private haptic: Haptic,
     private deviceFeedback: DeviceFeedback,
-    private socialSharing: SocialSharing
+    private socialSharing: SocialSharing,
+    private neo4jService: Neo4JService
   ) {}
 
   showDetails(e: MouseEvent) {
@@ -34,10 +37,6 @@ export class RecipePreviewComponent {
     this.navCtrl.push(RecipeManagementPage, { entity: this.entity });
   }
 
-  toggleFavourite() {
-    this.entity.favourite = !this.entity.favourite;
-  }
-
   share(recipe: RecipeEntity) {
     this.socialSharing
       .share(recipe.toString(), "Recipe: " + recipe.name)
@@ -46,6 +45,14 @@ export class RecipePreviewComponent {
       })
       .catch(() => {
         console.error("cannot share this recipe, i keep it a secret");
+      });
+  }
+
+  toggleFavourite() {
+    this.neo4jService
+      .setFavourite(this.entity.reference, !this.entity.favourite)
+      .then(v => {
+        this.entity.favourite = v;
       });
   }
 }

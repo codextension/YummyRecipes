@@ -149,23 +149,38 @@ export class RecipeManagementPage {
     }
   }
 
-  save() {
+  edit() {
     this.haptic.selection(); //iOs
     this.deviceFeedback.haptic(1);
 
     this.editMode = !this.editMode;
+  }
 
-    //    this.imagesService.save(this.recipe.imageUrl).then(res => {
-    //      this.recipe.imageUrl = res;
-    //    });
+  save() {
+    this.editMode = false;
+    this.toggleMode(false);
 
     if (this.recipe.reference == null) {
-      this.recipe.reference = this.recipe.name.toLowerCase().replace(/ /g, "_");
+      this.recipe.reference = this.recipe.name
+        .toLowerCase()
+        .replace(/[^A-Z0-9]+/gi, "_");
     }
 
-    this.neo4jService.addRecipe(this.recipe).then(v => {
-      this.recipe.id = v;
-    });
+    if (
+      this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
+      this.recipe.imageUrl.startsWith("http")
+    ) {
+      this.neo4jService.addRecipe(this.recipe).then(v => {
+        this.recipe.id = v;
+      });
+    } else {
+      this.imagesService.save(this.recipe.imageUrl).then(res => {
+        this.recipe.imageUrl = res;
+        this.neo4jService.addRecipe(this.recipe).then(v => {
+          this.recipe.id = v;
+        });
+      });
+    }
   }
 
   apply(inputRef: string, form: any) {
