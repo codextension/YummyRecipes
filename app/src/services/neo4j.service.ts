@@ -132,7 +132,7 @@ export class Neo4JService {
 
     for (let ingredient of entity.ingredients) {
       query.push(
-        `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`
+        `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
       );
     }
 
@@ -141,7 +141,7 @@ export class Neo4JService {
         if (queryResults == undefined) {
           reject(null);
         } else {
-          resolve(queryResults[0]._fields[0]);
+          resolve(queryResults[0].records[0]._fields[0]);
         }
       });
     });
