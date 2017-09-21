@@ -7,10 +7,10 @@ export class RecipeEntity {
     public favourite: boolean,
     public tags: string[],
     public instructions: string[],
-    public ingredients: Ingredients[],
+    public ingredients: Ingredient[],
     public imageUrl: string,
     public servings: number
-  ) {}
+  ) { }
 
   public toString(): string {
     let output: string = "";
@@ -27,13 +27,13 @@ export class RecipeEntity {
   }
 }
 
-export class Ingredients {
+export class Ingredient {
   constructor(
     public id: number,
     public name: string,
     public quantity: number,
     public unit: string
-  ) {}
+  ) { }
 
   public toString(): string {
     let output: string = "";

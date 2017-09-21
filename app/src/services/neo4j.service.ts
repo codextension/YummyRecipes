@@ -1,7 +1,7 @@
 import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
-import { Ingredients, RecipeEntity } from "../entities/recipe-entity";
+import { Ingredient, RecipeEntity } from "../entities/recipe-entity";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import {
@@ -121,7 +121,7 @@ export class Neo4JService {
   }
 
   public saveRecipe(entity: RecipeEntity): Promise<string> {
-    let query: string = `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description || ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:["${entity.instructions.join('","')}"]}) ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join('","')}"], r.name="${entity.name}" return r.id`;
+    let query: string = `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET id:"${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description || ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:["${entity.instructions.join('","')}"]}) ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join('","')}"], r.name="${entity.name}" return r.id`;
 
     /*
     let insertQuery: string = `create(r:Recipe {id: "${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
@@ -138,6 +138,20 @@ export class Neo4JService {
           query = insertQuery;
         }
     */
+    return new Promise((resolve, reject) => {
+      this.query(query, null).subscribe(queryResults => {
+        if (queryResults == undefined) {
+          reject(null);
+        } else {
+          resolve(queryResults[0]._fields[0]);
+        }
+      });
+    });
+  }
+
+  public saveIngredient(ingredient: Ingredient): Promise<string> {
+    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET id:"${this.uuidv4()}", name:"${ingredient.name}", quantity:${ingredient.quantity}, unit:"${ingredient.unit}" ON MATCH SET name:"${ingredient.name}", quantity:${ingredient.quantity}, unit:"${ingredient.unit}" return i.id`;
+
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
         if (queryResults == undefined) {
