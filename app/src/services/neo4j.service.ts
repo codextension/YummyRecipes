@@ -52,12 +52,12 @@ export class Neo4JService {
     });
     let results = this.http
       .post(
-        val.serverUrl + "/db/query",
-        {
-          query: q
-          //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
-        },
-        options
+      val.serverUrl + "/db/query",
+      {
+        query: q
+        //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
+      },
+      options
       )
       .map(this.queryResuts)
       .catch((err: any) => {
@@ -113,7 +113,7 @@ export class Neo4JService {
   }
 
   private uuidv4(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
       var r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
@@ -121,21 +121,23 @@ export class Neo4JService {
   }
 
   public saveRecipe(entity: RecipeEntity): Promise<string> {
-    let query: string;
+    let query: string = `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description || ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:["${entity.instructions.join('","')}"]}) ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join('","')}"], r.name="${entity.name}" return r.id`;
+
+    /*
     let insertQuery: string = `create(r:Recipe {id: "${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
       ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:[${'"' +
       entity.instructions.join('","') +
       '"'}]}) return r.id`;
-    let updateQuery: string = `match(r:Recipe {id:"${entity.id}"}) set r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=[${'"' +
+    let updateQuery: string = `merge(r:Recipe {id:"${entity.id}"}) set r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=[${'"' +
       entity.instructions.join('","') +
       '"'}], r.name="${entity.name}"  return r.id`;
 
-    if (entity.id != null) {
-      query = updateQuery;
-    } else {
-      query = insertQuery;
-    }
-
+        if (entity.id != null) {
+          query = updateQuery;
+        } else {
+          query = insertQuery;
+        }
+    */
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
         if (queryResults == undefined) {
