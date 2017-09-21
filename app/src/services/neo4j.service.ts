@@ -1,4 +1,10 @@
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
+import {
+  Http,
+  Response,
+  RequestOptions,
+  Headers,
+  URLSearchParams
+} from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
 import { Ingredient, RecipeEntity } from "../entities/recipe-entity";
@@ -39,10 +45,11 @@ export class Neo4JService {
       });
   }
 
-  private query(q: string, val: any): Observable<any> {
+  private query(q: string[], val: any): Observable<any> {
     if (val == null) {
       val = this.authInfo;
     }
+
     let _headers = new Headers({
       "Content-Type": "application/json",
       authorization: "Basic " + window.btoa(val.username + ":" + val.password)
@@ -51,14 +58,7 @@ export class Neo4JService {
       headers: _headers
     });
     let results = this.http
-      .post(
-      val.serverUrl + "/db/query",
-      {
-        query: q
-        //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
-      },
-      options
-      )
+      .post(val.serverUrl + "/db/query", { query: q }, options)
       .map(this.queryResuts)
       .catch((err: any) => {
         return Observable.of(undefined);
@@ -74,7 +74,7 @@ export class Neo4JService {
   public ping(authInfo: any): Promise<string> {
     return new Promise((resolve, reject) => {
       this.query(
-        "match (n) return count(n)",
+        ["match (n) return count(n)"],
         authInfo
       ).subscribe(queryResults => {
         if (queryResults == undefined) {
@@ -88,7 +88,7 @@ export class Neo4JService {
 
   public select(query: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query([query], null).subscribe(queryResults => {
         if (queryResults == undefined) {
           reject("something is wrong with your query.");
         } else {
@@ -102,7 +102,7 @@ export class Neo4JService {
     let query: string = `MERGE (r:Recipe {id:"${id}"}) set r.favourite=${value} return r.favourite`;
 
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query([query], null).subscribe(queryResults => {
         if (queryResults == undefined) {
           reject(false);
         } else {
@@ -121,23 +121,21 @@ export class Neo4JService {
   }
 
   public saveRecipe(entity: RecipeEntity): Promise<string> {
-    let query: string = `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET id:"${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description || ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:["${entity.instructions.join('","')}"]}) ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join('","')}"], r.name="${entity.name}" return r.id`;
+    let query: string[] = [
+      `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${this.uuidv4()}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.description="${entity.description ||
+        ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, r.instructions=["${entity.instructions.join(
+        '","'
+      )}"] ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join(
+        '","'
+      )}"], r.name="${entity.name}" return r.id`
+    ];
 
-    /*
-    let insertQuery: string = `create(r:Recipe {id: "${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
-      ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:[${'"' +
-      entity.instructions.join('","') +
-      '"'}]}) return r.id`;
-    let updateQuery: string = `merge(r:Recipe {id:"${entity.id}"}) set r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=[${'"' +
-      entity.instructions.join('","') +
-      '"'}], r.name="${entity.name}"  return r.id`;
+    for (let ingredient of entity.ingredients) {
+      query.push(
+        `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`
+      );
+    }
 
-        if (entity.id != null) {
-          query = updateQuery;
-        } else {
-          query = insertQuery;
-        }
-    */
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
         if (queryResults == undefined) {
@@ -150,10 +148,10 @@ export class Neo4JService {
   }
 
   public saveIngredient(ingredient: Ingredient): Promise<string> {
-    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET id:"${this.uuidv4()}", name:"${ingredient.name}", quantity:${ingredient.quantity}, unit:"${ingredient.unit}" ON MATCH SET name:"${ingredient.name}", quantity:${ingredient.quantity}, unit:"${ingredient.unit}" return i.id`;
+    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`;
 
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query([query], null).subscribe(queryResults => {
         if (queryResults == undefined) {
           reject(null);
         } else {
@@ -167,25 +165,27 @@ export class Neo4JService {
     let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
       5} limit 5`;
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query([query], null).subscribe(queryResults => {
         if (queryResults == undefined) {
           reject(-1);
         } else {
           let output: RecipeEntity[] = [];
-          for (let res of queryResults) {
-            let re: RecipeEntity = new RecipeEntity(
-              res._fields[0].properties.id,
-              res._fields[0].properties.name,
-              res._fields[0].properties.duration.low,
-              res._fields[0].properties.description,
-              res._fields[0].properties.favourite,
-              [],
-              res._fields[0].properties.instructions,
-              [],
-              res._fields[0].properties.imageUrl,
-              res._fields[0].properties.servings.low
-            );
-            output.push(re);
+          if (queryResults != null && queryResults.length > 0) {
+            for (let res of queryResults[0].records) {
+              let re: RecipeEntity = new RecipeEntity(
+                res._fields[0].properties.id,
+                res._fields[0].properties.name,
+                res._fields[0].properties.duration.low,
+                res._fields[0].properties.description,
+                res._fields[0].properties.favourite,
+                [],
+                res._fields[0].properties.instructions,
+                [],
+                res._fields[0].properties.imageUrl,
+                res._fields[0].properties.servings.low
+              );
+              output.push(re);
+            }
           }
           resolve(output);
         }

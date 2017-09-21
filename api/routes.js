@@ -9,9 +9,13 @@ var appRouter = function(app, passport, upload, fs, driver) {
 
     app.post(
         "/ping",
-        passport.authenticate("basic", { session: false }),
+        passport.authenticate("basic", {
+            session: false
+        }),
         function(req, res, next) {
-            res.json({ answer: "pong" });
+            res.json({
+                answer: "pong"
+            });
         }
     );
 
@@ -31,7 +35,9 @@ var appRouter = function(app, passport, upload, fs, driver) {
 
     app.post(
         "/images/upload",
-        passport.authenticate("basic", { session: false }),
+        passport.authenticate("basic", {
+            session: false
+        }),
         upload.single("recipe_img"),
         function(req, res, next) {
             res.json(req.file);
@@ -40,7 +46,9 @@ var appRouter = function(app, passport, upload, fs, driver) {
 
     app.post(
         "/images/save",
-        passport.authenticate("basic", { session: false }),
+        passport.authenticate("basic", {
+            session: false
+        }),
         function(req, res, next) {
             var data = req.body.data;
             var filename = uuidv4() + ".jpg";
@@ -48,17 +56,23 @@ var appRouter = function(app, passport, upload, fs, driver) {
                 err
             ) {
                 if (err) {
-                    res.json({ error: err });
+                    res.json({
+                        error: err
+                    });
                 }
 
-                res.json({ name: filename });
+                res.json({
+                    name: filename
+                });
             });
         }
     );
 
     app.post(
         "/images/rm/:reference",
-        passport.authenticate("basic", { session: false }),
+        passport.authenticate("basic", {
+            session: false
+        }),
         function(req, res, next) {
             var fileUri = __dirname + "/store/" + req.params.reference;
             fs.unlink(fileUri, function(err) {
@@ -73,21 +87,30 @@ var appRouter = function(app, passport, upload, fs, driver) {
 
     app.post(
         "/db/query",
-        passport.authenticate("basic", { session: false }),
+        passport.authenticate("basic", {
+            session: false
+        }),
         function(req, res, next) {
-            var query = req.body.query;
-            if (query == null || query.trim().length == 0) {
+            var queries = req.body.query;
+            if (queries == null || queries.length == 0) {
                 res.json("{error: 'no query provided'}");
             } else {
                 var session = driver.session();
-                var resultPromise = session.writeTransaction(
-                    tx => tx.run(query) // unescape(query).replace(/\+/g, " ")
-                );
+                var resultPromise = session.writeTransaction(function(tx) {
+                    var results = [];
+                    for (var i = 0; i < queries.length; i++) {
+                        var result = tx.run(queries[i]);
+                        results.push(result.then(r => {
+                            return r;
+                        }));
+                    }
+                    return Promise.all(results);
+                });
 
                 resultPromise
                     .then(result => {
                         session.close();
-                        res.json(result.records);
+                        res.json(result);
                     })
                     .catch(err => {
                         session.close();
