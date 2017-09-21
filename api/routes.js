@@ -84,10 +84,15 @@ var appRouter = function(app, passport, upload, fs, driver) {
                     tx => tx.run(query) // unescape(query).replace(/\+/g, " ")
                 );
 
-                resultPromise.then(result => {
-                    session.close();
-                    res.json(result.records);
-                });
+                resultPromise
+                    .then(result => {
+                        session.close();
+                        res.json(result.records);
+                    })
+                    .catch(err => {
+                        session.close();
+                        res.status(500).json(`{error:'${err}'}`);
+                    });
             }
         }
     );

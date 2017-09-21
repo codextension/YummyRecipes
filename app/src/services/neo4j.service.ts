@@ -52,12 +52,12 @@ export class Neo4JService {
     });
     let results = this.http
       .post(
-      val.serverUrl + "/db/query",
-      {
-        query: q
-        //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
-      },
-      options
+        val.serverUrl + "/db/query",
+        {
+          query: q
+          //"MATCH (x)-[r:INGREDIENT]->(y)  RETURN y.name,r.quantity, r.unit"
+        },
+        options
       )
       .map(this.queryResuts)
       .catch((err: any) => {
@@ -98,8 +98,8 @@ export class Neo4JService {
     });
   }
 
-  public setFavourite(id: number, value: boolean): Promise<boolean> {
-    let query: string = `MATCH (r:Recipe) where ID(r)=${id} set r.favourite=${value} return r.favourite`;
+  public setFavourite(id: string, value: boolean): Promise<boolean> {
+    let query: string = `MERGE (r:Recipe {id:"${id}"}) set r.favourite=${value} return r.favourite`;
 
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
@@ -112,16 +112,25 @@ export class Neo4JService {
     });
   }
 
-  public saveRecipe(entity: RecipeEntity): Promise<number> {
-    let query: string;
+  private uuidv4(): string {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
 
-    let insertQuery: string = `create(r:Recipe {name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
+  public saveRecipe(entity: RecipeEntity): Promise<string> {
+    let query: string;
+    let insertQuery: string = `create(r:Recipe {id: "${this.uuidv4()}", name:"${entity.name}", imageUrl:"${entity.imageUrl}", favourite:${entity.favourite}, description:"${entity.description ||
       ""}", duration:${entity.duration}, servings:${entity.servings}, instructions:[${'"' +
       entity.instructions.join('","') +
-      '"'}]}) return ID(r)`;
-    let updateQuery: string = `match(r:Recipe) where ID(r)=${entity.id} set r.servings=${entity.servings} and r.duration=${entity.duration} and r.favourite=${entity.favourite} and r.imageUrl="${entity.imageUrl}" and r.instructions=[${'"' + entity.instructions.join('","') + '"'}] and r.name="${entity.name}"  return ID(r)`;
+      '"'}]}) return r.id`;
+    let updateQuery: string = `match(r:Recipe {id:"${entity.id}"}) set r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=[${'"' +
+      entity.instructions.join('","') +
+      '"'}], r.name="${entity.name}"  return r.id`;
 
-    if (entity.id > -1) {
+    if (entity.id != null) {
       query = updateQuery;
     } else {
       query = insertQuery;
@@ -130,9 +139,9 @@ export class Neo4JService {
     return new Promise((resolve, reject) => {
       this.query(query, null).subscribe(queryResults => {
         if (queryResults == undefined) {
-          reject(-1);
+          reject(null);
         } else {
-          resolve(Number(queryResults[0]._fields[0].low));
+          resolve(queryResults[0]._fields[0]);
         }
       });
     });
@@ -149,7 +158,7 @@ export class Neo4JService {
           let output: RecipeEntity[] = [];
           for (let res of queryResults) {
             let re: RecipeEntity = new RecipeEntity(
-              Number(res._fields[0].identity.low),
+              res._fields[0].properties.id,
               res._fields[0].properties.name,
               res._fields[0].properties.duration.low,
               res._fields[0].properties.description,

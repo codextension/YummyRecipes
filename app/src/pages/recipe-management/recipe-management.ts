@@ -77,7 +77,7 @@ export class RecipeManagementPage {
     this.recipe = this.navParams.get("entity");
     this.imgState = "shrink";
     this.inputMode = false;
-    this.editMode = this.recipe.id == -1;
+    this.editMode = this.recipe.id == null;
 
     this.popover = this.popoverCtrl.create(CameraPopoverComponent, {
       recipe: this.recipe
@@ -90,7 +90,7 @@ export class RecipeManagementPage {
     });
   }
 
-  ionViewDidLoad() { }
+  ionViewDidLoad() {}
 
   getBackground(image) {
     return this.sanitizer.bypassSecurityTrustStyle(`url(${image})`);
