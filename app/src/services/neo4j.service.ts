@@ -146,22 +146,8 @@ export class Neo4JService {
     });
   }
 
-  public saveIngredient(ingredient: Ingredient): Promise<string> {
-    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`;
-
-    return new Promise((resolve, reject) => {
-      this.query([query], null).subscribe(queryResults => {
-        if (queryResults == undefined) {
-          reject(null);
-        } else {
-          resolve(queryResults[0]._fields[0]);
-        }
-      });
-    });
-  }
-
   public findRecipes(page: number): Promise<RecipeEntity[]> {
-    let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
+    let query: string = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
       5} limit 5`;
     return new Promise((resolve, reject) => {
       this.query([query], null).subscribe(queryResults => {
@@ -171,6 +157,13 @@ export class Neo4JService {
           let output: RecipeEntity[] = [];
           if (queryResults != null && queryResults.length > 0) {
             for (let res of queryResults[0].records) {
+              let ing: Ingredient = new Ingredient(
+                res._fields[2].properties.id,
+                res._fields[2].properties.name,
+                res._fields[1].properties.quantity.low,
+                res._fields[1].properties.unit
+              );
+
               let re: RecipeEntity = new RecipeEntity(
                 res._fields[0].properties.id,
                 res._fields[0].properties.name,
@@ -183,7 +176,19 @@ export class Neo4JService {
                 res._fields[0].properties.imageUrl,
                 res._fields[0].properties.servings.low
               );
-              output.push(re);
+              let index: number = output.findIndex(
+                (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
+                  return value.id == array[index].id;
+                },
+                re
+              );
+
+              if (index > -1) {
+                output[index].ingredients.push(ing);
+              } else {
+                re.ingredients.push(ing);
+                output.push(re);
+              }
             }
           }
           resolve(output);
