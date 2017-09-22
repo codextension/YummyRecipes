@@ -74,7 +74,7 @@ export class HomePage {
   newRecipe() {
     let recipe: RecipeEntity;
     recipe = new RecipeEntity(
-      null,
+      this.uuidv4(),
       null,
       null,
       null,
@@ -85,7 +85,7 @@ export class HomePage {
       "assets/imgs/no_image.jpg",
       null
     );
-    this.navCtrl.push(RecipeManagementPage, { entity: recipe });
+    this.navCtrl.push(RecipeManagementPage, { entity: recipe, editMode: true });
   }
 
   poll(event) {
@@ -99,5 +99,13 @@ export class HomePage {
         event.complete();
       });
     }, 500);
+  }
+
+  private uuidv4(): string {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 }

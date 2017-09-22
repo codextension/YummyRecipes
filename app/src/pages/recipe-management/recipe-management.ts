@@ -77,7 +77,7 @@ export class RecipeManagementPage {
     this.recipe = this.navParams.get("entity");
     this.imgState = "shrink";
     this.inputMode = false;
-    this.editMode = this.recipe.id == null;
+    this.editMode = this.navParams.get("editMode") || false;
 
     this.popover = this.popoverCtrl.create(CameraPopoverComponent, {
       recipe: this.recipe
@@ -189,6 +189,7 @@ export class RecipeManagementPage {
         let index: number = this.indexOf(this.recipe.ingredients, form.id);
         this.recipe.ingredients[index] = form;
       } else {
+        form.id = this.uuidv4();
         this.recipe.ingredients.push(form);
       }
     } else if (inputRef == "instructions") {
@@ -207,6 +208,14 @@ export class RecipeManagementPage {
         return i;
       }
     }
+  }
+
+  private uuidv4(): string {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   delete(item: any, itemType: string) {

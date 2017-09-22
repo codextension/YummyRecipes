@@ -106,23 +106,15 @@ export class Neo4JService {
         if (queryResults == undefined) {
           reject(false);
         } else {
-          resolve(Boolean(queryResults[0]._fields[0]));
+          resolve(Boolean(queryResults[0].records[0]._fields[0]));
         }
       });
     });
   }
 
-  private uuidv4(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
   public saveRecipe(entity: RecipeEntity): Promise<string> {
     let query: string[] = [
-      `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${this.uuidv4()}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.description="${entity.description ||
+      `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.description="${entity.description ||
         ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, r.instructions=["${entity.instructions.join(
         '","'
       )}"] ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", r.instructions=["${entity.instructions.join(
@@ -130,9 +122,16 @@ export class Neo4JService {
       )}"], r.name="${entity.name}" return r.id`
     ];
 
+    query.push(
+      `match (:Recipe {id:"${entity.id}"})-[c:CONTAINS]->(:Ingredient) delete c`
+    );
+
     for (let ingredient of entity.ingredients) {
       query.push(
-        `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+        `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+      );
+      query.push(
+        `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {quantity:${ingredient.quantity}, unit:"${ingredient.unit}"}]->(i)`
       );
     }
 
@@ -148,7 +147,7 @@ export class Neo4JService {
   }
 
   public saveIngredient(ingredient: Ingredient): Promise<string> {
-    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${this.uuidv4()}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`;
+    let query: string = `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" ON MATCH SET i.name="${ingredient.name}", i.quantity=${ingredient.quantity}, i.unit="${ingredient.unit}" return i.id`;
 
     return new Promise((resolve, reject) => {
       this.query([query], null).subscribe(queryResults => {
