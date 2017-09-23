@@ -177,6 +177,15 @@ export class RecipeManagementPage {
     }
   }
 
+  public canSave(): boolean {
+    return (
+      this.recipe.name != null &&
+      this.recipe.duration != null &&
+      this.recipe.servings != null &&
+      this.recipe.ingredients.length > 0
+    );
+  }
+
   apply(inputRef: string, form: any) {
     if (inputRef == "name") {
       this.recipe.name = form.name;
