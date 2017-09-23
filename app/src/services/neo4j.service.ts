@@ -112,6 +112,22 @@ export class Neo4JService {
     });
   }
 
+  public deleteRecipe(entity: RecipeEntity): Promise<boolean> {
+    let query: string[] = [
+      `match(r:Recipe {id:"${entity.id}"})-[c:CONTAINS]->(:Ingredient) delete r, c`
+    ];
+
+    return new Promise((resolve, reject) => {
+      this.query(query, null).subscribe(queryResults => {
+        if (queryResults == undefined) {
+          reject("something is wrong with your query.");
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
   public saveRecipe(entity: RecipeEntity): Promise<string> {
     let query: string[] = [
       `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.description="${entity.description ||

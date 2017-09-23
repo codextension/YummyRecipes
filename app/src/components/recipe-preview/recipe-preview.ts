@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { NavController, Haptic } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
 import { RecipeManagementPage } from "../../pages/recipe-management/recipe-management";
@@ -13,6 +13,9 @@ import { Neo4JService } from "../../services/neo4j.service";
 })
 export class RecipePreviewComponent {
   @Input() entity: RecipeEntity;
+  @Output() onDeleted: EventEmitter<RecipeEntity> = new EventEmitter();
+
+  public showDeleteOption: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -21,10 +24,8 @@ export class RecipePreviewComponent {
     private deviceFeedback: DeviceFeedback,
     private socialSharing: SocialSharing,
     private neo4jService: Neo4JService
-  ) {}
-
-  showDetails(e: MouseEvent) {
-    e.srcElement;
+  ) {
+    this.showDeleteOption = false;
   }
 
   getBackground(image) {
@@ -54,5 +55,27 @@ export class RecipePreviewComponent {
       .then(v => {
         this.entity.favourite = v;
       });
+  }
+
+  displayDeleteOption() {
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1); // Android
+    this.showDeleteOption = true;
+  }
+
+  delete() {
+    this.showDeleteOption = false;
+    this.neo4jService
+      .deleteRecipe(this.entity)
+      .then(deleted => {
+        this.onDeleted.emit(this.entity);
+      })
+      .catch(err => {
+        console.warn(err);
+      });
+  }
+
+  cancel() {
+    this.showDeleteOption = false;
   }
 }

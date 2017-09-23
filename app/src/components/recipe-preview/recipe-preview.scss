@@ -43,4 +43,13 @@ recipe-preview {
         float: right;
         top: -20px;
     }
+    .delete-box {
+        position: absolute;
+        top: calc(100% - 124px);
+        width: 100%;
+        padding-top: 5px;
+        padding-left: 5px;
+        background-color: #d32a08;
+        color: white;
+    }
 }

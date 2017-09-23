@@ -1,9 +1,17 @@
 <ion-card class="no-padding" *ngIf="entity != undefined">
-    <div class="square" (click)="showDetailedRecipe()" [style.background-image]="getBackground(entity.imageUrl)">
+    <div class="square" (click)="showDeleteOption?return:showDetailedRecipe()" (press)="displayDeleteOption()" [style.background-image]="getBackground(entity.imageUrl)">
     </div>
     <div class="card-fav">
         <button (click)="toggleFavourite()" ion-button clear color="info" icon-start>
                     <ion-icon name="{{entity.favourite==true?'heart':'heart-outline'}}"></ion-icon>
+</button>
+    </div>
+    <div class="delete-box" *ngIf="showDeleteOption">
+        <button style="float:left" (click)="cancel()" ion-button clear color="light" icon-start>
+        <ion-icon name="arrow-back"></ion-icon>{{"CANCEL" | translate}}
+</button>
+        <button style="float:right" (click)="delete()" ion-button clear color="light" icon-start>
+        <ion-icon name="trash"></ion-icon>{{"DELETE" | translate}}
 </button>
     </div>
     <div class="card-footer">

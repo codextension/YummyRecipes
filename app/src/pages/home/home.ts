@@ -35,16 +35,23 @@ export class HomePage {
     this.scrollEnabled = true;
     this.showSearchbar = false;
     this.queryParam = this.navParams.get("favourites");
+  }
 
+  ionViewDidLoad() {
+    this.reload();
+  }
+
+  private showLoadingScreen() {
     this.loadingScreen = this.loadingController.create();
 
     this.translate.get("PLEASE_WAIT").subscribe(value => {
       this.loadingScreen.setContent(value);
+      this.loadingScreen.present();
     });
   }
 
-  ionViewDidLoad() {
-    this.loadingScreen.present();
+  reload() {
+    this.showLoadingScreen();
     this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
       this.foundRecipes = recipes;
       this.loadingScreen.dismiss();
@@ -66,8 +73,10 @@ export class HomePage {
     this.showSearchbar = !this.showSearchbar;
     if (!this.showSearchbar) {
       this.queryParam = null;
+      this.showLoadingScreen();
       this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
+        this.loadingScreen.dismiss();
       });
     }
   }
@@ -76,7 +85,7 @@ export class HomePage {
     var val = e.target.value;
     if (val && val.trim() != "" && val.length > 2) {
       this.queryParam = val;
-      this.loadingScreen.present();
+      this.showLoadingScreen();
       this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
         this.loadingScreen.dismiss();

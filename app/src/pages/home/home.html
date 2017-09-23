@@ -19,7 +19,7 @@
     </ion-refresher>
 
     <div card-group>
-        <recipe-preview *ngFor="let recipe of foundRecipes" [entity]="recipe"></recipe-preview>
+        <recipe-preview (onDeleted)="reload()" *ngFor="let recipe of foundRecipes" [entity]="recipe"></recipe-preview>
         <ion-infinite-scroll (ionInfinite)="poll($event)" [enabled]="scrollEnabled">
             <ion-infinite-scroll-content>
             </ion-infinite-scroll-content>

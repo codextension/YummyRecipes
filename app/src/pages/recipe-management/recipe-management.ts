@@ -96,7 +96,7 @@ export class RecipeManagementPage {
     });
 
     this.toast = this.toastCtrl.create({
-      duration: 3000,
+      duration: 2000,
       position: "top"
     });
   }
