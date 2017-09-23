@@ -15,6 +15,7 @@ import {
   Popover,
   Toast,
   Content,
+  Events,
   Haptic
 } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
@@ -77,6 +78,7 @@ export class RecipeManagementPage {
     private imagesService: ImagesService,
     private neo4jService: Neo4JService,
     private toastCtrl: ToastController,
+    public events: Events,
     private translate: TranslateService
   ) {
     this.recipeContent = "ingredients";
@@ -176,15 +178,15 @@ export class RecipeManagementPage {
       this.recipe.imageUrl.startsWith("http")
     ) {
       this.neo4jService.saveRecipe(this.recipe).then(v => {
-        this.recipe.id = v;
         this.showToast("DATA_SAVED");
+        this.events.publish("recipe:saved", this.recipe);
       });
     } else {
       this.imagesService.save(this.recipe.imageUrl).then(res => {
         this.recipe.imageUrl = res;
         this.neo4jService.saveRecipe(this.recipe).then(v => {
-          this.recipe.id = v;
           this.showToast("DATA_SAVED");
+          this.events.publish("recipe:saved", this.recipe);
         });
       });
     }

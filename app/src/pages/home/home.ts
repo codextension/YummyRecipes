@@ -4,7 +4,8 @@ import {
   AlertController,
   NavParams,
   LoadingController,
-  Loading
+  Loading,
+  Events
 } from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
 import { RecipeManagementPage } from "../recipe-management/recipe-management";
@@ -30,11 +31,26 @@ export class HomePage {
     public alertCtrl: AlertController,
     private neo4jService: Neo4JService,
     private translate: TranslateService,
-    public loadingController: LoadingController
+    public loadingController: LoadingController,
+    public events: Events
   ) {
     this.scrollEnabled = true;
     this.showSearchbar = false;
     this.queryParam = this.navParams.get("favourites");
+
+    events.subscribe("recipe:saved", (recipe: RecipeEntity) => {
+      let index: number = this.foundRecipes.findIndex(
+        (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
+          return value.id == array[index].id;
+        },
+        recipe
+      );
+      if (index > -1) {
+        this.foundRecipes[index] = recipe;
+      } else {
+        this.foundRecipes.push(recipe);
+      }
+    });
   }
 
   ionViewDidLoad() {

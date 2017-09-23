@@ -144,7 +144,8 @@ export class Neo4JService {
 
     for (let ingredient of entity.ingredients) {
       let qty =
-        ingredient.quantity == null
+        ingredient.quantity == null ||
+        ingredient.quantity.toString().trim().length == 0
           ? ""
           : "quantity:" + ingredient.quantity + ", ";
       let unit = ingredient.unit == null ? "" : ingredient.unit;
