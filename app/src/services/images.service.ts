@@ -12,11 +12,10 @@ import {
   FileTransferObject
 } from "@ionic-native/file-transfer";
 import { File, FileEntry } from "@ionic-native/file";
+import { AuthInfo } from "./auth-info";
 
 @Injectable()
 export class ImagesService {
-  private restEntryPointUrl: string;
-  private authString: string;
   private fileTransfer: FileTransferObject;
 
   constructor(
@@ -26,59 +25,75 @@ export class ImagesService {
     private secureStorage: SecureStorage
   ) {
     this.fileTransfer = this.transfer.create();
+  }
 
-    this.secureStorage
-      .create("laziz")
-      .then((storage: SecureStorageObject) => {
-        storage.get("settings").then(data => {
-          if (data != null) {
-            let val = JSON.parse(data);
-            if (val.serverUrl.endsWith("/")) {
-              val.serverUrl = val.serverUrl.substring(
-                0,
-                val.serverUrl.length - 1
-              );
-            }
-            this.restEntryPointUrl = val.serverUrl + "/images";
-            this.authString =
-              "Basic " + window.btoa(val.username + ":" + val.password);
-          }
+  private withCredentials(): Promise<AuthInfo> {
+    return new Promise((resolve, reject) => {
+      let authInfo: AuthInfo;
+      this.secureStorage
+        .create("laziz")
+        .then((storage: SecureStorageObject) => {
+          storage
+            .get("settings")
+            .then(data => {
+              if (data != null) {
+                let val = JSON.parse(data);
+                authInfo = val;
+                if (authInfo.serverUrl.endsWith("/")) {
+                  authInfo.serverUrl = authInfo.serverUrl.substring(
+                    0,
+                    authInfo.serverUrl.length - 1
+                  );
+                }
+                resolve(authInfo);
+              }
+              reject("no auth information");
+            })
+            .catch(err => {
+              reject("no auth information");
+            });
+        })
+        .catch(err => {
+          reject("no auth information");
+          console.error("Cannot load the secure storage engine");
         });
-      })
-      .catch(err => {
-        console.error("Cannot load the secure storage engine");
-      });
+    });
   }
 
   public save(fileUri: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      window.resolveLocalFileSystemURL(fileUri, (fileEntry: FileEntry) => {
-        fileEntry.file(success => {
-          console.log(success.localURL);
-        });
-        this.fileTransfer
-          .upload(
-            fileEntry.toInternalURL(),
-            this.restEntryPointUrl + "/upload",
-            {
-              headers: { authorization: this.authString },
-              chunkedMode: true,
-              fileKey: "recipe_img",
-              fileName: fileEntry.name
-            },
-            true
-          )
-          .then(res => {
-            console.info(res);
-            let imgUrl =
-              this.restEntryPointUrl +
-              "/get/" +
-              JSON.parse(res.response).originalname;
-            resolve(imgUrl);
-          })
-          .catch(err => {
-            console.error(err);
+      this.withCredentials().then((val: AuthInfo) => {
+        window.resolveLocalFileSystemURL(fileUri, (fileEntry: FileEntry) => {
+          fileEntry.file(success => {
+            console.log(success.localURL);
           });
+          this.fileTransfer
+            .upload(
+              fileEntry.toInternalURL(),
+              val.serverUrl + "/images/upload",
+              {
+                headers: {
+                  authorization:
+                    "Basic " + window.btoa(val.username + ":" + val.password)
+                },
+                chunkedMode: true,
+                fileKey: "recipe_img",
+                fileName: fileEntry.name
+              },
+              true
+            )
+            .then(res => {
+              console.info(res);
+              let imgUrl =
+                val.serverUrl +
+                "/images/get/" +
+                JSON.parse(res.response).originalname;
+              resolve(imgUrl);
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        });
       });
     });
   }

@@ -11,6 +11,7 @@ import { Ingredient, RecipeEntity } from "../entities/recipe-entity";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/timeout";
+import { AuthInfo } from "./auth-info";
 
 import {
   SecureStorage,
@@ -264,12 +265,4 @@ export class Neo4JService {
       });
     });
   }
-}
-
-export class AuthInfo {
-  constructor(
-    public username: string,
-    public password: string,
-    public serverUrl: string
-  ) {}
 }
