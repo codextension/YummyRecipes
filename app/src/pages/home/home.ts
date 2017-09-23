@@ -146,6 +146,9 @@ export class HomePage {
             this.foundRecipes = recipes;
           }
           event.complete();
+        })
+        .catch(err => {
+          event.complete();
         });
     }, 100);
   }
