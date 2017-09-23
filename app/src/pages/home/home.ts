@@ -23,7 +23,7 @@ export class HomePage {
   private pageNumber: number = 0;
   public scrollEnabled: boolean;
   private queryParam: any;
-  private loadingScreen: Loading;
+  private PLEASE_WAIT: string;
 
   constructor(
     public navCtrl: NavController,
@@ -51,27 +51,38 @@ export class HomePage {
         this.foundRecipes.push(recipe);
       }
     });
+
+    this.translate.get("PLEASE_WAIT").subscribe(value => {
+      this.PLEASE_WAIT = value;
+    });
   }
 
   ionViewDidLoad() {
-    this.reload();
+    setTimeout(() => {
+      this.reload();
+      console.log("reloading...");
+    });
   }
 
-  private showLoadingScreen() {
-    this.loadingScreen = this.loadingController.create();
+  private createLoadingScreen(): Loading {
+    let loadingScreen: Loading = this.loadingController.create();
+    loadingScreen.setContent(this.PLEASE_WAIT);
+    loadingScreen.present();
 
-    this.translate.get("PLEASE_WAIT").subscribe(value => {
-      this.loadingScreen.setContent(value);
-      this.loadingScreen.present();
-    });
+    return loadingScreen;
   }
 
   reload() {
-    this.showLoadingScreen();
-    this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
-      this.foundRecipes = recipes;
-      this.loadingScreen.dismiss();
-    });
+    let loadingScreen: Loading = this.createLoadingScreen();
+    this.neo4jService
+      .findRecipes(0, this.queryParam)
+      .then(recipes => {
+        this.foundRecipes = recipes;
+        loadingScreen.dismiss();
+      })
+      .catch(err => {
+        loadingScreen.dismiss();
+      });
   }
 
   doRefresh(refresher) {
@@ -89,10 +100,8 @@ export class HomePage {
     this.showSearchbar = !this.showSearchbar;
     if (!this.showSearchbar) {
       this.queryParam = null;
-      this.showLoadingScreen();
       this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
-        this.loadingScreen.dismiss();
       });
     }
   }
@@ -101,10 +110,10 @@ export class HomePage {
     var val = e.target.value;
     if (val && val.trim() != "" && val.length > 2) {
       this.queryParam = val;
-      this.showLoadingScreen();
+      let loadingScreen: Loading = this.createLoadingScreen();
       this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
-        this.loadingScreen.dismiss();
+        loadingScreen.dismiss();
       });
     }
   }

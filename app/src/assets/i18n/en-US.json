@@ -21,5 +21,7 @@
     "INGREDIENTS": "Ingredients",
     "INSTRUCIONS": "Instructions",
     "PLEASE_WAIT": "Please wait ...",
-    "DATA_SAVED": "Recipe saved"
+    "DATA_SAVED": "Recipe saved",
+    "DELETE": "Delete",
+    "CANCEL": "Back"
 }

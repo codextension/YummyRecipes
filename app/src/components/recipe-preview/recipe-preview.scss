@@ -44,6 +44,7 @@ recipe-preview {
         top: -20px;
     }
     .delete-box {
+        z-index: 2;
         position: absolute;
         top: calc(100% - 124px);
         width: 100%;

@@ -10,6 +10,8 @@ import { Injectable } from "@angular/core";
 import { Ingredient, RecipeEntity } from "../entities/recipe-entity";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/timeout";
+
 import {
   SecureStorage,
   SecureStorageObject
@@ -59,6 +61,7 @@ export class Neo4JService {
     });
     let results = this.http
       .post(val.serverUrl + "/db/query", { query: q }, options)
+      .timeout(3000)
       .map(this.queryResuts)
       .catch((err: any) => {
         return Observable.of(undefined);
