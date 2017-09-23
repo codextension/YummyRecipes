@@ -157,4 +157,29 @@ export class HomePage {
       return v.toString(16);
     });
   }
+
+  onDelete(recipe: RecipeEntity) {
+    this.neo4jService
+      .deleteRecipe(recipe)
+      .then(deleted => {
+        let index: number = this.foundRecipes.findIndex(
+          (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
+            return value.id == array[index].id;
+          },
+          recipe
+        );
+        if (index > -1) {
+          this.foundRecipes.splice(index, 1);
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
+  }
+
+  favouriteToggle(entity: RecipeEntity) {
+    this.neo4jService.setFavourite(entity.id, !entity.favourite).then(v => {
+      entity.favourite = v;
+    });
+  }
 }

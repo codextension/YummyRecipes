@@ -19,55 +19,90 @@ import {
 
 @Injectable()
 export class Neo4JService {
-  private authInfo: any;
+  constructor(private http: Http, private secureStorage: SecureStorage) {}
 
-  constructor(private http: Http, private secureStorage: SecureStorage) {
-    this.secureStorage
-      .create("laziz")
-      .then((storage: SecureStorageObject) => {
-        storage.get("settings").then(data => {
-          if (data != null) {
-            let val = JSON.parse(data);
-            this.authInfo = val;
-            if (this.authInfo.serverUrl.endsWith("/")) {
-              this.authInfo.serverUrl = this.authInfo.serverUrl.substring(
-                0,
-                this.authInfo.serverUrl.length - 1
-              );
-            }
-          }
+  private withCredentials(): Promise<AuthInfo> {
+    return new Promise((resolve, reject) => {
+      let authInfo: AuthInfo;
+      this.secureStorage
+        .create("laziz")
+        .then((storage: SecureStorageObject) => {
+          storage
+            .get("settings")
+            .then(data => {
+              if (data != null) {
+                let val = JSON.parse(data);
+                authInfo = val;
+                if (authInfo.serverUrl.endsWith("/")) {
+                  authInfo.serverUrl = authInfo.serverUrl.substring(
+                    0,
+                    authInfo.serverUrl.length - 1
+                  );
+                }
+                resolve(authInfo);
+              }
+              reject("no auth information");
+            })
+            .catch(err => {
+              reject("no auth information");
+            });
+        })
+        .catch(err => {
+          resolve(new AuthInfo("elie", "pwd", "https://localhost:3443"));
+          console.error("Cannot load the secure storage engine");
         });
-      })
-      .catch(err => {
-        this.authInfo = [];
-        this.authInfo.serverUrl = "https://localhost:3443";
-        this.authInfo.username = "elie";
-        this.authInfo.password = "pwd";
-        console.error("Cannot load the secure storage engine");
-      });
+    });
   }
 
-  private query(q: string[], val: any): Observable<any> {
-    if (val == null) {
-      val = this.authInfo;
-    }
+  private query(q: string[], authInfo?: AuthInfo): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (authInfo != null) {
+        this.postData(authInfo, q)
+          .then(data => {
+            resolve(data);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      } else {
+        this.withCredentials()
+          .then((val: AuthInfo) => {
+            this.postData(val, q)
+              .then(data => {
+                resolve(data);
+              })
+              .catch(err => {
+                reject(err);
+              });
+          })
+          .catch(err => {
+            console.error(err);
+            reject(err);
+          });
+      }
+    });
+  }
 
-    let _headers = new Headers({
-      "Content-Type": "application/json",
-      authorization: "Basic " + window.btoa(val.username + ":" + val.password)
-    });
-    let options = new RequestOptions({
-      headers: _headers
-    });
-    let results = this.http
-      .post(val.serverUrl + "/db/query", { query: q }, options)
-      .timeout(3000)
-      .map(this.queryResuts)
-      .catch((err: any) => {
-        return Observable.of(undefined);
+  private postData(val: AuthInfo, q: string[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let _headers = new Headers({
+        "Content-Type": "application/json",
+        authorization: "Basic " + window.btoa(val.username + ":" + val.password)
       });
-
-    return results;
+      let options = new RequestOptions({
+        headers: _headers
+      });
+      this.http
+        .post(val.serverUrl + "/db/query", { query: q }, options)
+        .timeout(3000)
+        .map(this.queryResuts)
+        .catch((err: any) => {
+          return Observable.of(undefined);
+        })
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
   }
 
   private queryResuts(response: Response): string {
@@ -76,10 +111,7 @@ export class Neo4JService {
 
   public ping(authInfo: any): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.query(
-        ["match (n) return count(n)"],
-        authInfo
-      ).subscribe(queryResults => {
+      this.query(["match (n) return count(n)"], authInfo).then(queryResults => {
         if (queryResults == undefined) {
           reject("cannot connect to server.");
         } else {
@@ -91,7 +123,7 @@ export class Neo4JService {
 
   public select(query: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.query([query], null).subscribe(queryResults => {
+      this.query([query]).then(queryResults => {
         if (queryResults == undefined) {
           reject("something is wrong with your query.");
         } else {
@@ -105,7 +137,7 @@ export class Neo4JService {
     let query: string = `MERGE (r:Recipe {id:"${id}"}) set r.favourite=${value} return r.favourite`;
 
     return new Promise((resolve, reject) => {
-      this.query([query], null).subscribe(queryResults => {
+      this.query([query]).then(queryResults => {
         if (queryResults == undefined) {
           reject(false);
         } else {
@@ -121,7 +153,7 @@ export class Neo4JService {
     ];
 
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query(query).then(queryResults => {
         if (queryResults == undefined) {
           reject("something is wrong with your query.");
         } else {
@@ -161,7 +193,7 @@ export class Neo4JService {
     }
 
     return new Promise((resolve, reject) => {
-      this.query(query, null).subscribe(queryResults => {
+      this.query(query).then(queryResults => {
         if (queryResults == undefined) {
           reject(null);
         } else {
@@ -178,13 +210,13 @@ export class Neo4JService {
       if (typeof text === "string") {
         query = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r,c,i order by ID(r) skip ${page *
           5} limit 5`;
-      } else if (typeof text === "boolean") {
+      } else if (typeof text === "boolean" && text == true) {
         query = `match(r:Recipe {favourite:${text}})-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
           5} limit 5`;
       }
     }
     return new Promise((resolve, reject) => {
-      this.query([query], null).subscribe(queryResults => {
+      this.query([query]).then(queryResults => {
         if (queryResults == undefined) {
           reject(-1);
         } else {
@@ -232,4 +264,12 @@ export class Neo4JService {
       });
     });
   }
+}
+
+export class AuthInfo {
+  constructor(
+    public username: string,
+    public password: string,
+    public serverUrl: string
+  ) {}
 }

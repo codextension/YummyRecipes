@@ -5,15 +5,15 @@ import { RecipeManagementPage } from "../../pages/recipe-management/recipe-manag
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { SocialSharing } from "@ionic-native/social-sharing";
-import { Neo4JService } from "../../services/neo4j.service";
+
 @Component({
   selector: "recipe-preview",
-  templateUrl: "recipe-preview.html",
-  providers: [Neo4JService]
+  templateUrl: "recipe-preview.html"
 })
 export class RecipePreviewComponent {
   @Input() entity: RecipeEntity;
   @Output() onDeleted: EventEmitter<RecipeEntity> = new EventEmitter();
+  @Output() onFavToggle: EventEmitter<RecipeEntity> = new EventEmitter();
 
   public showDeleteOption: boolean;
 
@@ -22,8 +22,7 @@ export class RecipePreviewComponent {
     private sanitizer: DomSanitizer,
     private haptic: Haptic,
     private deviceFeedback: DeviceFeedback,
-    private socialSharing: SocialSharing,
-    private neo4jService: Neo4JService
+    private socialSharing: SocialSharing
   ) {
     this.showDeleteOption = false;
   }
@@ -50,11 +49,7 @@ export class RecipePreviewComponent {
   }
 
   toggleFavourite() {
-    this.neo4jService
-      .setFavourite(this.entity.id, !this.entity.favourite)
-      .then(v => {
-        this.entity.favourite = v;
-      });
+    this.onFavToggle.emit(this.entity);
   }
 
   displayDeleteOption() {
@@ -65,14 +60,7 @@ export class RecipePreviewComponent {
 
   delete() {
     this.showDeleteOption = false;
-    this.neo4jService
-      .deleteRecipe(this.entity)
-      .then(deleted => {
-        this.onDeleted.emit(this.entity);
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+    this.onDeleted.emit(this.entity);
   }
 
   cancel() {
