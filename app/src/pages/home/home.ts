@@ -39,15 +39,20 @@ export class HomePage {
     this.queryParam = this.navParams.get("favourites");
 
     events.subscribe("recipe:saved", (recipe: RecipeEntity) => {
-      let index: number = this.foundRecipes.findIndex(
-        (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
-          return recipe.id == array[index].id;
-        },
-        recipe
-      );
-      if (index > -1) {
-        this.foundRecipes[index] = recipe;
+      if (this.foundRecipes != null && this.foundRecipes.length > 0) {
+        let index: number = this.foundRecipes.findIndex(
+          (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
+            return recipe.id == array[index].id;
+          },
+          recipe
+        );
+        if (index > -1) {
+          this.foundRecipes[index] = recipe;
+        } else {
+          this.foundRecipes.push(recipe);
+        }
       } else {
+        this.foundRecipes = [];
         this.foundRecipes.push(recipe);
       }
     });

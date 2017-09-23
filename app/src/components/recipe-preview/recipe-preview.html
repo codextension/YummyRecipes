@@ -1,5 +1,5 @@
 <ion-card class="no-padding" *ngIf="entity != undefined">
-    <div class="square" (click)="showDeleteOption?return:showDetailedRecipe()" (press)="displayDeleteOption()" [style.background-image]="getBackground(entity.imageUrl)">
+    <div class="square" (click)="showDeleteOption?return:showDetailedRecipe()" [style.background-image]="getBackground(entity.imageUrl)">
         <ion-backdrop style="opacity:0.35;" class="show-backdrop" *ngIf="showDeleteOption"></ion-backdrop>
     </div>
     <div class="card-fav">
@@ -15,7 +15,7 @@
         <ion-icon name="trash"></ion-icon>{{"DELETE" | translate}}
 </button>
     </div>
-    <div class="card-footer">
+    <div class="card-footer" (press)="displayDeleteOption()">
         <h2 class="text-bold">{{entity.name}}</h2>
         <button class="align-right" ion-button clear color="info" (click)="share(entity)" icon-start>
             <ion-icon name='share-alt'></ion-icon>
