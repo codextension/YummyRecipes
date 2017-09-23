@@ -11,7 +11,9 @@ import {
   NavController,
   NavParams,
   PopoverController,
+  ToastController,
   Popover,
+  Toast,
   Content,
   Haptic
 } from "ionic-angular";
@@ -22,6 +24,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { ImagesService } from "../../services/images.service";
 import { Neo4JService } from "../../services/neo4j.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "page-recipe-management",
@@ -59,6 +62,7 @@ export class RecipeManagementPage {
   private swipeCoord?: [number, number];
   private swipeTime?: number;
   private popover: Popover;
+  private toast: Toast;
 
   @ViewChild(Content) content: Content;
 
@@ -71,7 +75,9 @@ export class RecipeManagementPage {
     private deviceFeedback: DeviceFeedback,
     private formBuilder: FormBuilder,
     private imagesService: ImagesService,
-    private neo4jService: Neo4JService
+    private neo4jService: Neo4JService,
+    private toastCtrl: ToastController,
+    private translate: TranslateService
   ) {
     this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
@@ -87,6 +93,11 @@ export class RecipeManagementPage {
       if (data != null) {
         this.recipe.imageUrl = data;
       }
+    });
+
+    this.toast = this.toastCtrl.create({
+      duration: 3000,
+      position: "top"
     });
   }
 
@@ -166,15 +177,24 @@ export class RecipeManagementPage {
     ) {
       this.neo4jService.saveRecipe(this.recipe).then(v => {
         this.recipe.id = v;
+        this.showToast("DATA_SAVED");
       });
     } else {
       this.imagesService.save(this.recipe.imageUrl).then(res => {
         this.recipe.imageUrl = res;
         this.neo4jService.saveRecipe(this.recipe).then(v => {
           this.recipe.id = v;
+          this.showToast("DATA_SAVED");
         });
       });
     }
+  }
+
+  private showToast(message: string) {
+    this.translate.get(message).subscribe(value => {
+      this.toast.setMessage(value);
+      this.toast.present();
+    });
   }
 
   public canSave(): boolean {

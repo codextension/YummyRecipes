@@ -19,5 +19,7 @@
     "LOADING_MORE": "Rezepte werden geladen ...",
     "SERVINGS": "Portionen",
     "INGREDIENTS": "Zutaten",
-    "INSTRUCIONS": "Zubereitung"
+    "INSTRUCIONS": "Zubereitung",
+    "PLEASE_WAIT": "Bitte warten ...",
+    "DATA_SAVED": "Rezept gespeichert"
 }

@@ -151,9 +151,18 @@ export class Neo4JService {
     });
   }
 
-  public findRecipes(page: number): Promise<RecipeEntity[]> {
+  public findRecipes(page: number, text?): Promise<RecipeEntity[]> {
     let query: string = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
       5} limit 5`;
+    if (text != null) {
+      if (typeof text === "string") {
+        query = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r,c,i order by ID(r) skip ${page *
+          5} limit 5`;
+      } else if (typeof text === "boolean") {
+        query = `match(r:Recipe {favourite:${text}})-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
+          5} limit 5`;
+      }
+    }
     return new Promise((resolve, reject) => {
       this.query([query], null).subscribe(queryResults => {
         if (queryResults == undefined) {

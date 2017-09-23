@@ -46,9 +46,13 @@ export class MyApp {
 
   openPage(page) {
     if (page.component == HomePage) {
-      this.nav.setRoot(page.component);
+      if (page.title == "FAVOURITE") {
+        this.nav.setRoot(page.component, { favourites: true });
+      } else {
+        this.nav.setRoot(page.component);
+      }
     } else {
-      this.nav.push(page.component, { query: "favourites" });
+      this.nav.push(page.component);
     }
   }
 }

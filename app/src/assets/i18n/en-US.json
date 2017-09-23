@@ -19,5 +19,7 @@
     "LOADING_MORE": "Loading more recipes...",
     "SERVINGS": "Servings",
     "INGREDIENTS": "Ingredients",
-    "INSTRUCIONS": "Instructions"
+    "INSTRUCIONS": "Instructions",
+    "PLEASE_WAIT": "Please wait ...",
+    "DATA_SAVED": "Recipe saved"
 }

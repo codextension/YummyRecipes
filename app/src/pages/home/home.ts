@@ -1,8 +1,15 @@
 import { Component } from "@angular/core";
-import { NavController, AlertController } from "ionic-angular";
+import {
+  NavController,
+  AlertController,
+  NavParams,
+  LoadingController,
+  Loading
+} from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
 import { RecipeManagementPage } from "../recipe-management/recipe-management";
 import { RecipeEntity } from "../../entities/recipe-entity";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "page-home",
@@ -14,61 +21,67 @@ export class HomePage {
   public foundRecipes: RecipeEntity[];
   private pageNumber: number = 0;
   public scrollEnabled: boolean;
+  private queryParam: any;
+  private loadingScreen: Loading;
 
   constructor(
     public navCtrl: NavController,
+    private navParams: NavParams,
     public alertCtrl: AlertController,
-    private neo4jService: Neo4JService
+    private neo4jService: Neo4JService,
+    private translate: TranslateService,
+    public loadingController: LoadingController
   ) {
     this.scrollEnabled = true;
     this.showSearchbar = false;
+    this.queryParam = this.navParams.get("favourites");
+
+    this.loadingScreen = this.loadingController.create();
+
+    this.translate.get("PLEASE_WAIT").subscribe(value => {
+      this.loadingScreen.setContent(value);
+    });
   }
 
   ionViewDidLoad() {
-    this.neo4jService.findRecipes(0).then(recipes => {
+    this.loadingScreen.present();
+    this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
       this.foundRecipes = recipes;
+      this.loadingScreen.dismiss();
     });
   }
 
   doRefresh(refresher) {
     setTimeout(() => {
-      this.neo4jService.findRecipes(0).then(recipes => {
+      this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
         this.scrollEnabled = true;
+        refresher.complete();
       });
-      refresher.complete();
-    }, 500);
+    }, 100);
   }
 
   toggleSearchbar(event) {
     this.foundRecipes = null;
     this.showSearchbar = !this.showSearchbar;
+    if (!this.showSearchbar) {
+      this.queryParam = null;
+      this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
+        this.foundRecipes = recipes;
+      });
+    }
   }
 
   findRecipes(e: any) {
     var val = e.target.value;
-    if (val && val.trim() != "") {
-      this.neo4jService
-        .select(
-          "MATCH (x)-[r:INGREDIENT]->(y) where y.name='" + val + "' RETURN x"
-        )
-        .then(value => {
-          console.info(value);
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    } else {
-      this.foundRecipes = null;
+    if (val && val.trim() != "" && val.length > 2) {
+      this.queryParam = val;
+      this.loadingScreen.present();
+      this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
+        this.foundRecipes = recipes;
+        this.loadingScreen.dismiss();
+      });
     }
-  }
-
-  tapEvent(e: Event) {
-    this.showSearchbar = false;
-  }
-
-  showRecipe(e: MouseEvent) {
-    e.srcElement;
   }
 
   newRecipe() {
@@ -90,15 +103,17 @@ export class HomePage {
 
   poll(event) {
     setTimeout(() => {
-      this.neo4jService.findRecipes(++this.pageNumber).then(recipes => {
-        if (recipes.length == 0) {
-          this.scrollEnabled = false;
-        } else {
-          this.foundRecipes = recipes;
-        }
-        event.complete();
-      });
-    }, 500);
+      this.neo4jService
+        .findRecipes(++this.pageNumber, this.queryParam)
+        .then(recipes => {
+          if (recipes.length == 0) {
+            this.scrollEnabled = false;
+          } else {
+            this.foundRecipes = recipes;
+          }
+          event.complete();
+        });
+    }, 100);
   }
 
   private uuidv4(): string {
