@@ -41,7 +41,7 @@ export class HomePage {
     events.subscribe("recipe:saved", (recipe: RecipeEntity) => {
       let index: number = this.foundRecipes.findIndex(
         (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
-          return value.id == array[index].id;
+          return recipe.id == array[index].id;
         },
         recipe
       );
@@ -167,7 +167,7 @@ export class HomePage {
       .then(deleted => {
         let index: number = this.foundRecipes.findIndex(
           (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
-            return value.id == array[index].id;
+            return recipe.id == array[index].id;
           },
           recipe
         );

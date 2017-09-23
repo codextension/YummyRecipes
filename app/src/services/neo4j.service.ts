@@ -247,7 +247,7 @@ export class Neo4JService {
               );
               let index: number = output.findIndex(
                 (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
-                  return value.id == array[index].id;
+                  return re.id == array[index].id;
                 },
                 re
               );
