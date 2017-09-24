@@ -49,7 +49,7 @@ export class Neo4JService {
             });
         })
         .catch(err => {
-          resolve(new AuthInfo("elie", "pwd", "https://localhost:3443"));
+          resolve(new AuthInfo("elie", "pwd", "https://35.184.3.51:3443"));
           console.error("Cannot load the secure storage engine");
         });
     });
@@ -167,7 +167,7 @@ export class Neo4JService {
   public saveRecipe(entity: RecipeEntity): Promise<string> {
     let instructions: string =
       entity.instructions.length > 0
-        ? "r.instructions=['" + entity.instructions.join('","') + "']"
+        ? 'r.instructions=["' + entity.instructions.join('","') + '"]'
         : "r.instructions=[]";
     let query: string[] = [
       `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
@@ -206,17 +206,18 @@ export class Neo4JService {
   }
 
   public findRecipes(page: number, text?): Promise<RecipeEntity[]> {
-    let query: string = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
+    let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
       5} limit 5`;
     if (text != null) {
       if (typeof text === "string") {
-        query = `match(r:Recipe)-[c:CONTAINS]->(i:Ingredient) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r,c,i order by ID(r) skip ${page *
+        query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r order by ID(r) skip ${page *
           5} limit 5`;
       } else if (typeof text === "boolean" && text == true) {
-        query = `match(r:Recipe {favourite:${text}})-[c:CONTAINS]->(i:Ingredient) return r,c,i order by ID(r) skip ${page *
+        query = `match(r:Recipe {favourite:${text}}) return r order by ID(r) skip ${page *
           5} limit 5`;
       }
     }
+
     return new Promise((resolve, reject) => {
       this.query([query]).then(queryResults => {
         if (queryResults == undefined) {
@@ -225,20 +226,11 @@ export class Neo4JService {
           let output: RecipeEntity[] = [];
           if (queryResults != null && queryResults.length > 0) {
             for (let res of queryResults[0].records) {
-              let ing: Ingredient = new Ingredient(
-                res._fields[2].properties.id,
-                res._fields[2].properties.name,
-                res._fields[1].properties.quantity == null
-                  ? ""
-                  : res._fields[1].properties.quantity.low,
-                res._fields[1].properties.unit
-              );
-
               let re: RecipeEntity = new RecipeEntity(
                 res._fields[0].properties.id,
                 res._fields[0].properties.name,
                 res._fields[0].properties.duration.low,
-                res._fields[0].properties.description,
+                res._fields[0].properties.notes,
                 res._fields[0].properties.favourite,
                 [],
                 res._fields[0].properties.instructions,
@@ -246,22 +238,35 @@ export class Neo4JService {
                 res._fields[0].properties.imageUrl,
                 res._fields[0].properties.servings.low
               );
-              let index: number = output.findIndex(
-                (value: RecipeEntity, index: number, array: RecipeEntity[]) => {
-                  return re.id == array[index].id;
-                },
-                re
-              );
-
-              if (index > -1) {
-                output[index].ingredients.push(ing);
-              } else {
-                re.ingredients.push(ing);
-                output.push(re);
-              }
+              output.push(re);
             }
           }
-          resolve(output);
+
+          let ingredientQuery: string[] = [];
+          for (let out of output) {
+            ingredientQuery.push(
+              `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
+            );
+          }
+
+          this.query(ingredientQuery)
+            .then(results => {
+              for (let i = 0; i < results.length; i++) {
+                for (let res of results[i].records) {
+                  let ing: Ingredient = new Ingredient(
+                    res._fields[2].properties.id,
+                    res._fields[2].properties.name,
+                    res._fields[1].properties.quantity == null
+                      ? ""
+                      : res._fields[1].properties.quantity.low,
+                    res._fields[1].properties.unit
+                  );
+                  output[i].ingredients.push(ing);
+                }
+              }
+              resolve(output);
+            })
+            .catch(err => {});
         }
       });
     });
