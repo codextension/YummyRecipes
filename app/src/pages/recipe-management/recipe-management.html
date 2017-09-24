@@ -36,7 +36,6 @@
                 <ion-icon name='people'></ion-icon>
             </ion-col>
         </ion-row>
-
         <ion-row>
             <ion-col col-12>
                 <div [ngSwitch]="recipeContent">
@@ -92,11 +91,9 @@
                             </ion-item-sliding>
                         </ion-item-group>
                     </ion-list>
-                    <ion-list *ngSwitchCase="'notes'">
-                        <ion-item>
-                            {{recipe.notes||''}}
-                        </ion-item>
-                    </ion-list>
+                    <span *ngSwitchCase="'notes'">
+                        {{recipe.notes||''}}
+                    </span>
                 </div>
             </ion-col>
         </ion-row>
