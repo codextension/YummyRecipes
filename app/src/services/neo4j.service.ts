@@ -170,8 +170,9 @@ export class Neo4JService {
         ? "r.instructions=['" + entity.instructions.join('","') + "']"
         : "r.instructions=[]";
     let query: string[] = [
-      `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.description="${entity.description ||
-        ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
+      `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
+        ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
+        ""}", r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
     ];
 
     query.push(

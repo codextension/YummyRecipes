@@ -3,14 +3,14 @@ export class RecipeEntity {
     public id: string,
     public name: string,
     public duration: number,
-    public description: string,
+    public notes: string,
     public favourite: boolean,
     public tags: string[],
     public instructions: string[],
     public ingredients: Ingredient[],
     public imageUrl: string,
     public servings: number
-  ) { }
+  ) {}
 
   public toString(): string {
     let output: string = "";
@@ -33,7 +33,7 @@ export class Ingredient {
     public name: string,
     public quantity: number,
     public unit: string
-  ) { }
+  ) {}
 
   public toString(): string {
     let output: string = "";

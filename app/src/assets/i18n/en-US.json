@@ -23,5 +23,6 @@
     "PLEASE_WAIT": "Please wait ...",
     "DATA_SAVED": "Recipe saved",
     "DELETE": "Delete",
-    "CANCEL": "Back"
+    "CANCEL": "Back",
+    "NOTES": "Notes"
 }

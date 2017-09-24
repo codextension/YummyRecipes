@@ -23,5 +23,6 @@
     "PLEASE_WAIT": "Bitte warten ...",
     "DATA_SAVED": "Rezept gespeichert",
     "DELETE": "Löschen",
-    "CANCEL": "Zurück"
+    "CANCEL": "Zurück",
+    "NOTES": "Notizen"
 }

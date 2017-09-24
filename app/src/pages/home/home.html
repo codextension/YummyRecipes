@@ -3,7 +3,7 @@
         <button *ngIf="!showSearchbar" ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-        <ion-title *ngIf="!showSearchbar">{{'APP_TITLE' | translate}}</ion-title>
+        <ion-title *ngIf="!showSearchbar">{{queryParam?('FAVOURITE' | translate):('APP_TITLE' | translate)}}</ion-title>
         <ion-buttons end *ngIf="!showSearchbar">
             <button ion-button (click)="toggleSearchbar($event)">
         <ion-icon name="search"></ion-icon>

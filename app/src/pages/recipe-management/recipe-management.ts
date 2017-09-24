@@ -159,6 +159,11 @@ export class RecipeManagementPage {
         });
         break;
       }
+      case "notes": {
+        this.recipeForm = this.formBuilder.group({
+          notes: item
+        });
+      }
     }
   }
 
@@ -229,6 +234,8 @@ export class RecipeManagementPage {
       } else {
         this.recipe.instructions.push(form.description);
       }
+    } else if (inputRef == "notes") {
+      this.recipe.notes = form.notes;
     }
     this.toggleMode(false);
   }
