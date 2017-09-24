@@ -38,7 +38,7 @@ var storage = multer.diskStorage({
         cb(null, "store/");
     },
     filename: function(req, file, cb) {
-        cb(null, uuidv4());
+        cb(null, uuidv4() + file.originalname.toLowerCase().split(".")[1]);
     }
 });
 
