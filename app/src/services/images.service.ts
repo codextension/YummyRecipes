@@ -78,7 +78,7 @@ export class ImagesService {
                 },
                 chunkedMode: true,
                 fileKey: "recipe_img",
-                fileName: fileEntry.name
+                fileName: fileEntry.name.toLowerCase()
               },
               true
             )

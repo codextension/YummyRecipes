@@ -45,29 +45,6 @@ var appRouter = function(app, passport, upload, fs, driver) {
     );
 
     app.post(
-        "/images/save",
-        passport.authenticate("basic", {
-            session: false
-        }),
-        function(req, res, next) {
-            var data = req.body.data;
-            var filename = uuidv4() + ".jpg";
-            fs.writeFile(__dirname + "/store/" + filename, data, "base64", function(
-                err
-            ) {
-                if (err) {
-                    res.json({
-                        error: err
-                    });
-                }
-
-                res.json({
-                    name: filename
-                });
-            });
-        }
-    );
-    app.post(
         "/images/rm/:reference",
         passport.authenticate("basic", {
             session: false
