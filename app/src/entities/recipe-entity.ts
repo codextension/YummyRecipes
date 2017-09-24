@@ -13,16 +13,17 @@ export class RecipeEntity {
   ) {}
 
   public toString(): string {
-    let output: string = "";
-    output +=
-      "Duration :" +
-      this.duration +
-      "min, servings: " +
-      this.servings +
-      "ppl\n";
-    output += "Ingredients\n";
-    output += "Instructions\n";
+    let allIngredients: string = "";
 
+    for (let ingredient of this.ingredients) {
+      allIngredients += ingredient + "\n";
+    }
+
+    let output: string = `${this.name}\n\nDuration: ${this
+      .duration}min\tServings: ${this
+      .servings}\n\nIngredients:\n${allIngredients}\n\nInstructions:\n${this.instructions.join(
+      "\n"
+    )}\n\nNotes:\n${this.notes}`;
     return output;
   }
 }

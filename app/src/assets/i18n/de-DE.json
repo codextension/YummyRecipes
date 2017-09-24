@@ -24,5 +24,8 @@
     "DATA_SAVED": "Rezept gespeichert",
     "DELETE": "Löschen",
     "CANCEL": "Zurück",
-    "NOTES": "Notizen"
+    "NOTES": "Notizen",
+    "RESET": "Zurückstzen",
+    "IMAGE_FROM_DEVICE": "Bild von Gerät",
+    "IMAGE_FROM_CAMERA": "Foto aufnehmen"
 }

@@ -14,6 +14,7 @@ export class RecipePreviewComponent {
   @Input() entity: RecipeEntity;
   @Output() onDeleted: EventEmitter<RecipeEntity> = new EventEmitter();
   @Output() onFavToggle: EventEmitter<RecipeEntity> = new EventEmitter();
+  @Output() onClick: EventEmitter<RecipeEntity> = new EventEmitter();
 
   public showDeleteOption: boolean;
 
@@ -32,9 +33,7 @@ export class RecipePreviewComponent {
   }
 
   showDetailedRecipe() {
-    this.haptic.selection(); //iOs
-    this.deviceFeedback.haptic(1); // Android
-    this.navCtrl.push(RecipeManagementPage, { entity: this.entity });
+    this.onClick.emit(this.entity);
   }
 
   share(recipe: RecipeEntity) {

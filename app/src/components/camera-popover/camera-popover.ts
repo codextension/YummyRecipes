@@ -57,4 +57,8 @@ export class CameraPopoverComponent {
       }
     );
   }
+
+  public clearImage() {
+    this.view.dismiss("assets/imgs/no_image.jpg");
+  }
 }

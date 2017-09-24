@@ -5,12 +5,14 @@ import {
   NavParams,
   LoadingController,
   Loading,
-  Events
+  Events,
+  Haptic
 } from "ionic-angular";
 import { Neo4JService } from "../../services/neo4j.service";
 import { RecipeManagementPage } from "../recipe-management/recipe-management";
 import { RecipeEntity } from "../../entities/recipe-entity";
 import { TranslateService } from "@ngx-translate/core";
+import { DeviceFeedback } from "@ionic-native/device-feedback";
 
 @Component({
   selector: "page-home",
@@ -32,7 +34,9 @@ export class HomePage {
     private neo4jService: Neo4JService,
     private translate: TranslateService,
     public loadingController: LoadingController,
-    public events: Events
+    public events: Events,
+    private haptic: Haptic,
+    private deviceFeedback: DeviceFeedback
   ) {
     this.scrollEnabled = true;
     this.showSearchbar = false;
@@ -176,6 +180,8 @@ export class HomePage {
   }
 
   onDelete(recipe: RecipeEntity) {
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1); // Android
     this.neo4jService
       .deleteRecipe(recipe)
       .then(deleted => {
@@ -194,7 +200,15 @@ export class HomePage {
       });
   }
 
+  onClick(recipe: RecipeEntity) {
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1); // Android
+    this.navCtrl.push(RecipeManagementPage, { entity: recipe });
+  }
+
   favouriteToggle(entity: RecipeEntity) {
+    this.haptic.selection(); //iOs
+    this.deviceFeedback.haptic(1); // Android
     this.neo4jService.setFavourite(entity.id, !entity.favourite).then(v => {
       entity.favourite = v;
     });

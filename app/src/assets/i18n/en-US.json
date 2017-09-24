@@ -24,5 +24,8 @@
     "DATA_SAVED": "Recipe saved",
     "DELETE": "Delete",
     "CANCEL": "Back",
-    "NOTES": "Notes"
+    "NOTES": "Notes",
+    "RESET": "Reset",
+    "IMAGE_FROM_DEVICE": "Photo from device",
+    "IMAGE_FROM_CAMERA": "Take a Photo"
 }
