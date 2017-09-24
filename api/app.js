@@ -25,12 +25,20 @@ var multer = require("multer");
 var schedule = require("node-schedule");
 var neo4j = require("neo4j-driver").v1;
 
+function uuidv4() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, "store/");
     },
     filename: function(req, file, cb) {
-        cb(null, file.originalname.toLowerCase());
+        cb(null, uuidv4());
     }
 });
 

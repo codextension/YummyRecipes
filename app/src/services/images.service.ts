@@ -77,8 +77,7 @@ export class ImagesService {
                     "Basic " + window.btoa(val.username + ":" + val.password)
                 },
                 chunkedMode: true,
-                fileKey: "recipe_img",
-                fileName: this.uuidv4()
+                fileKey: "recipe_img"
               },
               true
             )
@@ -87,7 +86,7 @@ export class ImagesService {
               let imgUrl =
                 val.serverUrl +
                 "/images/get/" +
-                JSON.parse(res.response).originalname;
+                JSON.parse(res.response).filename;
               resolve(imgUrl);
             })
             .catch(err => {
