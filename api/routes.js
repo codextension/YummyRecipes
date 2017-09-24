@@ -67,7 +67,6 @@ var appRouter = function(app, passport, upload, fs, driver) {
             });
         }
     );
-
     app.post(
         "/images/rm/:reference",
         passport.authenticate("basic", {
@@ -100,9 +99,11 @@ var appRouter = function(app, passport, upload, fs, driver) {
                     var results = [];
                     for (var i = 0; i < queries.length; i++) {
                         var result = tx.run(queries[i]);
-                        results.push(result.then(r => {
-                            return r;
-                        }));
+                        results.push(
+                            result.then(r => {
+                                return r;
+                            })
+                        );
                     }
                     return Promise.all(results);
                 });

@@ -22,6 +22,8 @@ var app = express();
 var passport = require("passport");
 var BasicStrategy = require("passport-http").BasicStrategy;
 var multer = require("multer");
+var schedule = require("node-schedule");
+var neo4j = require("neo4j-driver").v1;
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -73,11 +75,52 @@ passport.use(
     })
 );
 
-var neo4j = require("neo4j-driver").v1;
 var driver = neo4j.driver(
     "bolt://localhost",
     neo4j.auth.basic(NEO_USERNAME, NEO_PASSWORD)
 );
+
+schedule.scheduleJob("0 0 * * 0", function() {
+    var imageDir = __dirname + "/store/";
+
+    var session = driver.session();
+    var resultPromise = session.writeTransaction(function(tx) {
+        var result = tx.run(
+            "match(r:Recipe) where not r.imageUrl contains('no_image') return r.imageUrl"
+        );
+        return result;
+    });
+
+    resultPromise
+        .then(result => {
+            session.close();
+            var images = [];
+            if (result.records.length > 0) {
+                for (var i = 0; i < result.records.length; i++) {
+                    images.push(result.records[i]._fields[0]);
+                }
+            }
+            console.log(
+                `DB images found:${images.length}, and named:${images.join(",")}`
+            );
+            fs.readdir(imageDir, function(err, items) {
+                console.log(
+                    `FS images found:${items.length}, and named:${items.join(",")}`
+                );
+                for (var i = 0; i < items.length; i++) {
+                    var index = images.findIndex(function(value, index, obj) {
+                        return value.endsWith(`/${items[i]}`);
+                    });
+                    if (index == -1) {
+                        fs.unlink(imageDir + items[i], function(err) {});
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            session.close();
+        });
+});
 
 var routes = require("./routes.js")(app, passport, upload, fs, driver);
 
