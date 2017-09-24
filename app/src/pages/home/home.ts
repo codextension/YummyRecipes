@@ -83,6 +83,11 @@ export class HomePage {
       .findRecipes(0, this.queryParam)
       .then(recipes => {
         this.foundRecipes = recipes;
+        if (this.foundRecipes.length < 5) {
+          this.scrollEnabled = false;
+        } else {
+          this.scrollEnabled = true;
+        }
         loadingScreen.dismiss();
       })
       .catch(err => {
@@ -94,7 +99,11 @@ export class HomePage {
     setTimeout(() => {
       this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
         this.foundRecipes = recipes;
-        this.scrollEnabled = true;
+        if (this.foundRecipes.length < 5) {
+          this.scrollEnabled = false;
+        } else {
+          this.scrollEnabled = true;
+        }
         refresher.complete();
       });
     }, 100);
