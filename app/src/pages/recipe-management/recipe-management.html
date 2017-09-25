@@ -12,7 +12,7 @@
         </ion-buttons>
     </ion-navbar>
     <ion-card class="no-padding">
-        <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" [style.background-image]="getBackground(recipe.imageUrl)">
+        <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" [style.background-image]="getBackground(tempImageUrl)">
         </div>
     </ion-card>
     <ion-fab bottom left edge *ngIf="!inputMode">

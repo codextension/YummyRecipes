@@ -58,6 +58,7 @@ export class RecipeManagementPage {
   public inputRef: string;
   public recipeContent: string;
   public recipeForm: FormGroup;
+  public tempImageUrl: string;
 
   private actionMode: EditModeType;
   private swipeCoord?: [number, number];
@@ -83,6 +84,7 @@ export class RecipeManagementPage {
   ) {
     this.recipeContent = "ingredients";
     this.recipe = this.navParams.get("entity");
+    this.tempImageUrl = this.recipe.imageUrl;
     this.imgState = "shrink";
     this.inputMode = false;
     this.editMode = this.navParams.get("editMode") || false;
@@ -93,7 +95,7 @@ export class RecipeManagementPage {
 
     this.popover.onDidDismiss((data, role) => {
       if (data != null) {
-        this.recipe.imageUrl = data;
+        this.tempImageUrl = data;
       }
     });
 
@@ -179,14 +181,15 @@ export class RecipeManagementPage {
     this.toggleMode(false);
 
     if (
-      this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
-      this.recipe.imageUrl.startsWith("http")
+      this.tempImageUrl.indexOf("no_image.jpg") > -1 ||
+      this.tempImageUrl.startsWith("http")
     ) {
       this.neo4jService.saveRecipe(this.recipe).then(v => {
         this.showToast("DATA_SAVED");
         this.events.publish("recipe:saved", this.recipe);
       });
     } else {
+      this.recipe.imageUrl = this.tempImageUrl;
       this.imagesService.save(this.recipe.imageUrl).then(res => {
         this.recipe.imageUrl = res;
         this.neo4jService.saveRecipe(this.recipe).then(v => {
