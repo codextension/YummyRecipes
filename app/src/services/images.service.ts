@@ -38,10 +38,14 @@ export class ImagesService {
         this.storage
           .get("settings")
           .then((val: AuthInfo) => {
-            resolve(val);
+            if (val == null) {
+              reject("empty authentication not allowed");
+            } else {
+              resolve(val);
+            }
           })
           .catch(err => {
-            console.error("Cannot load the secure storage engine");
+            reject(err);
           });
       } else {
         this.secureStorage

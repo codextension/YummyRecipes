@@ -184,6 +184,7 @@ export class RecipeManagementPage {
       this.tempImageUrl.indexOf("no_image.jpg") > -1 ||
       this.tempImageUrl.startsWith("http")
     ) {
+      this.recipe.imageUrl = this.tempImageUrl;
       this.neo4jService.saveRecipe(this.recipe).then(v => {
         this.showToast("DATA_SAVED");
         this.events.publish("recipe:saved", this.recipe);

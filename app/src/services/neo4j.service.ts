@@ -35,10 +35,14 @@ export class Neo4JService {
         this.storage
           .get("settings")
           .then((val: AuthInfo) => {
-            resolve(val);
+            if (val == null) {
+              reject("empty authentication not allowed");
+            } else {
+              resolve(val);
+            }
           })
           .catch(err => {
-            console.error("Cannot load the secure storage engine");
+            reject(err);
           });
       } else {
         this.secureStorage
@@ -93,7 +97,6 @@ export class Neo4JService {
               });
           })
           .catch(err => {
-            console.error(err);
             reject(err);
           });
       }
@@ -235,56 +238,62 @@ export class Neo4JService {
     }
 
     return new Promise((resolve, reject) => {
-      this.query([query]).then(queryResults => {
-        if (queryResults == undefined) {
-          reject(-1);
-        } else {
-          let output: RecipeEntity[] = [];
-          if (queryResults != null && queryResults.length > 0) {
-            for (let res of queryResults[0].records) {
-              let re: RecipeEntity = new RecipeEntity(
-                res._fields[0].properties.id,
-                res._fields[0].properties.name,
-                res._fields[0].properties.duration.low,
-                res._fields[0].properties.notes,
-                res._fields[0].properties.favourite,
-                [],
-                res._fields[0].properties.instructions,
-                [],
-                res._fields[0].properties.imageUrl,
-                res._fields[0].properties.servings.low
-              );
-              output.push(re);
-            }
-          }
-
-          let ingredientQuery: string[] = [];
-          for (let out of output) {
-            ingredientQuery.push(
-              `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
-            );
-          }
-
-          this.query(ingredientQuery)
-            .then(results => {
-              for (let i = 0; i < results.length; i++) {
-                for (let res of results[i].records) {
-                  let ing: Ingredient = new Ingredient(
-                    res._fields[2].properties.id,
-                    res._fields[2].properties.name,
-                    res._fields[1].properties.quantity == null
-                      ? ""
-                      : res._fields[1].properties.quantity.low,
-                    res._fields[1].properties.unit
-                  );
-                  output[i].ingredients.push(ing);
-                }
+      this.query([query])
+        .then(queryResults => {
+          if (queryResults == undefined) {
+            reject(-1);
+          } else {
+            let output: RecipeEntity[] = [];
+            if (queryResults != null && queryResults.length > 0) {
+              for (let res of queryResults[0].records) {
+                let re: RecipeEntity = new RecipeEntity(
+                  res._fields[0].properties.id,
+                  res._fields[0].properties.name,
+                  res._fields[0].properties.duration.low,
+                  res._fields[0].properties.notes,
+                  res._fields[0].properties.favourite,
+                  [],
+                  res._fields[0].properties.instructions,
+                  [],
+                  res._fields[0].properties.imageUrl,
+                  res._fields[0].properties.servings.low
+                );
+                output.push(re);
               }
-              resolve(output);
-            })
-            .catch(err => {});
-        }
-      });
+            }
+
+            let ingredientQuery: string[] = [];
+            for (let out of output) {
+              ingredientQuery.push(
+                `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
+              );
+            }
+
+            this.query(ingredientQuery)
+              .then(results => {
+                for (let i = 0; i < results.length; i++) {
+                  for (let res of results[i].records) {
+                    let ing: Ingredient = new Ingredient(
+                      res._fields[2].properties.id,
+                      res._fields[2].properties.name,
+                      res._fields[1].properties.quantity == null
+                        ? ""
+                        : res._fields[1].properties.quantity.low,
+                      res._fields[1].properties.unit
+                    );
+                    output[i].ingredients.push(ing);
+                  }
+                }
+                resolve(output);
+              })
+              .catch(err => {
+                reject(err);
+              });
+          }
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 }
