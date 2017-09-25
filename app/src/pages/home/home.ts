@@ -109,6 +109,8 @@ export class HomePage {
           this.scrollEnabled = true;
         }
         refresher.complete();
+      }).catch(err => {
+        refresher.complete();
       });
     }, 100);
   }
