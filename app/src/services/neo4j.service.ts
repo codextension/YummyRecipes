@@ -5,6 +5,7 @@ import {
   Headers,
   URLSearchParams
 } from "@angular/http";
+import { Platform } from "ionic-angular";
 import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
 import { Ingredient, RecipeEntity } from "../entities/recipe-entity";
@@ -12,7 +13,7 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/timeout";
 import { AuthInfo } from "./auth-info";
-
+import { Storage } from "@ionic/storage";
 import {
   SecureStorage,
   SecureStorageObject
@@ -20,38 +21,53 @@ import {
 
 @Injectable()
 export class Neo4JService {
-  constructor(private http: Http, private secureStorage: SecureStorage) {}
+  constructor(
+    private http: Http,
+    private secureStorage: SecureStorage,
+    private storage: Storage,
+    private platform: Platform
+  ) {}
 
   private withCredentials(): Promise<AuthInfo> {
     return new Promise((resolve, reject) => {
       let authInfo: AuthInfo;
-      this.secureStorage
-        .create("laziz")
-        .then((storage: SecureStorageObject) => {
-          storage
-            .get("settings")
-            .then(data => {
-              if (data != null) {
-                let val = JSON.parse(data);
-                authInfo = val;
-                if (authInfo.serverUrl.endsWith("/")) {
-                  authInfo.serverUrl = authInfo.serverUrl.substring(
-                    0,
-                    authInfo.serverUrl.length - 1
-                  );
+      if (this.platform.is("core")) {
+        this.storage
+          .get("settings")
+          .then((val: AuthInfo) => {
+            resolve(val);
+          })
+          .catch(err => {
+            console.error("Cannot load the secure storage engine");
+          });
+      } else {
+        this.secureStorage
+          .create("laziz")
+          .then((storage: SecureStorageObject) => {
+            storage
+              .get("settings")
+              .then(data => {
+                if (data != null) {
+                  let val = JSON.parse(data);
+                  authInfo = val;
+                  if (authInfo.serverUrl.endsWith("/")) {
+                    authInfo.serverUrl = authInfo.serverUrl.substring(
+                      0,
+                      authInfo.serverUrl.length - 1
+                    );
+                  }
+                  resolve(authInfo);
                 }
-                resolve(authInfo);
-              }
-              reject("no auth information");
-            })
-            .catch(err => {
-              reject("no auth information");
-            });
-        })
-        .catch(err => {
-          resolve(new AuthInfo("elie", "pwd", "https://35.184.3.51:3443"));
-          console.error("Cannot load the secure storage engine");
-        });
+                reject("no auth information");
+              })
+              .catch(err => {
+                reject("no auth information");
+              });
+          })
+          .catch(err => {
+            console.error("Cannot load the secure storage engine");
+          });
+      }
     });
   }
 
