@@ -1,7 +1,10 @@
 import { Http, RequestOptions, Headers } from "@angular/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
+import { Platform } from "ionic-angular";
+import { Storage } from "@ionic/storage";
 import {
   SecureStorage,
   SecureStorageObject
@@ -11,7 +14,7 @@ import {
   FileUploadOptions,
   FileTransferObject
 } from "@ionic-native/file-transfer";
-import { File, FileEntry } from "@ionic-native/file";
+import { FileEntry } from "@ionic-native/file";
 import { AuthInfo } from "./auth-info";
 
 @Injectable()
@@ -20,9 +23,10 @@ export class ImagesService {
 
   constructor(
     private transfer: FileTransfer,
-    private file: File,
     private http: Http,
-    private secureStorage: SecureStorage
+    private secureStorage: SecureStorage,
+    private platform: Platform,
+    private storage: Storage
   ) {
     this.fileTransfer = this.transfer.create();
   }
@@ -30,33 +34,43 @@ export class ImagesService {
   private withCredentials(): Promise<AuthInfo> {
     return new Promise((resolve, reject) => {
       let authInfo: AuthInfo;
-      this.secureStorage
-        .create("laziz")
-        .then((storage: SecureStorageObject) => {
-          storage
-            .get("settings")
-            .then(data => {
-              if (data != null) {
-                let val = JSON.parse(data);
-                authInfo = val;
-                if (authInfo.serverUrl.endsWith("/")) {
-                  authInfo.serverUrl = authInfo.serverUrl.substring(
-                    0,
-                    authInfo.serverUrl.length - 1
-                  );
+      if (this.platform.is("core")) {
+        this.storage
+          .get("settings")
+          .then((val: AuthInfo) => {
+            resolve(val);
+          })
+          .catch(err => {
+            console.error("Cannot load the secure storage engine");
+          });
+      } else {
+        this.secureStorage
+          .create("laziz")
+          .then((storage: SecureStorageObject) => {
+            storage
+              .get("settings")
+              .then(data => {
+                if (data != null) {
+                  let val = JSON.parse(data);
+                  authInfo = val;
+                  if (authInfo.serverUrl.endsWith("/")) {
+                    authInfo.serverUrl = authInfo.serverUrl.substring(
+                      0,
+                      authInfo.serverUrl.length - 1
+                    );
+                  }
+                  resolve(authInfo);
                 }
-                resolve(authInfo);
-              }
-              reject("no auth information");
-            })
-            .catch(err => {
-              reject("no auth information");
-            });
-        })
-        .catch(err => {
-          reject("no auth information");
-          console.error("Cannot load the secure storage engine");
-        });
+                reject("no auth information");
+              })
+              .catch(err => {
+                reject("no auth information");
+              });
+          })
+          .catch(err => {
+            console.error("Cannot load the secure storage engine");
+          });
+      }
     });
   }
 
@@ -93,6 +107,32 @@ export class ImagesService {
               console.error(err);
             });
         });
+      });
+    });
+  }
+
+  public upload(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.withCredentials().then((val: AuthInfo) => {
+        let formData: FormData = new FormData();
+        formData.append("recipe_img", file, file.name);
+        let headers = new Headers();
+        headers.append(
+          "authorization",
+          "Basic " + window.btoa(val.username + ":" + val.password)
+        );
+        let options = new RequestOptions({ headers: headers });
+        this.http
+          .post(val.serverUrl + "/images/upload", formData, options)
+          .map(res => res.json())
+          .catch(error => Observable.throw(error))
+          .subscribe(
+            data => {
+              let imgUrl = val.serverUrl + "/images/get/" + data.filename;
+              resolve(imgUrl);
+            },
+            error => reject(error)
+          );
       });
     });
   }

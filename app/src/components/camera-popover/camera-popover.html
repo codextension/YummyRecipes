@@ -1,10 +1,15 @@
 <ion-list no-lines class="no-margin">
-    <button ion-item detail-none (click)="makeScreenshot()">{{"IMAGE_FROM_CAMERA" | translate}}
+    <button *ngIf="!platform.is('core')" ion-item detail-none (click)="makeScreenshot()">{{"IMAGE_FROM_CAMERA" | translate}}
         <ion-icon name="camera" item-start></ion-icon>
       </button>
-    <button ion-item detail-none (click)="uploadFromLibrary()">{{"IMAGE_FROM_DEVICE" | translate}}
+    <button ion-item detail-none (click)="uploadFromLibrary()" *ngIf="!platform.is('core')">{{"IMAGE_FROM_DEVICE" | translate}}
           <ion-icon name="images" item-start></ion-icon>
         </button>
+    <div *ngIf="platform.is('core')" class="fileUpload item item-block item-md">
+        <ion-icon name="images" item-start></ion-icon>
+        <span class="label">{{"IMAGE_FROM_DEVICE" | translate}}</span>
+        <input type="file" (change)="uploadFromBrowser($event)" accept=".jpg, .png, .gif" class="upload" />
+    </div>
     <button ion-item detail-none (click)="clearImage()">{{"RESET" | translate}}
             <ion-icon name="refresh" item-start></ion-icon>
           </button>

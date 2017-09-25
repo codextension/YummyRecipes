@@ -2,4 +2,23 @@ camera-popover {
     .no-margin {
         margin: 0px;
     }
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        .label {
+            position: relative;
+            left: -80px;
+        }
+        input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+            height: 100%;
+            filter: alpha(opacity=0);
+        }
+    }
 }
