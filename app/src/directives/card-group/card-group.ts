@@ -1,4 +1,4 @@
-import { Directive, ElementRef } from "@angular/core";
+import {Directive, ElementRef} from "@angular/core";
 
 /**
  * Generated class for the CardGroupDirective directive.
@@ -7,10 +7,10 @@ import { Directive, ElementRef } from "@angular/core";
  * for more info on Angular Directives.
  */
 @Directive({
-  selector: "[card-group]"
+    selector: "[card-group]"
 })
 export class CardGroupDirective {
-  constructor(el: ElementRef) {
-    el.nativeElement.className += " card-deck";
-  }
+    constructor(el: ElementRef) {
+        el.nativeElement.className += " card-deck";
+    }
 }

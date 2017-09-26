@@ -1,26 +1,29 @@
 <ion-card class="no-padding" *ngIf="entity != undefined">
-    <div class="square" (click)="showDeleteOption?return:showDetailedRecipe()" [style.background-image]="getBackground(entity.imageUrl)">
+    <div class="square" (click)="showDeleteOption?return:showDetailedRecipe()"
+         [style.background-image]="getBackground(entity.imageUrl)">
         <ion-backdrop style="opacity:0.35;" class="show-backdrop" *ngIf="showDeleteOption"></ion-backdrop>
     </div>
     <div class="card-fav">
         <button (click)="toggleFavourite()" ion-button clear color="info" icon-start>
-                    <ion-icon name="{{entity.favourite==true?'heart':'heart-outline'}}"></ion-icon>
-</button>
+            <ion-icon name="{{entity.favourite==true?'heart':'heart-outline'}}"></ion-icon>
+        </button>
     </div>
     <div class="delete-box" *ngIf="showDeleteOption">
         <button style="float:left" (click)="cancel()" ion-button clear color="light" icon-start>
-        <ion-icon name="arrow-back"></ion-icon>{{"CANCEL" | translate}}
-</button>
+            <ion-icon name="arrow-back"></ion-icon>
+            {{"CANCEL" | translate}}
+        </button>
         <button style="float:right" (click)="delete()" ion-button clear color="light" icon-start>
-        <ion-icon name="trash"></ion-icon>{{"DELETE" | translate}}
-</button>
+            <ion-icon name="trash"></ion-icon>
+            {{"DELETE" | translate}}
+        </button>
     </div>
     <div class="card-footer" (press)="displayDeleteOption()">
         <h2 class="text-bold">{{entity.name}}</h2>
         <button class="align-right" ion-button clear color="info" (click)="share(entity)" icon-start>
             <ion-icon name='share-alt'></ion-icon>
             {{'SHARE' | translate}}
-</button>
+        </button>
         <div class="align-left">
             <ion-icon name='time'></ion-icon>
             <span style="top: -2px;position: relative;font-size: smaller">{{entity.duration | time}}</span>
