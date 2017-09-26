@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { NavController, Haptic } from "ionic-angular";
 import { RecipeEntity } from "../../entities/recipe-entity";
-import { RecipeManagementPage } from "../../pages/recipe-management/recipe-management";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DeviceFeedback } from "@ionic-native/device-feedback";
 import { SocialSharing } from "@ionic-native/social-sharing";

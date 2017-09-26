@@ -9,11 +9,7 @@ import {
   SecureStorage,
   SecureStorageObject
 } from "@ionic-native/secure-storage";
-import {
-  FileTransfer,
-  FileUploadOptions,
-  FileTransferObject
-} from "@ionic-native/file-transfer";
+import { FileTransfer, FileTransferObject } from "@ionic-native/file-transfer";
 import { FileEntry } from "@ionic-native/file";
 import { AuthInfo } from "./auth-info";
 
@@ -138,14 +134,6 @@ export class ImagesService {
             error => reject(error)
           );
       });
-    });
-  }
-
-  private uuidv4(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      let r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
     });
   }
 }

@@ -1,10 +1,4 @@
-import {
-  Http,
-  Response,
-  RequestOptions,
-  Headers,
-  URLSearchParams
-} from "@angular/http";
+import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { Platform } from "ionic-angular";
 import { Observable } from "rxjs/Rx";
 import { Injectable } from "@angular/core";
