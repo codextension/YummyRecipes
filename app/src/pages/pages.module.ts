@@ -5,9 +5,9 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "../app/http-loader";
 import { PipesModule } from "../pipes/pipes.module";
 import { DirectivesModule } from "../directives/directives.module";
-import { HomePage } from "../pages/home/home";
-import { SettingsPage } from "../pages/settings/settings";
-import { RecipeManagementPage } from "../pages/recipe-management/recipe-management";
+import {HomePage} from "./home/home";
+import {SettingsPage} from "./settings/settings";
+import {RecipeManagementPage} from "./recipe-management/recipe-management";
 import { ComponentsModule } from "../components/components.module";
 
 @NgModule({

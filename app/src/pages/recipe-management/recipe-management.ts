@@ -1,12 +1,14 @@
 import {
   Component,
   ViewChild,
-  trigger,
-  state,
-  style,
-  transition,
-  animate
 } from "@angular/core";
+import {
+    trigger,
+    state,
+    style,
+    transition,
+    animate
+} from "@angular/animations";
 import {
   NavController,
   NavParams,
