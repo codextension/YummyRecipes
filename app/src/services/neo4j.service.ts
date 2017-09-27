@@ -160,8 +160,10 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query([query])
                 .then(queryResults => {
-                    if (queryResults == undefined) {
-                        reject(-1);
+                    if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
+                        let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
+                        error.name = "CONN_ERROR";
+                        reject(error);
                     } else {
                         let output: RecipeEntity[] = [];
                         if (queryResults != null && queryResults.length > 0) {

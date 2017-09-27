@@ -67,6 +67,8 @@ export class HomePage {
 
     reload() {
         let loadingScreen: Loading = this.createLoadingScreen();
+        this.error = null;
+
         this.neo4jService
             .findRecipes(0, this.queryParam)
             .then(recipes => {
@@ -80,12 +82,14 @@ export class HomePage {
             })
             .catch(err => {
                 this.error = err;
+                this.foundRecipes = null;
                 loadingScreen.dismiss();
             });
     }
 
     doRefresh(refresher) {
         setTimeout(() => {
+            this.error = null;
             this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
                 if (this.foundRecipes.length < 5) {
@@ -95,6 +99,8 @@ export class HomePage {
                 }
                 refresher.complete();
             }).catch(err => {
+                this.error = err;
+                this.foundRecipes = null;
                 refresher.complete();
             });
         }, 100);
@@ -102,22 +108,31 @@ export class HomePage {
 
     toggleSearchbar(event) {
         this.foundRecipes = null;
+        this.error = null;
         this.showSearchbar = !this.showSearchbar;
         if (!this.showSearchbar) {
             this.queryParam = null;
             this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
+            }).catch(err => {
+                this.foundRecipes = null;
+                this.error = err;
             });
         }
     }
 
     findRecipes(e: any) {
+        this.error = null;
         var val = e.target.value;
         if (val && val.trim() != "" && val.length > 2) {
             this.queryParam = val;
             let loadingScreen: Loading = this.createLoadingScreen();
             this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
+                loadingScreen.dismiss();
+            }).catch(err => {
+                this.error = err;
+                this.foundRecipes = null;
                 loadingScreen.dismiss();
             });
         }
@@ -142,6 +157,7 @@ export class HomePage {
 
     poll(event) {
         setTimeout(() => {
+            this.error = null;
             this.neo4jService
                 .findRecipes(++this.pageNumber, this.queryParam)
                 .then(recipes => {
@@ -153,6 +169,8 @@ export class HomePage {
                     event.complete();
                 })
                 .catch(err => {
+                    this.error = err;
+                    this.foundRecipes = null;
                     event.complete();
                 });
         }, 100);
@@ -161,6 +179,7 @@ export class HomePage {
     onDelete(recipe: RecipeEntity) {
         this.haptic.selection(); //iOs
         this.deviceFeedback.haptic(1); // Android
+        this.error = null;
         this.neo4jService
             .deleteRecipe(recipe)
             .then(deleted => {
@@ -175,6 +194,8 @@ export class HomePage {
                 }
             })
             .catch(err => {
+                this.error = err;
+                this.foundRecipes = null;
                 console.warn(err);
             });
     }
