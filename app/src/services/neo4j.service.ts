@@ -1,5 +1,4 @@
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
-import {Platform} from "ionic-angular";
 import {Observable} from "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Ingredient, RecipeEntity} from "../entities/recipe-entity";
@@ -7,15 +6,13 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/timeout";
 import {AuthInfo} from "./auth-info";
-import {Storage} from "@ionic/storage";
-import {SecureStorage, SecureStorageObject} from "@ionic-native/secure-storage";
+import {ConnectionService} from "./connection.service";
+import {ErrorType, InternalError} from "./internal-error";
 
 @Injectable()
 export class Neo4JService {
     constructor(private http: Http,
-                private secureStorage: SecureStorage,
-                private storage: Storage,
-                private platform: Platform) {
+                private connectionService: ConnectionService) {
     }
 
     private static sanitize(entity: RecipeEntity): RecipeEntity {
@@ -44,7 +41,9 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query(["match (n) return count(n)"], authInfo).then(queryResults => {
                 if (queryResults == undefined) {
-                    reject("cannot connect to server.");
+                    let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
+                    error.name = "CONN_ERROR";
+                    reject(error);
                 } else {
                     resolve("pong");
                 }
@@ -56,7 +55,9 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
                 if (queryResults == undefined) {
-                    reject("something is wrong with your query.");
+                    let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
+                    error.name = "QUERY_ERROR";
+                    reject(error);
                 } else {
                     resolve(queryResults);
                 }
@@ -70,7 +71,9 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
                 if (queryResults == undefined) {
-                    reject(false);
+                    let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
+                    error.name = "QUERY_ERROR";
+                    reject(error);
                 } else {
                     resolve(Boolean(queryResults[0].records[0]._fields[0]));
                 }
@@ -86,7 +89,9 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query(query).then(queryResults => {
                 if (queryResults == undefined) {
-                    reject("something is wrong with your query.");
+                    let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
+                    error.name = "QUERY_ERROR";
+                    reject(error);
                 } else {
                     resolve(true);
                 }
@@ -129,7 +134,9 @@ export class Neo4JService {
         return new Promise((resolve, reject) => {
             this.query(query).then(queryResults => {
                 if (queryResults == undefined) {
-                    reject(null);
+                    let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
+                    error.name = "QUERY_ERROR";
+                    reject(error);
                 } else {
                     resolve(queryResults[0].records[0]._fields[0]);
                 }
@@ -210,53 +217,6 @@ export class Neo4JService {
         });
     }
 
-    private withCredentials(): Promise<AuthInfo> {
-        return new Promise((resolve, reject) => {
-            let authInfo: AuthInfo;
-            if (this.platform.is("core")) {
-                this.storage
-                    .get("settings")
-                    .then((val: AuthInfo) => {
-                        if (val == null) {
-                            reject("empty authentication not allowed");
-                        } else {
-                            resolve(val);
-                        }
-                    })
-                    .catch(err => {
-                        reject(err);
-                    });
-            } else {
-                this.secureStorage
-                    .create("laziz")
-                    .then((storage: SecureStorageObject) => {
-                        storage
-                            .get("settings")
-                            .then(data => {
-                                if (data != null) {
-                                    let val = JSON.parse(data);
-                                    authInfo = val;
-                                    if (authInfo.serverUrl.endsWith("/")) {
-                                        authInfo.serverUrl = authInfo.serverUrl.substring(
-                                            0,
-                                            authInfo.serverUrl.length - 1
-                                        );
-                                    }
-                                    resolve(authInfo);
-                                }
-                                reject("no auth information");
-                            })
-                            .catch(err => {
-                                reject("no auth information");
-                            });
-                    })
-                    .catch(err => {
-                        console.error("Cannot load the secure storage engine");
-                    });
-            }
-        });
-    }
-
     private query(q: string[], authInfo?: AuthInfo): Promise<any> {
         return new Promise((resolve, reject) => {
             if (authInfo != null) {
@@ -268,7 +228,7 @@ export class Neo4JService {
                         reject(err);
                     });
             } else {
-                this.withCredentials()
+                this.connectionService.withCredentials()
                     .then((val: AuthInfo) => {
                         this.postData(val, q)
                             .then(data => {
@@ -296,10 +256,10 @@ export class Neo4JService {
             });
             this.http
                 .post(val.serverUrl + "/db/query", {query: q}, options)
-                .timeout(3000)
+                .timeout(5000)
                 .map(this.queryResuts)
                 .catch((err: any) => {
-                    return Observable.of(undefined);
+                    return Observable.of(err);
                 })
                 .subscribe(data => {
                     resolve(data);

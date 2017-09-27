@@ -3,12 +3,10 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
-import {Platform} from "ionic-angular";
-import {Storage} from "@ionic/storage";
-import {SecureStorage, SecureStorageObject} from "@ionic-native/secure-storage";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {FileEntry} from "@ionic-native/file";
 import {AuthInfo} from "./auth-info";
+import {ConnectionService} from "./connection.service";
 
 @Injectable()
 export class ImagesService {
@@ -16,15 +14,13 @@ export class ImagesService {
 
     constructor(private transfer: FileTransfer,
                 private http: Http,
-                private secureStorage: SecureStorage,
-                private platform: Platform,
-                private storage: Storage) {
+                private connectionService: ConnectionService) {
         this.fileTransfer = this.transfer.create();
     }
 
     public save(fileUri: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.withCredentials().then((val: AuthInfo) => {
+            this.connectionService.withCredentials().then((val: AuthInfo) => {
                 window.resolveLocalFileSystemURL(fileUri, (fileEntry: FileEntry) => {
                     fileEntry.file(success => {
                         console.log(success.localURL);
@@ -61,7 +57,7 @@ export class ImagesService {
 
     public upload(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.withCredentials().then((val: AuthInfo) => {
+            this.connectionService.withCredentials().then((val: AuthInfo) => {
                 let formData: FormData = new FormData();
                 formData.append("recipe_img", file, file.name);
                 let headers = new Headers();
@@ -82,53 +78,6 @@ export class ImagesService {
                         error => reject(error)
                     );
             });
-        });
-    }
-
-    private withCredentials(): Promise<AuthInfo> {
-        return new Promise((resolve, reject) => {
-            let authInfo: AuthInfo;
-            if (this.platform.is("core")) {
-                this.storage
-                    .get("settings")
-                    .then((val: AuthInfo) => {
-                        if (val == null) {
-                            reject("empty authentication not allowed");
-                        } else {
-                            resolve(val);
-                        }
-                    })
-                    .catch(err => {
-                        reject(err);
-                    });
-            } else {
-                this.secureStorage
-                    .create("laziz")
-                    .then((storage: SecureStorageObject) => {
-                        storage
-                            .get("settings")
-                            .then(data => {
-                                if (data != null) {
-                                    let val = JSON.parse(data);
-                                    authInfo = val;
-                                    if (authInfo.serverUrl.endsWith("/")) {
-                                        authInfo.serverUrl = authInfo.serverUrl.substring(
-                                            0,
-                                            authInfo.serverUrl.length - 1
-                                        );
-                                    }
-                                    resolve(authInfo);
-                                }
-                                reject("no auth information");
-                            })
-                            .catch(err => {
-                                reject("no auth information");
-                            });
-                    })
-                    .catch(err => {
-                        console.error("Cannot load the secure storage engine");
-                    });
-            }
         });
     }
 }

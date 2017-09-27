@@ -5,6 +5,7 @@ import {RecipeManagementPage} from "../recipe-management/recipe-management";
 import {RecipeEntity} from "../../entities/recipe-entity";
 import {TranslateService} from "@ngx-translate/core";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
+import {InternalError} from "../../services/internal-error";
 
 @Component({
     selector: "page-home",
@@ -18,6 +19,7 @@ export class HomePage {
     private pageNumber: number = 0;
     private queryParam: any;
     private PLEASE_WAIT: string;
+    private error: InternalError;
 
     constructor(public navCtrl: NavController,
                 private navParams: NavParams,
@@ -77,6 +79,7 @@ export class HomePage {
                 loadingScreen.dismiss();
             })
             .catch(err => {
+                this.error = err;
                 loadingScreen.dismiss();
             });
     }

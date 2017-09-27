@@ -20,6 +20,7 @@ import {ComponentsModule} from "../components/components.module";
 import {SecureStorage} from "@ionic-native/secure-storage";
 import {SocialSharing} from "@ionic-native/social-sharing";
 import {FileTransfer} from "@ionic-native/file-transfer";
+import {ServicesModule} from "../services/services.module";
 
 export class MyHammerConfig extends HammerGestureConfig {
     overrides = <any>{
@@ -37,6 +38,7 @@ export class MyHammerConfig extends HammerGestureConfig {
         BrowserAnimationsModule,
         DirectivesModule,
         ComponentsModule,
+        ServicesModule,
         PipesModule,
         IonicModule.forRoot(MyApp),
         IonicStorageModule.forRoot({

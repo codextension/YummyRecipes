@@ -27,5 +27,6 @@
     "NOTES": "Notizen",
     "RESET": "Zurückstzen",
     "IMAGE_FROM_DEVICE": "Bild von Gerät",
-    "IMAGE_FROM_CAMERA": "Foto aufnehmen"
+  "IMAGE_FROM_CAMERA": "Foto aufnehmen",
+  "NO_CONNECTION": "Keine Verbindung"
 }

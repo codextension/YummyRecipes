@@ -27,5 +27,6 @@
     "NOTES": "Notes",
     "RESET": "Reset",
     "IMAGE_FROM_DEVICE": "Photo from device",
-    "IMAGE_FROM_CAMERA": "Take a Photo"
+  "IMAGE_FROM_CAMERA": "Take a Photo",
+  "NO_CONNECTION": "No connection"
 }
