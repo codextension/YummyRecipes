@@ -18,47 +18,26 @@ export class Neo4JService {
                 private platform: Platform) {
     }
 
-    public saveRecipe(entity: RecipeEntity): Promise<string> {
-        entity = this.sanitize(entity);
+    private static sanitize(entity: RecipeEntity): RecipeEntity {
+        entity.name = entity.name.replace(/"/g, '').replace(/\\/g, "");
+        entity.notes = entity.notes.replace(/"/g, '').replace(/\\/g, "");
 
-        let instructions: string =
-            entity.instructions.length > 0
-                ? 'r.instructions=["' + entity.instructions.join('","') + '"]'
-                : "r.instructions=[]";
-        let query: string[] = [
-            `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
-            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
-            ""}", r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
-        ];
-
-        query.push(
-            `match (:Recipe {id:"${entity.id}"})-[c:CONTAINS]->(:Ingredient) delete c`
-        );
-
-        for (let ingredient of entity.ingredients) {
-            let qty =
-                ingredient.quantity == null ||
-                ingredient.quantity.toString().trim().length == 0
-                    ? ""
-                    : "quantity:" + ingredient.quantity + ", ";
-            let unit = ingredient.unit == null ? "" : ingredient.unit;
-            query.push(
-                `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
-            );
-            query.push(
-                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}"}]->(i)`
-            );
+        for (let i = 0; i < entity.ingredients.length; i++) {
+            entity.ingredients[i].name = entity.ingredients[i].name
+                .replace(/"/g, '')
+                .replace(/\\/g, "");
+            entity.ingredients[i].unit = entity.ingredients[i].unit
+                .replace(/"/g, '')
+                .replace(/\\/g, "");
         }
 
-        return new Promise((resolve, reject) => {
-            this.query(query).then(queryResults => {
-                if (queryResults == undefined) {
-                    reject(null);
-                } else {
-                    resolve(queryResults[0].records[0]._fields[0]);
-                }
-            });
-        });
+        for (let i = 0; i < entity.instructions.length; i++) {
+            entity.instructions[i] = entity.instructions[i]
+                .replace(/"/g, '')
+                .replace(/\\/g, "");
+        }
+
+        return entity;
     }
 
     public ping(authInfo: any): Promise<string> {
@@ -115,26 +94,47 @@ export class Neo4JService {
         });
     }
 
-    private sanitize(entity: RecipeEntity): RecipeEntity {
-        entity.name = entity.name.replace(/"/g, '').replace(/\\/g, "");
-        entity.notes = entity.notes.replace(/"/g, '').replace(/\\/g, "");
+    public saveRecipe(entity: RecipeEntity): Promise<string> {
+        entity = Neo4JService.sanitize(entity);
 
-        for (let i = 0; i < entity.ingredients.length; i++) {
-            entity.ingredients[i].name = entity.ingredients[i].name
-                .replace(/"/g, '')
-                .replace(/\\/g, "");
-            entity.ingredients[i].unit = entity.ingredients[i].unit
-                .replace(/"/g, '')
-                .replace(/\\/g, "");
+        let instructions: string =
+            entity.instructions.length > 0
+                ? 'r.instructions=["' + entity.instructions.join('","') + '"]'
+                : "r.instructions=[]";
+        let query: string[] = [
+            `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
+            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
+            ""}", r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
+        ];
+
+        query.push(
+            `match (:Recipe {id:"${entity.id}"})-[c:CONTAINS]->(:Ingredient) delete c`
+        );
+
+        for (let ingredient of entity.ingredients) {
+            let qty =
+                ingredient.quantity == null ||
+                ingredient.quantity.toString().trim().length == 0
+                    ? ""
+                    : "quantity:" + ingredient.quantity + ", ";
+            let unit = ingredient.unit == null ? "" : ingredient.unit;
+            query.push(
+                `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+            );
+            query.push(
+                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}"}]->(i)`
+            );
         }
 
-        for (let i = 0; i < entity.instructions.length; i++) {
-            entity.instructions[i] = entity.instructions[i]
-                .replace(/"/g, '')
-                .replace(/\\/g, "");
-        }
-
-        return entity;
+        return new Promise((resolve, reject) => {
+            this.query(query).then(queryResults => {
+                if (queryResults == undefined) {
+                    reject(null);
+                } else {
+                    resolve(queryResults[0].records[0]._fields[0]);
+                }
+            });
+        });
     }
 
     public findRecipes(page: number, text?): Promise<RecipeEntity[]> {

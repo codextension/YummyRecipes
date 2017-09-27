@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.codextension.laziz" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.codextension.laziz" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
     <name>Laziz</name>
     <description>Store and manage your own recipes</description>
     <author email="elie@el-khoury.net" href="http://www.codextension.io">Codextension Team</author>
@@ -87,12 +87,12 @@
     <plugin name="cordova-plugin-camera" spec="2.4.1" />
     <plugin name="cordova-plugin-console" spec="1.0.7" />
     <plugin name="cordova-plugin-device" spec="1.1.6" />
-    <plugin name="cordova-plugin-file" spec="4.3.3" />
+    <plugin name="cordova-plugin-file" spec="^4.3.3"/>
     <plugin name="cordova-plugin-file-transfer" spec="1.6.3" />
     <plugin name="cordova-plugin-screen-orientation" spec="2.0.1" />
-    <plugin name="cordova-plugin-secure-storage" spec="2.6.8" />
+    <plugin name="cordova-plugin-secure-storage" spec="^2.6.8"/>
     <plugin name="cordova-plugin-splashscreen" spec="4.0.3" />
-    <plugin name="cordova-plugin-statusbar" spec="2.2.3" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.2.3"/>
     <plugin name="cordova-plugin-velda-devicefeedback" spec="0.0.2" />
     <plugin name="cordova-plugin-whitelist" spec="1.3.2" />
     <plugin name="cordova-plugin-x-socialsharing" spec="5.2.0" />
