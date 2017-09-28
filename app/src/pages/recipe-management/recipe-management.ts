@@ -111,6 +111,16 @@ export class RecipeManagementPage {
         this.deviceFeedback.haptic(1); // Android
     }
 
+    onSwipe(event: any, item: any, input: string, mode: EditModeType) {
+        if (event._openAmount < -200) {
+            //right
+            this.showInput(item, input, mode);
+        } else if (event._openAmount > 200) {
+            //left
+            this.delete(item[0], input);
+        }
+    }
+
     showInput(item: any, input: string, mode: EditModeType) {
         this.toggleMode(true);
         this.inputRef = input;

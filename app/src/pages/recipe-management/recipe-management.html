@@ -48,7 +48,8 @@
                 <div [ngSwitch]="recipeContent">
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
-                            <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
+                            <ion-item-sliding (ionDrag)="onSwipe($event,[ingredient],'ingredients',2)"
+                                              *ngFor="let ingredient of recipe.ingredients">
                                 <ion-item>
                                     <ion-grid>
                                         <ion-row>
@@ -63,14 +64,14 @@
                                     </ion-grid>
                                 </ion-item>
                                 <ion-item-options side="left">
-                                    <button *ngIf="editMode" ion-button color="secondary"
+                                    <button *ngIf="editMode" ion-button expandable color="secondary"
                                             (click)="showInput(ingredient,'ingredients',2)">
                                         <ion-icon name="create"></ion-icon>
 
                                     </button>
                                 </ion-item-options>
                                 <ion-item-options side="right">
-                                    <button *ngIf="editMode" ion-button color="danger"
+                                    <button *ngIf="editMode" ion-button expandable color="danger"
                                             (click)="delete(ingredient,'ingredients')">
                                         <ion-icon name="trash"></ion-icon>
 
@@ -81,20 +82,22 @@
                     </ion-list>
                     <ion-list *ngSwitchCase="'instructions'">
                         <ion-item-group>
-                            <ion-item-sliding *ngFor="let instruction of recipe.instructions; let i = index">
+                            <ion-item-sliding (ionDrag)="onSwipe($event,[instruction,i],'instructions',2)"
+                                              *ngFor="let instruction of recipe.instructions; let i = index">
                                 <ion-item>
                                     <ion-badge style="margin-right:5px">{{i+1}}</ion-badge>
                                     <span style="white-space: pre-line">{{instruction}}</span>
                                 </ion-item>
                                 <ion-item-options *ngIf="editMode" side="left">
-                                    <button ion-button color="secondary"
+                                    <button ion-button expandable color="secondary"
                                             (click)="showInput([instruction,i],'instructions',2)">
                                         <ion-icon name="create"></ion-icon>
 
                                     </button>
                                 </ion-item-options>
                                 <ion-item-options *ngIf="editMode" side="right">
-                                    <button ion-button color="danger" (click)="delete(instruction,'instructions')">
+                                    <button ion-button expandable color="danger"
+                                            (click)="delete(instruction,'instructions')">
                                         <ion-icon name="trash"></ion-icon>
 
                                     </button>
