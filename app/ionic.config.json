@@ -1,8 +1,8 @@
 {
-  "name": "yummyrecipes",
-  "app_id": "yr2017",
-  "type": "ionic-angular",
-  "integrations": {
-    "cordova": {}
-  }
+    "name": "laziz",
+    "app_id": "",
+    "type": "ionic-angular",
+    "integrations": {
+        "cordova": {}
+    }
 }

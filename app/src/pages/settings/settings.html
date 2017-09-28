@@ -6,16 +6,30 @@
 -->
 <ion-header>
     <ion-navbar>
-        <!--        <ion-buttons left>
-            <button icon-only ion-button (click)="back()">
-                <ion-icon name="arrow-back"></ion-icon>
-            </button>
-        </ion-buttons>-->
         <ion-title>{{'SETTINGS' | translate}}</ion-title>
+        <ion-buttons end>
+            <button ion-button [disabled]="!settingsForm.valid" (click)="saveSettings()">
+                <ion-icon name="checkmark"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
+    <form [formGroup]="settingsForm" class="list">
+        <ion-item no-padding>
+            <ion-label>{{'SERVER_URL' | translate}}</ion-label>
+            <ion-input name="serverUrl" type="url" formControlName="serverUrl" required></ion-input>
+        </ion-item>
 
+        <ion-item no-padding>
+            <ion-label>{{'USERNAME' | translate}}</ion-label>
+            <ion-input type="text" name="username" formControlName="username"></ion-input>
+        </ion-item>
+
+        <ion-item no-padding>
+            <ion-label>{{'PASSWORD' | translate}}</ion-label>
+            <ion-input type="password" name="password" formControlName="password"></ion-input>
+        </ion-item>
+    </form>
 </ion-content>

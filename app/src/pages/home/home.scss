@@ -1,5 +1,23 @@
 page-home {
-    .center {
-        text-align: center;
+  .center {
+    text-align: center;
+  }
+
+  @media screen and (min-width: 576px) {
+    .card-deck {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
     }
+    .card-deck .card {
+      width: 400px;
+    }
+    .card-md + ion-card {
+      margin-top: 10px;
+    }
+  }
 }

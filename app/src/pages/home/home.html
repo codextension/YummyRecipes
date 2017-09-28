@@ -1,37 +1,40 @@
 <ion-header>
     <ion-navbar>
-        <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-        <ion-title>{{'APP_TITLE' | translate}}</ion-title>
-        <ion-buttons end>
-            <button ion-button (click)="toggleSearchbar()">
-        <ion-icon name="search" *ngIf="!showSearchbar"></ion-icon>
-        <ion-icon name="close-circle" *ngIf="showSearchbar"></ion-icon>
-      </button>
+        <button *ngIf="!showSearchbar" ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title *ngIf="!showSearchbar">{{queryParam?('FAVOURITE' | translate):('APP_TITLE' | translate)}}</ion-title>
+        <ion-buttons end *ngIf="!showSearchbar && error == null">
+            <button ion-button (click)="toggleSearchbar($event)">
+                <ion-icon name="search"></ion-icon>
+            </button>
         </ion-buttons>
+        <ion-searchbar *ngIf="showSearchbar" showCancelButton="true" (ionCancel)="toggleSearchbar()" debounce="500"
+                       (search)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}" focuser></ion-searchbar>
     </ion-navbar>
-    <ion-toolbar *ngIf="showSearchbar">
-        <ion-searchbar (ionInput)="findRecipes($event)" placeholder="{{'SEARCH' | translate}}"></ion-searchbar>
-        <ion-list>
-            <ion-item (click)="showRecipe($event)" *ngFor="let foundRecipe of foundRecipes">
-                <ion-thumbnail item-start>
-                    <img src="assets/imgs/falafel.jpg">
-                </ion-thumbnail>
-                <h2>{{foundRecipe}}</h2>
-                <p>Hayao Miyazaki • 1988</p>
-            </ion-item>
-        </ion-list>
-    </ion-toolbar>
-</ion-header>
 
-<ion-content padding (tap)="tapEvent($event)">
+</ion-header>
+<ion-content>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
     <div card-group>
-        <ng-template ngFor let-item [ngForOf]="createRange(50)" let-currentElementIndex="index+1">
-            <recipe [entity]=""></recipe>
-        </ng-template>
+        <div style="text-align: center;padding-top: 10%;width: 100%" *ngIf="error != null && error.type==2">
+            <img src="assets/imgs/no_conn.png" style="width: 50px; height: 50px">
+            <br>{{"NO_CONNECTION" | translate}}
+        </div>
+        <recipe-preview (onClick)="onClick($event)" (onFavToggle)="favouriteToggle($event)"
+                        (onDeleted)="onDelete($event)" *ngFor="let recipe of foundRecipes"
+                        [entity]="recipe"></recipe-preview>
+        <ion-infinite-scroll (ionInfinite)="poll($event)" [enabled]="scrollEnabled">
+            <ion-infinite-scroll-content>
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
     </div>
-    <ion-fab right bottom>
-        <button ion-fab><ion-icon name="add"></ion-icon></button>
+    <ion-fab right bottom *ngIf="!showSearchbar && error == null">
+        <button (click)="newRecipe()" ion-fab>
+            <ion-icon name="add"></ion-icon>
+        </button>
     </ion-fab>
 </ion-content>
