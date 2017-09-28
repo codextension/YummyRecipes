@@ -1,9 +1,2 @@
-to make a release:
-
-1. ionic cordova platform add android
-
-2. ionic cordova build --release android
-
-
-
-adb install YummyRecipe.apk
+Please refer to the wiki for installation and user guide:
+https://github.com/codeXtension/YummyRecipes/wiki
