@@ -17,7 +17,6 @@ export class HomePage {
     public scrollEnabled: boolean;
     private pageNumber: number = 0;
     private queryParam: any;
-    private PLEASE_WAIT: string;
     private error: InternalError;
     public reloading: boolean;
 
