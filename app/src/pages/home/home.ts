@@ -1,9 +1,8 @@
 import {Component} from "@angular/core";
-import {AlertController, Events, Haptic, Loading, LoadingController, NavController, NavParams} from "ionic-angular";
+import {AlertController, Events, Haptic, NavController, NavParams} from "ionic-angular";
 import {Neo4JService} from "../../services/neo4j.service";
 import {RecipeManagementPage} from "../recipe-management/recipe-management";
 import {RecipeEntity} from "../../entities/recipe-entity";
-import {TranslateService} from "@ngx-translate/core";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {InternalError} from "../../services/internal-error";
 
@@ -20,16 +19,16 @@ export class HomePage {
     private queryParam: any;
     private PLEASE_WAIT: string;
     private error: InternalError;
+    public reloading: boolean;
 
     constructor(public navCtrl: NavController,
                 private navParams: NavParams,
                 public alertCtrl: AlertController,
                 private neo4jService: Neo4JService,
-                private translate: TranslateService,
-                public loadingController: LoadingController,
                 public events: Events,
                 private haptic: Haptic,
                 private deviceFeedback: DeviceFeedback) {
+        this.reloading = false;
         this.scrollEnabled = true;
         this.showSearchbar = false;
         this.queryParam = this.navParams.get("favourites");
@@ -52,10 +51,6 @@ export class HomePage {
                 this.foundRecipes.push(recipe);
             }
         });
-
-        this.translate.get("PLEASE_WAIT").subscribe(value => {
-            this.PLEASE_WAIT = value;
-        });
     }
 
     ionViewDidLoad() {
@@ -66,7 +61,7 @@ export class HomePage {
     }
 
     reload() {
-        let loadingScreen: Loading = this.createLoadingScreen();
+        this.reloading = true;
         this.error = null;
 
         this.neo4jService
@@ -78,12 +73,12 @@ export class HomePage {
                 } else {
                     this.scrollEnabled = true;
                 }
-                loadingScreen.dismiss();
+                this.reloading = false;
             })
             .catch(err => {
                 this.error = err;
                 this.foundRecipes = null;
-                loadingScreen.dismiss();
+                this.reloading = false;
             });
     }
 
@@ -112,11 +107,14 @@ export class HomePage {
         this.showSearchbar = !this.showSearchbar;
         if (!this.showSearchbar) {
             this.queryParam = null;
+            this.reloading = true;
             this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
+                this.reloading = false;
             }).catch(err => {
                 this.foundRecipes = null;
                 this.error = err;
+                this.reloading = false;
             });
         }
     }
@@ -126,14 +124,14 @@ export class HomePage {
         var val = e.target.value;
         if (val && val.trim() != "" && val.length > 2) {
             this.queryParam = val;
-            let loadingScreen: Loading = this.createLoadingScreen();
+            this.reloading = true;
             this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
-                loadingScreen.dismiss();
+                this.reloading = false;
             }).catch(err => {
                 this.error = err;
                 this.foundRecipes = null;
-                loadingScreen.dismiss();
+                this.reloading = false;
             });
         }
     }
@@ -212,14 +210,6 @@ export class HomePage {
         this.neo4jService.setFavourite(entity.id, !entity.favourite).then(v => {
             entity.favourite = v;
         });
-    }
-
-    private createLoadingScreen(): Loading {
-        let loadingScreen: Loading = this.loadingController.create();
-        loadingScreen.setContent(this.PLEASE_WAIT);
-        loadingScreen.present();
-
-        return loadingScreen;
     }
 
     private uuidv4(): string {

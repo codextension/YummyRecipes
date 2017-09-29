@@ -3,6 +3,12 @@ page-home {
     text-align: center;
   }
 
+  ion-spinner {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+
   @media screen and (min-width: 576px) {
     .card-deck {
       display: -webkit-box;
