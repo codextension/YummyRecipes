@@ -11,7 +11,7 @@ import {
     Toast,
     ToastController
 } from "ionic-angular";
-import {RecipeEntity} from "../../entities/recipe-entity";
+import {Ingredient, RecipeEntity} from "../../entities/recipe-entity";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CameraPopoverComponent} from "../../components/camera-popover/camera-popover";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -51,7 +51,6 @@ export class RecipeManagementPage {
     public inputRef: string;
     public recipeContent: string;
     public recipeForm: FormGroup;
-    public tempImageUrl: string;
     @ViewChild(Content) content: Content;
     private actionMode: EditModeType;
     private swipeCoord?: [number, number];
@@ -72,8 +71,12 @@ export class RecipeManagementPage {
                 public events: Events,
                 private translate: TranslateService) {
         this.recipeContent = "ingredients";
-        this.recipe = this.navParams.get("entity");
-        this.tempImageUrl = this.recipe.imageUrl;
+        let tempRecipe: RecipeEntity = this.navParams.get("entity");
+        let tempInstructions: string[] = [];
+        tempInstructions = tempInstructions.concat(tempRecipe.instructions);
+        let tempIngredients: Ingredient[] = [];
+        tempIngredients = tempIngredients.concat(tempRecipe.ingredients);
+        this.recipe = new RecipeEntity(tempRecipe.id, tempRecipe.name, tempRecipe.duration, tempRecipe.notes, tempRecipe.favourite, tempRecipe.tags, tempInstructions, tempIngredients, tempRecipe.imageUrl, tempRecipe.servings);
         this.imgState = "shrink";
         this.inputMode = false;
         this.editMode = this.navParams.get("editMode") || false;
@@ -84,7 +87,7 @@ export class RecipeManagementPage {
 
         this.popover.onDidDismiss((data, role) => {
             if (data != null) {
-                this.tempImageUrl = data;
+                this.recipe.imageUrl = data;
             }
         });
 
@@ -112,10 +115,10 @@ export class RecipeManagementPage {
     }
 
     onSwipe(event: any, item: any, input: string, mode: EditModeType) {
-        if (event._openAmount < -200) {
+        if (event._openAmount < -100) {
             //right
             this.showInput(item, input, mode);
-        } else if (event._openAmount > 200) {
+        } else if (event._openAmount > 100) {
             //left
             this.delete(item[0], input);
         }
@@ -147,10 +150,10 @@ export class RecipeManagementPage {
             }
             case "ingredients": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item.name, Validators.required],
-                    quantity: [item.quantity],
-                    unit: [item.unit],
-                    id: [item.id == null ? new Date().getTime() : item.id]
+                    name: [item[0].name, Validators.required],
+                    quantity: [item[0].quantity],
+                    unit: [item[0].unit],
+                    id: [item[0].id == null ? new Date().getTime() : item[0].id]
                 });
                 break;
             }
@@ -181,16 +184,14 @@ export class RecipeManagementPage {
         this.toggleMode(false);
 
         if (
-            this.tempImageUrl.indexOf("no_image.jpg") > -1 ||
-            this.tempImageUrl.startsWith("http")
+            this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
+            this.recipe.imageUrl.startsWith("http")
         ) {
-            this.recipe.imageUrl = this.tempImageUrl;
             this.neo4jService.saveRecipe(this.recipe).then(v => {
                 this.showToast("DATA_SAVED");
                 this.events.publish("recipe:saved", this.recipe);
             });
         } else {
-            this.recipe.imageUrl = this.tempImageUrl;
             this.imagesService.save(this.recipe.imageUrl).then(res => {
                 this.recipe.imageUrl = res;
                 this.neo4jService.saveRecipe(this.recipe).then(v => {

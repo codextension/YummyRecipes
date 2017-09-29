@@ -17,7 +17,7 @@
     <ion-card class="no-padding">
         <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()"
              (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')"
-             [style.background-image]="getBackground(tempImageUrl)">
+             [style.background-image]="getBackground(recipe.imageUrl)">
         </div>
     </ion-card>
     <ion-fab bottom left edge *ngIf="!inputMode">
@@ -118,7 +118,7 @@
         </button>
     </ion-fab>
     <ion-fab right bottom *ngIf="recipeContent=='ingredients' && editMode && !inputMode && imgState!='expand'">
-        <button mini ion-fab (click)="showInput([],'ingredients',1)">
+        <button mini ion-fab (click)="showInput([[]],'ingredients',1)">
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
