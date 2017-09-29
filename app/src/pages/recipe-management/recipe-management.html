@@ -48,7 +48,7 @@
                 <div [ngSwitch]="recipeContent">
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
-                            <ion-item-sliding (ionDrag)="onSwipe($event,[ingredient],'ingredients',2)"
+                            <ion-item-sliding (ionDrag)="editMode?onSwipe($event,[ingredient],'ingredients',2):return;"
                                               *ngFor="let ingredient of recipe.ingredients">
                                 <ion-item>
                                     <ion-grid>
