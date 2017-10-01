@@ -161,13 +161,15 @@ export class HomePage {
                     if (recipes.length == 0) {
                         this.scrollEnabled = false;
                     } else {
-                        this.foundRecipes = recipes;
+                        if (recipes.length < 5) {
+                            this.scrollEnabled = false;
+                        }
+                        this.foundRecipes = this.foundRecipes.concat(recipes);
                     }
                     event.complete();
                 })
                 .catch(err => {
                     this.error = err;
-                    this.foundRecipes = null;
                     event.complete();
                 });
         }, 100);

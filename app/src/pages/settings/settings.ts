@@ -86,6 +86,9 @@ export class SettingsPage {
             .ping(this.settingsForm.value)
             .then(() => {
                 if (this.platform.is("core")) {
+                    if (this.settingsForm.value.serverUrl.endsWith("/")) {
+                        this.settingsForm.value.serverUrl = this.settingsForm.value.serverUrl.substr(0, this.settingsForm.value.serverUrl.lastIndexOf("/"));
+                    }
                     this.storage
                         .set("settings", this.settingsForm.value)
                         .then(v => {
