@@ -144,16 +144,16 @@ export class Neo4JService {
         });
     }
 
-    public findRecipes(page: number, text?): Promise<RecipeEntity[]> {
+    public findRecipes(page: number, size:number=5, text?): Promise<RecipeEntity[]> {
         let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
-        5} limit 5`;
+        size} limit ${size}`;
         if (text != null) {
             if (typeof text === "string") {
                 query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r order by ID(r) skip ${page *
-                5} limit 5`;
+                size} limit ${size}`;
             } else if (typeof text === "boolean" && text == true) {
                 query = `match(r:Recipe {favourite:${text}}) return r order by ID(r) skip ${page *
-                5} limit 5`;
+                size} limit ${size}`;
             }
         }
 

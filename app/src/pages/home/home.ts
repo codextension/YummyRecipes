@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {AlertController, Events, Haptic, NavController, NavParams} from "ionic-angular";
+import {AlertController, Events, Haptic, NavController, NavParams, Platform} from "ionic-angular";
 import {Neo4JService} from "../../services/neo4j.service";
 import {RecipeManagementPage} from "../recipe-management/recipe-management";
 import {RecipeEntity} from "../../entities/recipe-entity";
@@ -16,6 +16,7 @@ export class HomePage {
     public foundRecipes: RecipeEntity[];
     public scrollEnabled: boolean;
     private pageNumber: number = 0;
+    private recipesToLoad:number=5;
     private queryParam: any;
     private error: InternalError;
     public reloading: boolean;
@@ -25,6 +26,7 @@ export class HomePage {
                 public alertCtrl: AlertController,
                 private neo4jService: Neo4JService,
                 public events: Events,
+                private platform: Platform,
                 private haptic: Haptic,
                 private deviceFeedback: DeviceFeedback) {
         this.reloading = false;
@@ -54,8 +56,14 @@ export class HomePage {
 
     ionViewDidLoad() {
         setTimeout(() => {
-            this.reload();
-            console.log("reloading...");
+            this.platform.ready().then((readySource) => {
+                let width:number=this.platform.width(); // 415x415
+                let height:number=this.platform.height();
+                this.recipesToLoad = Math.ceil((width*height)/(415*415)+1);
+                this.reload();
+            }).catch(err=>{
+                this.reload();
+            });
         });
     }
 
@@ -64,10 +72,10 @@ export class HomePage {
         this.error = null;
 
         this.neo4jService
-            .findRecipes(0, this.queryParam)
+            .findRecipes(0,this.recipesToLoad, this.queryParam)
             .then(recipes => {
                 this.foundRecipes = recipes;
-                if (this.foundRecipes.length < 5) {
+                if (this.foundRecipes.length < this.recipesToLoad) {
                     this.scrollEnabled = false;
                 } else {
                     this.scrollEnabled = true;
@@ -84,9 +92,9 @@ export class HomePage {
     doRefresh(refresher) {
         setTimeout(() => {
             this.error = null;
-            this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
+            this.neo4jService.findRecipes(0,this.recipesToLoad, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
-                if (this.foundRecipes.length < 5) {
+                if (this.foundRecipes.length < this.recipesToLoad) {
                     this.scrollEnabled = false;
                 } else {
                     this.scrollEnabled = true;
@@ -107,7 +115,7 @@ export class HomePage {
         if (!this.showSearchbar) {
             this.queryParam = null;
             this.reloading = true;
-            this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
+            this.neo4jService.findRecipes(0,this.recipesToLoad, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
                 this.reloading = false;
             }).catch(err => {
@@ -124,7 +132,7 @@ export class HomePage {
         if (val && val.trim() != "" && val.length > 2) {
             this.queryParam = val;
             this.reloading = true;
-            this.neo4jService.findRecipes(0, this.queryParam).then(recipes => {
+            this.neo4jService.findRecipes(0,this.recipesToLoad, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
                 this.reloading = false;
             }).catch(err => {
@@ -156,12 +164,12 @@ export class HomePage {
         setTimeout(() => {
             this.error = null;
             this.neo4jService
-                .findRecipes(++this.pageNumber, this.queryParam)
+                .findRecipes(++this.pageNumber,this.recipesToLoad, this.queryParam)
                 .then(recipes => {
                     if (recipes.length == 0) {
                         this.scrollEnabled = false;
                     } else {
-                        if (recipes.length < 5) {
+                        if (recipes.length < this.recipesToLoad) {
                             this.scrollEnabled = false;
                         }
                         this.foundRecipes = this.foundRecipes.concat(recipes);
@@ -170,6 +178,7 @@ export class HomePage {
                 })
                 .catch(err => {
                     this.error = err;
+                    this.scrollEnabled = false;
                     event.complete();
                 });
         }, 100);
