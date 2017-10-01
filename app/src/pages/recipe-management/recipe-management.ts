@@ -4,6 +4,8 @@ import {
     Content,
     Events,
     Haptic,
+    Loading,
+    LoadingController,
     NavController,
     NavParams,
     Popover,
@@ -60,6 +62,8 @@ export class RecipeManagementPage {
 
     constructor(public navCtrl: NavController,
                 public navParams: NavParams,
+                public events: Events,
+                private loadingCtrl: LoadingController,
                 private popoverCtrl: PopoverController,
                 private sanitizer: DomSanitizer,
                 private haptic: Haptic,
@@ -68,7 +72,6 @@ export class RecipeManagementPage {
                 private imagesService: ImagesService,
                 private neo4jService: Neo4JService,
                 private toastCtrl: ToastController,
-                public events: Events,
                 private translate: TranslateService) {
         this.recipeContent = "ingredients";
         let tempRecipe: RecipeEntity = this.navParams.get("entity");
@@ -179,27 +182,45 @@ export class RecipeManagementPage {
         this.editMode = !this.editMode;
     }
 
-    save() {
-        this.editMode = false;
-        this.toggleMode(false);
+    async save() {
+        let saving_wait = await this.getTranslation("SAVING_WAIT");
 
+        let loading: Loading = this.loadingCtrl.create({content: saving_wait});
+        loading.present();
         if (
             this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
             this.recipe.imageUrl.startsWith("http")
         ) {
             this.neo4jService.saveRecipe(this.recipe).then(v => {
                 this.showToast("DATA_SAVED");
+                this.editMode = false;
+                this.toggleMode(false);
+                loading.dismissAll();
                 this.events.publish("recipe:saved", this.recipe);
+            }).catch(err => {
+                loading.dismissAll();
             });
         } else {
             this.imagesService.save(this.recipe.imageUrl).then(res => {
                 this.recipe.imageUrl = res;
                 this.neo4jService.saveRecipe(this.recipe).then(v => {
                     this.showToast("DATA_SAVED");
+                    this.editMode = false;
+                    this.toggleMode(false);
+                    loading.dismissAll();
                     this.events.publish("recipe:saved", this.recipe);
+                }).catch(err => {
+                    loading.dismissAll();
                 });
+            }).catch(err => {
+                loading.dismissAll();
             });
         }
+    }
+
+    private async getTranslation(key: string): Promise<string> {
+        let response = await this.translate.get(key).first().toPromise();
+        return response;
     }
 
     public canSave(): boolean {

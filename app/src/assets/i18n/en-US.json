@@ -28,5 +28,6 @@
     "RESET": "Reset",
     "IMAGE_FROM_DEVICE": "Photo from device",
   "IMAGE_FROM_CAMERA": "Take a Photo",
-  "NO_CONNECTION": "No connection"
+  "NO_CONNECTION": "No connection",
+  "SAVING_WAIT": "Saving, please wait ..."
 }

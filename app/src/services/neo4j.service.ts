@@ -17,15 +17,15 @@ export class Neo4JService {
 
     private static sanitize(entity: RecipeEntity): RecipeEntity {
         entity.name = entity.name.replace(/"/g, '').replace(/\\/g, "");
-        entity.notes = entity.notes.replace(/"/g, '').replace(/\\/g, "");
+        entity.notes = entity.notes != null ? entity.notes.replace(/"/g, '').replace(/\\/g, "") : "";
 
         for (let i = 0; i < entity.ingredients.length; i++) {
-            entity.ingredients[i].name = entity.ingredients[i].name
+            entity.ingredients[i].name = entity.ingredients[i].name != null ? entity.ingredients[i].name
                 .replace(/"/g, '')
-                .replace(/\\/g, "");
-            entity.ingredients[i].unit = entity.ingredients[i].unit
+                .replace(/\\/g, "") : "";
+            entity.ingredients[i].unit = entity.ingredients[i].unit != null ? entity.ingredients[i].unit
                 .replace(/"/g, '')
-                .replace(/\\/g, "");
+                .replace(/\\/g, "") : "";
         }
 
         for (let i = 0; i < entity.instructions.length; i++) {

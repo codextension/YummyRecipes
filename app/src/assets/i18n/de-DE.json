@@ -28,5 +28,6 @@
     "RESET": "Zurückstzen",
     "IMAGE_FROM_DEVICE": "Bild von Gerät",
   "IMAGE_FROM_CAMERA": "Foto aufnehmen",
-  "NO_CONNECTION": "Keine Verbindung"
+  "NO_CONNECTION": "Keine Verbindung",
+  "SAVING_WAIT": "Speichern, bitte warten ..."
 }
