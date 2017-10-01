@@ -184,7 +184,6 @@ export class RecipeManagementPage {
 
     async save() {
         let saving_wait = await this.getTranslation("SAVING_WAIT");
-
         let loading: Loading = this.loadingCtrl.create({content: saving_wait});
         loading.present();
         if (

@@ -48,7 +48,7 @@
                 <div [ngSwitch]="recipeContent">
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
-                            <ion-item-sliding (ionDrag)="editMode?onSwipe($event,[ingredient],'ingredients',2):return;"
+                            <ion-item-sliding (ionDrag)="onSwipe($event,[ingredient],'ingredients',2)"
                                               *ngFor="let ingredient of recipe.ingredients">
                                 <ion-item>
                                     <ion-grid>
@@ -63,15 +63,15 @@
                                         </ion-row>
                                     </ion-grid>
                                 </ion-item>
-                                <ion-item-options side="left">
-                                    <button *ngIf="editMode" ion-button expandable color="secondary"
+                                <ion-item-options side="left" *ngIf="editMode">
+                                    <button ion-button expandable color="secondary"
                                             (click)="showInput(ingredient,'ingredients',2)">
                                         <ion-icon name="create"></ion-icon>
 
                                     </button>
                                 </ion-item-options>
-                                <ion-item-options side="right">
-                                    <button *ngIf="editMode" ion-button expandable color="danger"
+                                <ion-item-options *ngIf="editMode" side="right">
+                                    <button ion-button expandable color="danger"
                                             (click)="delete(ingredient,'ingredients')">
                                         <ion-icon name="trash"></ion-icon>
 
