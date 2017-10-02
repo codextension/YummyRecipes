@@ -2,12 +2,10 @@ import {Component} from "@angular/core";
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {NavParams, Platform, ViewController} from "ionic-angular";
 import {RecipeEntity} from "../../entities/recipe-entity";
-import {ImagesService} from "../../services/images.service";
 
 @Component({
     selector: "camera-popover",
-    templateUrl: "camera-popover.html",
-    providers: [ImagesService]
+    templateUrl: "camera-popover.html"
 })
 export class CameraPopoverComponent {
     private recipe: RecipeEntity;
@@ -39,8 +37,7 @@ export class CameraPopoverComponent {
     constructor(private camera: Camera,
                 private navParams: NavParams,
                 public view: ViewController,
-                public platform: Platform,
-                private imageService: ImagesService) {
+                public platform: Platform) {
         this.recipe = navParams.data.recipe;
     }
 
@@ -73,14 +70,7 @@ export class CameraPopoverComponent {
             if (file.size > 1000000) {
                 this.view.dismiss(null);
             } else {
-                this.imageService
-                    .upload(file)
-                    .then(imageData => {
-                        this.view.dismiss(imageData);
-                    })
-                    .catch(err => {
-                        this.view.dismiss(null);
-                    });
+                this.view.dismiss(file);
             }
         }
     }

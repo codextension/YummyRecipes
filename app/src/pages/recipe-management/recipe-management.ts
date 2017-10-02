@@ -59,6 +59,7 @@ export class RecipeManagementPage {
     private swipeTime?: number;
     private popover: Popover;
     private toast: Toast;
+    private imageFile: File;
 
     constructor(public navCtrl: NavController,
                 public navParams: NavParams,
@@ -89,8 +90,15 @@ export class RecipeManagementPage {
         });
 
         this.popover.onDidDismiss((data, role) => {
-            if (data != null) {
+            if (data != null && (typeof data === "string")) {
                 this.recipe.imageUrl = data;
+            } else if (data != null) {
+                let reader: FileReader = new FileReader();
+                reader.readAsDataURL(data);
+                this.imageFile = data;
+                reader.addEventListener("load", ev => {
+                    this.recipe.imageUrl = reader.result;
+                }, false);
             }
         });
 
@@ -98,6 +106,14 @@ export class RecipeManagementPage {
             duration: 2000,
             position: "top"
         });
+    }
+
+    private static indexOf(objs: any[], id: number) {
+        for (let i = 0; i < objs.length; i++) {
+            if (objs[i].id == id) {
+                return i;
+            }
+        }
     }
 
     ionViewDidLoad() {
@@ -190,36 +206,39 @@ export class RecipeManagementPage {
             this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
             this.recipe.imageUrl.startsWith("http")
         ) {
-            this.neo4jService.saveRecipe(this.recipe).then(v => {
-                this.showToast("DATA_SAVED");
-                this.editMode = false;
-                this.toggleMode(false);
-                loading.dismissAll();
-                this.events.publish("recipe:saved", this.recipe);
-            }).catch(err => {
-                loading.dismissAll();
-            });
+            this.saveRecipe(loading);
         } else {
-            this.imagesService.save(this.recipe.imageUrl).then(res => {
-                this.recipe.imageUrl = res;
-                this.neo4jService.saveRecipe(this.recipe).then(v => {
-                    this.showToast("DATA_SAVED");
-                    this.editMode = false;
-                    this.toggleMode(false);
-                    loading.dismissAll();
-                    this.events.publish("recipe:saved", this.recipe);
+            if (this.imageFile != null) {
+                this.imagesService
+                    .upload(this.imageFile)
+                    .then(res => {
+                        this.recipe.imageUrl = res;
+                        this.saveRecipe(loading);
+                    })
+                    .catch(err => {
+                        loading.dismissAll();
+                    });
+            } else {
+                this.imagesService.save(this.recipe.imageUrl).then(res => {
+                    this.recipe.imageUrl = res;
+                    this.saveRecipe(loading);
                 }).catch(err => {
                     loading.dismissAll();
                 });
-            }).catch(err => {
-                loading.dismissAll();
-            });
+            }
         }
     }
 
-    private async getTranslation(key: string): Promise<string> {
-        let response = await this.translate.get(key).first().toPromise();
-        return response;
+    private saveRecipe(loading: Loading) {
+        this.neo4jService.saveRecipe(this.recipe).then(v => {
+            this.showToast("DATA_SAVED");
+            this.editMode = false;
+            this.toggleMode(false);
+            loading.dismissAll();
+            this.events.publish("recipe:saved", this.recipe);
+        }).catch(err => {
+            loading.dismissAll();
+        });
     }
 
     public canSave(): boolean {
@@ -229,14 +248,6 @@ export class RecipeManagementPage {
             this.recipe.servings != null &&
             this.recipe.ingredients.length > 0
         );
-    }
-
-    private static indexOf(objs: any[], id: number) {
-        for (let i = 0; i < objs.length; i++) {
-            if (objs[i].id == id) {
-                return i;
-            }
-        }
     }
 
     delete(item: any, itemType: string) {
@@ -287,13 +298,6 @@ export class RecipeManagementPage {
         }
     }
 
-    private showToast(message: string) {
-        this.translate.get(message).subscribe(value => {
-            this.toast.setMessage(value);
-            this.toast.present();
-        });
-    }
-
     apply(inputRef: string, form: any) {
         if (inputRef == "name") {
             this.recipe.name = form.name;
@@ -319,6 +323,18 @@ export class RecipeManagementPage {
             this.recipe.notes = form.notes;
         }
         this.toggleMode(false);
+    }
+
+    private async getTranslation(key: string): Promise<string> {
+        let response = await this.translate.get(key).first().toPromise();
+        return response;
+    }
+
+    private showToast(message: string) {
+        this.translate.get(message).subscribe(value => {
+            this.toast.setMessage(value);
+            this.toast.present();
+        });
     }
 
     private uuidv4(): string {
