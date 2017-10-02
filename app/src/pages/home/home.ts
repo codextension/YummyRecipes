@@ -93,6 +93,7 @@ export class HomePage {
     doRefresh(refresher) {
         setTimeout(() => {
             this.error = null;
+            this.pageNumber = 0;
             this.neo4jService.findRecipes(0,this.recipesToLoad, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
                 if (this.foundRecipes.length < this.recipesToLoad) {
