@@ -59,7 +59,8 @@ export class HomePage {
             this.platform.ready().then((readySource) => {
                 let width:number=this.platform.width(); // 415x415
                 let height:number=this.platform.height();
-                this.recipesToLoad = Math.ceil((width*height)/(415*415)+1);
+                let buffer: number = Math.floor(width / 400) * 2;
+                this.recipesToLoad = Math.ceil((width * height) / (400 * 400) + buffer);
                 this.reload();
             }).catch(err=>{
                 this.reload();
