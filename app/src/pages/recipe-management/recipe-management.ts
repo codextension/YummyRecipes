@@ -231,31 +231,12 @@ export class RecipeManagementPage {
         );
     }
 
-    apply(inputRef: string, form: any) {
-        if (inputRef == "name") {
-            this.recipe.name = form.name;
-        } else if (inputRef == "duration") {
-            this.recipe.duration = form.duration;
-        } else if (inputRef == "servings") {
-            this.recipe.servings = form.servings;
-        } else if (inputRef == "ingredients") {
-            if (this.actionMode == EditModeType.UPDATE) {
-                let index: number = this.indexOf(this.recipe.ingredients, form.id);
-                this.recipe.ingredients[index] = form;
-            } else {
-                form.id = this.uuidv4();
-                this.recipe.ingredients.push(form);
+    private static indexOf(objs: any[], id: number) {
+        for (let i = 0; i < objs.length; i++) {
+            if (objs[i].id == id) {
+                return i;
             }
-        } else if (inputRef == "instructions") {
-            if (this.actionMode == EditModeType.UPDATE) {
-                this.recipe.instructions[form.order] = form.description;
-            } else {
-                this.recipe.instructions.push(form.description);
-            }
-        } else if (inputRef == "notes") {
-            this.recipe.notes = form.notes;
         }
-        this.toggleMode(false);
     }
 
     delete(item: any, itemType: string) {
@@ -313,17 +294,36 @@ export class RecipeManagementPage {
         });
     }
 
-    private indexOf(objs: any[], id: number) {
-        for (let i = 0; i < objs.length; i++) {
-            if (objs[i].id == id) {
-                return i;
+    apply(inputRef: string, form: any) {
+        if (inputRef == "name") {
+            this.recipe.name = form.name;
+        } else if (inputRef == "duration") {
+            this.recipe.duration = form.duration;
+        } else if (inputRef == "servings") {
+            this.recipe.servings = form.servings;
+        } else if (inputRef == "ingredients") {
+            if (this.actionMode == EditModeType.UPDATE) {
+                let index: number = RecipeManagementPage.indexOf(this.recipe.ingredients, form.id);
+                this.recipe.ingredients[index] = form;
+            } else {
+                form.id = this.uuidv4();
+                this.recipe.ingredients.push(form);
             }
+        } else if (inputRef == "instructions") {
+            if (this.actionMode == EditModeType.UPDATE) {
+                this.recipe.instructions[form.order] = form.description;
+            } else {
+                this.recipe.instructions.push(form.description);
+            }
+        } else if (inputRef == "notes") {
+            this.recipe.notes = form.notes;
         }
+        this.toggleMode(false);
     }
 
     private uuidv4(): string {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-            var r = (Math.random() * 16) | 0,
+            let r = (Math.random() * 16) | 0,
                 v = c == "x" ? r : (r & 0x3) | 0x8;
             return v.toString(16);
         });

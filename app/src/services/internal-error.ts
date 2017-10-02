@@ -13,5 +13,6 @@ export class InternalError implements Error {
 export enum ErrorType {
     EMPTY_AUTH = 1,
     CONN_ERROR,
-    QUERY_ERROR
+    QUERY_ERROR,
+    IMG_UPLOAD_ERROR
 }

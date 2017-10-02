@@ -7,6 +7,7 @@ import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {FileEntry} from "@ionic-native/file";
 import {AuthInfo} from "./auth-info";
 import {ConnectionService} from "./connection.service";
+import {ErrorType, InternalError} from "./internal-error";
 
 @Injectable()
 export class ImagesService {
@@ -48,9 +49,15 @@ export class ImagesService {
                             resolve(imgUrl);
                         })
                         .catch(err => {
-                            console.error(err);
+                            let error: InternalError = new InternalError("cannot upload image to server.", ErrorType.IMG_UPLOAD_ERROR);
+                            error.name = "IMG_UPLOAD_ERROR";
+                            reject(error);
                         });
                 });
+            }).catch(err => {
+                let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
+                error.name = "CONN_ERROR";
+                reject(error);
             });
         });
     }

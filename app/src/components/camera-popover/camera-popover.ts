@@ -18,6 +18,8 @@ export class CameraPopoverComponent {
         mediaType: this.camera.MediaType.PICTURE,
         sourceType: this.camera.PictureSourceType.CAMERA,
         correctOrientation: true,
+        targetHeight: 1080,
+        targetWidth: 1920,
         destinationType: this.camera.DestinationType.FILE_URI,
         cameraDirection: this.camera.Direction.BACK
     };
@@ -27,6 +29,8 @@ export class CameraPopoverComponent {
         encodingType: this.camera.EncodingType.JPEG,
         mediaType: this.camera.MediaType.PICTURE,
         correctOrientation: true,
+        targetHeight: 1080,
+        targetWidth: 1920,
         sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
         destinationType: this.camera.DestinationType.FILE_URI,
         cameraDirection: this.camera.Direction.BACK
@@ -66,14 +70,18 @@ export class CameraPopoverComponent {
         let fileList: FileList = event.target.files;
         if (fileList.length > 0) {
             let file: File = fileList[0];
-            this.imageService
-                .upload(file)
-                .then(imageData => {
-                    this.view.dismiss(imageData);
-                })
-                .catch(err => {
-                    this.view.dismiss(null);
-                });
+            if (file.size > 1000000) {
+                this.view.dismiss(null);
+            } else {
+                this.imageService
+                    .upload(file)
+                    .then(imageData => {
+                        this.view.dismiss(imageData);
+                    })
+                    .catch(err => {
+                        this.view.dismiss(null);
+                    });
+            }
         }
     }
 
