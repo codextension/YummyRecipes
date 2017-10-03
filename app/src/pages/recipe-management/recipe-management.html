@@ -56,13 +56,14 @@
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
+
                                 <ion-item>
-                                    <ion-avatar item-start>
-                                        <img src="assets/imgs/no_image.jpg">
-                                    </ion-avatar>
-                                    <h2>{{ingredient.name}}</h2>
-                                    <p>{{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
-                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}</p>
+                                    <ion-checkbox checked="false"></ion-checkbox>
+                                    <ion-label>{{ingredient.name}}</ion-label>
+                                    <ion-note item-end>
+                                        {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
+                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}
+                                    </ion-note>
                                 </ion-item>
                                 <ion-item-options side="right">
                                     <button [disabled]="!editMode" ion-button color="danger"

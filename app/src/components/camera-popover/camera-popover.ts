@@ -35,7 +35,7 @@ export class CameraPopoverComponent {
     };
 
     constructor(private camera: Camera,
-                private navParams: NavParams,
+                public navParams: NavParams,
                 public view: ViewController,
                 public platform: Platform) {
         this.recipe = navParams.data.recipe;
