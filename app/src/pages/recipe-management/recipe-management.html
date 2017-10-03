@@ -58,8 +58,8 @@
                             <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
 
                                 <ion-item>
-                                    <ion-checkbox checked="false"></ion-checkbox>
-                                    <ion-label>{{ingredient.name}}</ion-label>
+                                    <ion-icon name='arrow-dropright' item-start></ion-icon>
+                                    {{ingredient.name}}
                                     <ion-note item-end>
                                         {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
                                         (ingredient.unit!=null? ingredient.unit + ' ':'')}}
@@ -84,8 +84,11 @@
                         <ion-item-group>
                             <ion-item-sliding *ngFor="let instruction of recipe.instructions; let i = index">
                                 <ion-item>
-                                    <ion-badge style="margin-right:5px">{{i+1}}</ion-badge>
-                                    <span style="white-space: pre-line">{{instruction}}</span>
+                                    <ion-checkbox #checkBox class="checkbox-top" color="dark"
+                                                  checked="false"></ion-checkbox>
+                                    <ion-label [style.color]="checkBox.checked?'lightgray':''"
+                                               style="white-space: pre-line">{{instruction}}
+                                    </ion-label>
                                 </ion-item>
                                 <ion-item-options *ngIf="editMode" side="right">
                                     <button ion-button color="danger"
