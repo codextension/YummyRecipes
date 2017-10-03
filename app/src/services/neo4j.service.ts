@@ -17,15 +17,15 @@ export class Neo4JService {
 
     private static sanitize(entity: RecipeEntity): RecipeEntity {
         entity.name = entity.name.replace(/"/g, '').replace(/\\/g, "");
-        entity.notes = entity.notes != null ? entity.notes.replace(/"/g, '').replace(/\\/g, "") : "";
+        entity.notes = entity.notes != null ? entity.notes.replace(/"/g, '').replace(/\\/g, "") : null;
 
         for (let i = 0; i < entity.ingredients.length; i++) {
             entity.ingredients[i].name = entity.ingredients[i].name != null ? entity.ingredients[i].name
                 .replace(/"/g, '')
-                .replace(/\\/g, "") : "";
+                .replace(/\\/g, "") : null;
             entity.ingredients[i].unit = entity.ingredients[i].unit != null ? entity.ingredients[i].unit
                 .replace(/"/g, '')
-                .replace(/\\/g, "") : "";
+                .replace(/\\/g, "") : null;
         }
 
         for (let i = 0; i < entity.instructions.length; i++) {
@@ -168,19 +168,23 @@ export class Neo4JService {
                         let output: RecipeEntity[] = [];
                         if (queryResults != null && queryResults.length > 0) {
                             for (let res of queryResults[0].records) {
-                                let re: RecipeEntity = new RecipeEntity(
-                                    res._fields[0].properties.id,
-                                    res._fields[0].properties.name,
-                                    res._fields[0].properties.duration.low,
-                                    res._fields[0].properties.notes,
-                                    res._fields[0].properties.favourite,
-                                    [],
-                                    res._fields[0].properties.instructions,
-                                    [],
-                                    res._fields[0].properties.imageUrl,
-                                    res._fields[0].properties.servings.low
-                                );
-                                output.push(re);
+                                try {
+                                    let re: RecipeEntity = new RecipeEntity(
+                                        res._fields[0].properties.id,
+                                        res._fields[0].properties.name,
+                                        res._fields[0].properties.duration.low,
+                                        res._fields[0].properties.notes,
+                                        res._fields[0].properties.favourite,
+                                        [],
+                                        res._fields[0].properties.instructions,
+                                        [],
+                                        res._fields[0].properties.imageUrl,
+                                        res._fields[0].properties.servings.low
+                                    );
+                                    output.push(re);
+                                } catch (e) {
+                                    console.error(e);
+                                }
                             }
                         }
 

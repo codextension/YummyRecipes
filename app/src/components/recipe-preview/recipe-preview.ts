@@ -49,11 +49,11 @@ export class RecipePreviewComponent {
     }
 
     toggleFavourite() {
+        this.onFavToggle.emit(this.entity);
         this.loading = true;
         this.neo4jService.setFavourite(this.entity.id, !this.entity.favourite).then(v => {
             this.entity.favourite = v;
             this.loading = false;
-            this.onFavToggle.emit(this.entity);
         }).catch(err => {
             this.loading = false;
         });
