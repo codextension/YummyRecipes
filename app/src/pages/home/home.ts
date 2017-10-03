@@ -45,7 +45,7 @@ export class HomePage {
                 if (index > -1) {
                     this.foundRecipes[index] = recipe;
                 } else {
-                    this.foundRecipes.push(recipe);
+                    this.reload();
                 }
             } else {
                 this.foundRecipes = [];
@@ -59,7 +59,7 @@ export class HomePage {
             this.platform.ready().then((readySource) => {
                 let width:number=this.platform.width(); // 415x415
                 let height:number=this.platform.height();
-                let buffer: number = Math.floor(width / 400) * 2;
+                let buffer: number = Math.floor(width / 400) * 2 + 1;
                 this.recipesToLoad = Math.ceil((width * height) / (400 * 400) + buffer);
                 this.reload();
             }).catch(err=>{
@@ -216,12 +216,9 @@ export class HomePage {
         this.navCtrl.push(RecipeManagementPage, {entity: recipe});
     }
 
-    favouriteToggle(entity: RecipeEntity) {
+    favouriteToggle(event: any) {
         this.haptic.selection(); //iOs
         this.deviceFeedback.haptic(1); // Android
-        this.neo4jService.setFavourite(entity.id, !entity.favourite).then(v => {
-            entity.favourite = v;
-        });
     }
 
     private uuidv4(): string {
