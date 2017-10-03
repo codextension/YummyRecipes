@@ -133,18 +133,8 @@ export class RecipeManagementPage {
         this.deviceFeedback.haptic(1); // Android
     }
 
-    onSwipe(event: any, item: any, input: string, mode: EditModeType) {
-        if (event._openAmount < -100) {
-            //right
-            this.showInput(item, input, mode);
-        } else if (event._openAmount > 100) {
-            //left
-            this.delete(item[0], input);
-        }
-    }
-
     showInput(item: any, input: string, mode: EditModeType) {
-        this.toggleMode(true);
+        this.inputMode = true;
         this.inputRef = input;
         this.actionMode = mode;
 
@@ -169,10 +159,10 @@ export class RecipeManagementPage {
             }
             case "ingredients": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item[0].name, Validators.required],
-                    quantity: [item[0].quantity],
-                    unit: [item[0].unit],
-                    id: [item[0].id == null ? new Date().getTime() : item[0].id]
+                    name: [item.name, Validators.required],
+                    quantity: [item.quantity],
+                    unit: [item.unit],
+                    id: [item.id == null ? new Date().getTime() : item.id]
                 });
                 break;
             }

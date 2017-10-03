@@ -29,5 +29,6 @@
   "IMAGE_FROM_DEVICE": "Bild von Gerät",
   "IMAGE_FROM_CAMERA": "Foto aufnehmen",
   "NO_CONNECTION": "Keine Verbindung",
-  "SAVING_WAIT": "Speichern, bitte warten ..."
+  "SAVING_WAIT": "Speichern, bitte warten ...",
+  "EDIT": "Bearbeiten"
 }

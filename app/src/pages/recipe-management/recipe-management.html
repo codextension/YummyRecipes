@@ -18,7 +18,27 @@
         <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()"
              (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')"
              [style.background-image]="getBackground(recipe.imageUrl)">
+            <ion-grid class="bottom-of-div">
+                <ion-row>
+                    <ion-col col-5>
+
+                    </ion-col>
+
+                    <ion-col col-4 (click)="editMode?showInput(recipe.duration,'duration',2):false">
+                        <ion-icon name='time'></ion-icon>
+                        <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
+                    </ion-col>
+                    <ion-col col-2 (click)="editMode?showInput(recipe.servings,'servings',2):false">
+                        <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
+                        <ion-icon name='people'></ion-icon>
+                    </ion-col>
+                    <ion-col col-1>
+
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
         </div>
+
     </ion-card>
     <ion-fab bottom left edge *ngIf="!inputMode">
         <button ion-fab mini [disabled]="(editMode)?!canSave():false" (click)="editMode?save():edit()">
@@ -29,52 +49,31 @@
 <ion-backdrop style="opacity:0.35;" class="show-backdrop" (click)="toggleMode(false)" *ngIf="inputMode"></ion-backdrop>
 <ion-content>
     <ion-grid *ngIf="!inputMode">
-        <ion-row>
-            <ion-col col-5>
 
-            </ion-col>
-
-            <ion-col col-4 (click)="editMode?showInput(recipe.duration,'duration',2):false">
-                <ion-icon name='time'></ion-icon>
-                <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
-            </ion-col>
-            <ion-col col-3 (click)="editMode?showInput(recipe.servings,'servings',2):false">
-                <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
-                <ion-icon name='people'></ion-icon>
-            </ion-col>
-        </ion-row>
         <ion-row>
             <ion-col col-12>
                 <div [ngSwitch]="recipeContent">
                     <ion-list *ngSwitchCase="'ingredients'">
                         <ion-item-group>
-                            <ion-item-sliding (ionDrag)="onSwipe($event,[ingredient],'ingredients',2)"
-                                              *ngFor="let ingredient of recipe.ingredients">
+                            <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
                                 <ion-item>
-                                    <ion-grid>
-                                        <ion-row>
-                                            <ion-col col-6 class="weight-info">
-                                                {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
-                                                (ingredient.unit!=null? ingredient.unit + ' ':'')}}
-                                            </ion-col>
-                                            <ion-col col-6>
-                                                {{ingredient.name}}
-                                            </ion-col>
-                                        </ion-row>
-                                    </ion-grid>
+                                    <ion-avatar item-start>
+                                        <img src="assets/imgs/no_image.jpg">
+                                    </ion-avatar>
+                                    <h2>{{ingredient.name}}</h2>
+                                    <p>{{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
+                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}</p>
                                 </ion-item>
-                                <ion-item-options side="left" *ngIf="editMode">
-                                    <button ion-button expandable color="secondary"
-                                            (click)="showInput(ingredient,'ingredients',2)">
-                                        <ion-icon name="create"></ion-icon>
-
-                                    </button>
-                                </ion-item-options>
-                                <ion-item-options *ngIf="editMode" side="right">
-                                    <button ion-button expandable color="danger"
+                                <ion-item-options side="right">
+                                    <button [disabled]="!editMode" ion-button color="danger"
                                             (click)="delete(ingredient,'ingredients')">
                                         <ion-icon name="trash"></ion-icon>
-
+                                        {{"DELETE" | translate}}
+                                    </button>
+                                    <button [disabled]="!editMode" ion-button color="secondary"
+                                            (click)="showInput(ingredient,'ingredients',2)">
+                                        <ion-icon name="create"></ion-icon>
+                                        {{"EDIT" | translate}}
                                     </button>
                                 </ion-item-options>
                             </ion-item-sliding>
@@ -82,24 +81,21 @@
                     </ion-list>
                     <ion-list *ngSwitchCase="'instructions'">
                         <ion-item-group>
-                            <ion-item-sliding (ionDrag)="onSwipe($event,[instruction,i],'instructions',2)"
-                                              *ngFor="let instruction of recipe.instructions; let i = index">
+                            <ion-item-sliding *ngFor="let instruction of recipe.instructions; let i = index">
                                 <ion-item>
                                     <ion-badge style="margin-right:5px">{{i+1}}</ion-badge>
                                     <span style="white-space: pre-line">{{instruction}}</span>
                                 </ion-item>
-                                <ion-item-options *ngIf="editMode" side="left">
-                                    <button ion-button expandable color="secondary"
-                                            (click)="showInput([instruction,i],'instructions',2)">
-                                        <ion-icon name="create"></ion-icon>
-
-                                    </button>
-                                </ion-item-options>
                                 <ion-item-options *ngIf="editMode" side="right">
-                                    <button ion-button expandable color="danger"
+                                    <button ion-button color="danger"
                                             (click)="delete(instruction,'instructions')">
                                         <ion-icon name="trash"></ion-icon>
-
+                                        {{"DELETE" | translate}}
+                                    </button>
+                                    <button ion-button color="secondary"
+                                            (click)="showInput([instruction,i],'instructions',2)">
+                                        <ion-icon name="create"></ion-icon>
+                                        {{"EDIT" | translate}}
                                     </button>
                                 </ion-item-options>
                             </ion-item-sliding>

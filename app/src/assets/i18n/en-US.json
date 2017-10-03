@@ -29,5 +29,6 @@
   "IMAGE_FROM_DEVICE": "Photo from device",
   "IMAGE_FROM_CAMERA": "Take a Photo",
   "NO_CONNECTION": "No connection",
-  "SAVING_WAIT": "Saving, please wait ..."
+  "SAVING_WAIT": "Saving, please wait ...",
+  "EDIT": "Edit"
 }
