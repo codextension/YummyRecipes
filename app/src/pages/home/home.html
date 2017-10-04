@@ -24,9 +24,10 @@
         <div class="ym-spinner" *ngIf="reloading">
             <ion-spinner class="centered-spinner"></ion-spinner>
         </div>
-        <div style="text-align: center;padding-top: 10%;width: 100%" *ngIf="error != null && error.type==2">
+        <div style="text-align: center;padding-top: 10%;width: 100%"
+             *ngIf="error != null && (error.type==2 || error.type==1)">
             <img src="assets/imgs/no_conn.png" style="width: 50px; height: 50px">
-            <br>{{"NO_CONNECTION" | translate}}
+            <br>{{error.name | translate}}
         </div>
         <recipe-preview (onClick)="onClick($event)" (onFavToggle)="favouriteToggle($event)"
                         (onDeleted)="onDelete($event)" *ngFor="let recipe of foundRecipes"

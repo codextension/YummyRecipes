@@ -27,7 +27,9 @@ export class ConnectionService {
                             resolve(val);
                         }
                     })
-                    .catch(err => {
+                    .catch(ex => {
+                        let err: InternalError = new InternalError("empty authentication not allowed", ErrorType.EMPTY_AUTH);
+                        err.name = "EMPTY_AUTH";
                         reject(err);
                     });
             } else {

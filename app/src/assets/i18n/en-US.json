@@ -30,5 +30,6 @@
   "IMAGE_FROM_CAMERA": "Take a Photo",
   "NO_CONNECTION": "No connection",
   "SAVING_WAIT": "Saving, please wait ...",
-  "EDIT": "Edit"
+  "EDIT": "Edit",
+  "EMPTY_AUTH": "Authentication info not provided"
 }

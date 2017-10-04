@@ -76,15 +76,11 @@ export class SettingsPage {
     ionViewDidLoad() {
     }
 
-    back() {
-        return this.navCtrl.getPrevious();
-    }
-
     saveSettings() {
         this.neo4jService
             .ping(this.settingsForm.value)
             .then(() => {
-                if (this.platform.is("core")) {
+                if (this.platform.is("core") || this.platform.is("mobileweb")) {
                     if (this.settingsForm.value.serverUrl.endsWith("/")) {
                         this.settingsForm.value.serverUrl = this.settingsForm.value.serverUrl.substr(0, this.settingsForm.value.serverUrl.lastIndexOf("/"));
                     }
