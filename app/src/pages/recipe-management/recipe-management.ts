@@ -197,6 +197,13 @@ export class RecipeManagementPage {
         this.deviceFeedback.haptic(1);
 
         this.editMode = !this.editMode;
+        if (this.editMode) {
+            this.insomnia.allowSleepAgain()
+                .then(
+                    () => console.log('success'),
+                    () => console.error('insomnia is not loaded')
+                );
+        }
     }
 
     public toggleLock(event: any) {
