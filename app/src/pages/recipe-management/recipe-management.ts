@@ -119,6 +119,15 @@ export class RecipeManagementPage {
     }
 
     ionViewDidLoad() {
+
+    }
+
+    ionViewWillLeave() {
+        this.insomnia.allowSleepAgain()
+            .then(
+                () => console.log('success'),
+                () => console.error('insomnia is not loaded')
+            );
     }
 
     getBackground(image) {
