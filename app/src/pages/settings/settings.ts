@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, Platform, ToastController} from "ionic-angular";
+import {NavController, Platform, ToastController} from "ionic-angular";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TranslateService} from "@ngx-translate/core";
 import {Neo4JService} from "../../services/neo4j.service";
@@ -16,7 +16,6 @@ export class SettingsPage {
     public settingsForm: FormGroup;
 
     constructor(public navCtrl: NavController,
-                public navParams: NavParams,
                 private formBuilder: FormBuilder,
                 public toastCtrl: ToastController,
                 private translate: TranslateService,

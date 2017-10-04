@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {Haptic, NavController} from "ionic-angular";
+import {Haptic} from "ionic-angular";
 import {RecipeEntity} from "../../entities/recipe-entity";
 import {DomSanitizer} from "@angular/platform-browser";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
@@ -19,8 +19,7 @@ export class RecipePreviewComponent {
     public showDeleteOption: boolean;
     public loading: boolean;
 
-    constructor(public navCtrl: NavController,
-                private sanitizer: DomSanitizer,
+    constructor(private sanitizer: DomSanitizer,
                 private haptic: Haptic,
                 private deviceFeedback: DeviceFeedback,
                 private socialSharing: SocialSharing,
