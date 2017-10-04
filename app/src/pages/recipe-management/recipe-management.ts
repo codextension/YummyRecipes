@@ -152,7 +152,7 @@ export class RecipeManagementPage {
         switch (input) {
             case "name": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item, [item.notes, [Validators.required, Validators.maxLength(40)]]]
+                    name: [item, [Validators.required, Validators.maxLength(40)]]
                 });
                 break;
             }
