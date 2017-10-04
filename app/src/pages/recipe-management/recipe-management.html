@@ -3,16 +3,16 @@
                   *ngIf="inputMode"></ion-backdrop>
 
     <ion-navbar>
-        <ion-title (click)="editMode?showInput(recipe.name,'name',2):false">{{recipe.name || ('NEW_RECIPE' |
-            translate)}}
+        <ion-title (click)="editMode?showInput(recipe.name,'name',2):false">
+            {{recipe.name || ('NEW_RECIPE' | translate)}}
         </ion-title>
-        <ion-buttons end *ngIf="editMode">
-
-            <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-buttons end>
+            <button *ngIf="editMode" ion-button icon-only (click)="presentPopover($event)">
                 <ion-icon name="more"></ion-icon>
             </button>
-
+            <ion-toggle *ngIf="!editMode" (ionChange)="toggleLock($event)"></ion-toggle>
         </ion-buttons>
+
     </ion-navbar>
     <ion-card class="no-padding">
         <div class="fill" [@resizeImg]='imgState' (@resizeImg.done)="content.resize()"

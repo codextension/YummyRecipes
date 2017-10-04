@@ -75,7 +75,11 @@ export class Neo4JService {
                     error.name = "QUERY_ERROR";
                     reject(error);
                 } else {
-                    resolve(Boolean(queryResults[0].records[0]._fields[0]));
+                    try {
+                        resolve(Boolean(queryResults[0].records[0]._fields[0]));
+                    } catch (e) {
+                        reject(e);
+                    }
                 }
             });
         });
@@ -144,7 +148,7 @@ export class Neo4JService {
         });
     }
 
-    public findRecipes(page: number, size:number=5, text?): Promise<RecipeEntity[]> {
+    public findRecipes(page: number, size: number = 5, text?): Promise<RecipeEntity[]> {
         let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
         size} limit ${size}`;
         if (text != null) {

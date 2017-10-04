@@ -14,6 +14,7 @@ import {Http, HttpModule, JsonpModule} from "@angular/http";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "./http-loader";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
+import {Insomnia} from '@ionic-native/insomnia';
 import {PipesModule} from "../pipes/pipes.module";
 import {DirectivesModule} from "../directives/directives.module";
 import {ComponentsModule} from "../components/components.module";
@@ -62,6 +63,7 @@ export class MyHammerConfig extends HammerGestureConfig {
         SecureStorage,
         SocialSharing,
         File,
+        Insomnia,
         FileTransfer,
         {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig},
         StatusBar,

@@ -21,6 +21,7 @@ import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {ImagesService} from "../../services/images.service";
 import {Neo4JService} from "../../services/neo4j.service";
 import {TranslateService} from "@ngx-translate/core";
+import {Insomnia} from '@ionic-native/insomnia';
 
 @Component({
     selector: "page-recipe-management",
@@ -63,6 +64,7 @@ export class RecipeManagementPage {
 
     constructor(public navCtrl: NavController,
                 public navParams: NavParams,
+                private insomnia: Insomnia,
                 public events: Events,
                 private loadingCtrl: LoadingController,
                 private popoverCtrl: PopoverController,
@@ -186,6 +188,22 @@ export class RecipeManagementPage {
         this.deviceFeedback.haptic(1);
 
         this.editMode = !this.editMode;
+    }
+
+    public toggleLock(event: any) {
+        if (event.value) {
+            this.insomnia.keepAwake()
+                .then(
+                    () => console.log('success'),
+                    () => console.error('insomnia is not loaded')
+                );
+        } else {
+            this.insomnia.allowSleepAgain()
+                .then(
+                    () => console.log('success'),
+                    () => console.error('insomnia is not loaded')
+                );
+        }
     }
 
     async save() {
