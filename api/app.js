@@ -1,11 +1,19 @@
-//TODO find a better solution
-const API_USERNAME = "elie";
-const API_PASSWORD = "pwd";
-
-const NEO_USERNAME = "elie";
-const NEO_PASSWORD = "pwd";
-
 const API_PORT_NB = 3443;
+
+var argv = require('minimist')(process.argv.slice(2));
+
+var valid = argv.api_user && argv.api_pwd && argv.neo_user && argv.api_pwd && argv.store;
+
+if (!valid) {
+    throw new Error("you need to provide the following paramters: \n--store <store_location> --api_user <username> --api_pwd <pwd> --neo_user <username> --neo_pwd <pwd>");
+}
+
+const API_USERNAME = argv.api_user;
+const API_PASSWORD = argv.api_pwd;
+
+const NEO_USERNAME = argv.neo_user;
+const NEO_PASSWORD = argv.neo_pwd;
+
 
 var express = require("express");
 var bodyParser = require("body-parser");
@@ -35,7 +43,7 @@ function uuidv4() {
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, "store/");
+        cb(null, argv.store);
     },
     filename: function(req, file, cb) {
         cb(null, uuidv4() + "." + file.originalname.toLowerCase().split(".")[1]);
@@ -46,13 +54,14 @@ function fileFilter(req, file, cb) {
     if (file.mimetype == null) {
         cb(null, false);
     } else if (
-        file.mimetype.indexOf("jpeg") ||
-        file.mimetype.indexOf("png") ||
-        file.mimetype.indexOf("gif")
+        file.mimetype == "image/jpeg" ||
+        file.mimetype == "image/png" ||
+        file.mimetype == "image/gif" ||
+        file.mimetype == "image/jpg"
     ) {
         cb(null, true);
     } else {
-        cb(null, false);
+        cb(new Error("invalid_file_type"), false);
     }
 }
 
@@ -89,7 +98,7 @@ var driver = neo4j.driver(
 );
 
 schedule.scheduleJob("0 0 * * 0", function() {
-    var imageDir = __dirname + "/store/";
+    var imageDir = argv.store;
 
     var session = driver.session();
     var resultPromise = session.writeTransaction(function(tx) {
@@ -130,7 +139,7 @@ schedule.scheduleJob("0 0 * * 0", function() {
         });
 });
 
-var routes = require("./routes.js")(app, passport, upload, fs, driver);
+var routes = require("./routes.js")(app, passport, upload, fs, driver, argv);
 
 var httpsServer = https.createServer(credentials, app);
 

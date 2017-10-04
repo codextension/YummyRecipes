@@ -1,4 +1,4 @@
-var appRouter = function(app, passport, upload, fs, driver) {
+var appRouter = function (app, passport, upload, fs, driver, argv) {
     app.post(
         "/ping",
         passport.authenticate("basic", {
@@ -22,7 +22,7 @@ var appRouter = function(app, passport, upload, fs, driver) {
 
     app.get("/images/get/:reference", function(req, res) {
         var reference = req.params.reference;
-        res.sendFile(__dirname + "/store/" + reference);
+        res.sendFile(argv.store + "/" + reference);
     });
 
     app.post(
@@ -42,7 +42,7 @@ var appRouter = function(app, passport, upload, fs, driver) {
             session: false
         }),
         function(req, res, next) {
-            var fileUri = __dirname + "/store/" + req.params.reference;
+            var fileUri = argv.store + "/" + req.params.reference;
             fs.unlink(fileUri, function(err) {
                 if (err) {
                     res.json("{deleted: false}");
