@@ -67,12 +67,19 @@ export class CameraPopoverComponent {
         let fileList: FileList = event.target.files;
         if (fileList.length > 0) {
             let file: File = fileList[0];
-            if (file.size > 1000000) {
+            if (!this.isValid(file)) {
                 this.view.dismiss(null);
             } else {
                 this.view.dismiss(file);
             }
         }
+    }
+
+    private isValid(file: File) {
+        return file.size < 1000000 && (file.type == "image/jpeg" ||
+            file.type == "image/png" ||
+            file.type == "image/gif" ||
+            file.type == "image/jpg");
     }
 
     public clearImage() {
