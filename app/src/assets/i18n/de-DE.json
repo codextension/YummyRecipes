@@ -31,5 +31,6 @@
   "NO_CONNECTION": "Keine Verbindung",
   "EMPTY_AUTH": "Keine Zugangdaten",
   "SAVING_WAIT": "Speichern, bitte warten ...",
-  "EDIT": "Bearbeiten"
+  "EDIT": "Bearbeiten",
+  "NO_NOTES": "Keine Notiz"
 }

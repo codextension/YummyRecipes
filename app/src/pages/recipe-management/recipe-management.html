@@ -63,7 +63,7 @@
                                         (ingredient.unit!=null? ingredient.unit + ' ':'')}}</span>{{ingredient.name}}
                                     <ion-note item-end
                                               (click)="editMode?showInput(ingredient,'ingredients_notes',2):false">
-                                        {{ingredient.notes || "..."}}
+                                        {{ingredient.notes || ("NO_NOTES" | translate)}}
                                     </ion-note>
                                 </ion-item>
                                 <ion-item-options side="right">
@@ -146,7 +146,7 @@
     <form [formGroup]="recipeForm" *ngIf="editMode && inputMode" (ngSubmit)="apply(inputRef, recipeForm.value)">
         <ion-toolbar *ngIf="editMode && inputMode">
             <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white" autofocus></ion-input>
-            <ion-input *ngIf="inputRef=='ingredients_notes'" required formControlName="notes" class="text-white"
+            <ion-input *ngIf="inputRef=='ingredients_notes'" formControlName="notes" class="text-white"
                        autofocus></ion-input>
             <ion-input *ngIf="inputRef=='duration'" type="number" formControlName="duration" class="text-white"
                        select-text autofocus></ion-input>

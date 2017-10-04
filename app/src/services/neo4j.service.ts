@@ -127,12 +127,12 @@ export class Neo4JService {
                     ? ""
                     : "quantity:" + ingredient.quantity + ", ";
             let unit = ingredient.unit == null ? "" : ingredient.unit;
-            let notes = ingredient.notes == null ? "" : ingredient.notes;
+            let notes = ingredient.notes == null ? "" : `, notes:"${ingredient.notes}"`;
             query.push(
                 `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
             );
             query.push(
-                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}", notes:"${notes}"}]->(i)`
+                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}" ${notes}}]->(i)`
             );
         }
 
@@ -211,7 +211,7 @@ export class Neo4JService {
                                                 ? ""
                                                 : res._fields[1].properties.quantity.low,
                                             res._fields[1].properties.unit,
-                                            res._fields[1].properties.notes || "no notes"
+                                            res._fields[1].properties.notes
                                         );
                                         output[i].ingredients.push(ing);
                                     }

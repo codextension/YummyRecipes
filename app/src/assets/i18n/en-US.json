@@ -31,5 +31,6 @@
   "NO_CONNECTION": "No connection",
   "SAVING_WAIT": "Saving, please wait ...",
   "EDIT": "Edit",
-  "EMPTY_AUTH": "Authentication info not provided"
+  "EMPTY_AUTH": "Authentication info not provided",
+  "NO_NOTES": "No note"
 }

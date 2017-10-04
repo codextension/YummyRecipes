@@ -187,7 +187,7 @@ export class RecipeManagementPage {
             }
             case "ingredients_notes": {
                 this.recipeForm = this.formBuilder.group({
-                    notes: [item.notes, [Validators.required, Validators.maxLength(15)]],
+                    notes: [item.notes, [Validators.maxLength(15)]],
                     id: item.id
                 });
                 break;
