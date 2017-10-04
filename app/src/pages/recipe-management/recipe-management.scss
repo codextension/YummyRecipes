@@ -45,6 +45,14 @@ page-recipe-management {
     opacity: 0.8;
   }
 
+  .lowercase input {
+    text-transform: lowercase;
+  }
+
+  .capitalize input {
+    text-transform: capitalize;
+  }
+
   .bottom-of-div {
     position: absolute;
     bottom: 0;

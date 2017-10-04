@@ -145,7 +145,8 @@
     </div>
     <form [formGroup]="recipeForm" *ngIf="editMode && inputMode" (ngSubmit)="apply(inputRef, recipeForm.value)">
         <ion-toolbar *ngIf="editMode && inputMode">
-            <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white" autofocus></ion-input>
+            <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white capitalize"
+                       autofocus></ion-input>
             <ion-input *ngIf="inputRef=='ingredients_notes'" formControlName="notes" class="text-white"
                        autofocus></ion-input>
             <ion-input *ngIf="inputRef=='duration'" type="number" formControlName="duration" class="text-white"
@@ -159,10 +160,10 @@
                                    class="text-white"></ion-input>
                     </ion-col>
                     <ion-col col-2>
-                        <ion-input placeholder="__" formControlName="unit" class="text-white"></ion-input>
+                        <ion-input placeholder="__" formControlName="unit" class="text-white lowercase"></ion-input>
                     </ion-col>
                     <ion-col col-8>
-                        <ion-input required placeholder="_______" formControlName="name" class="text-white"
+                        <ion-input required placeholder="_______" formControlName="name" class="text-white capitalize"
                                    autofocus></ion-input>
                     </ion-col>
                 </ion-row>
