@@ -63,7 +63,7 @@
                                         (ingredient.unit!=null? ingredient.unit + ' ':'')}}</span>{{ingredient.name}}
                                     <ion-note item-end
                                               (click)="editMode?showInput(ingredient,'ingredients_notes',2):false">
-                                        {{ingredient.notes}}
+                                        {{ingredient.notes || "..."}}
                                     </ion-note>
                                 </ion-item>
                                 <ion-item-options side="right">

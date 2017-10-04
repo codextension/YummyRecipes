@@ -170,9 +170,10 @@ export class RecipeManagementPage {
             }
             case "ingredients": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item.name, [item.notes, [Validators.required, Validators.maxLength(20)]]],
+                    name: [item.name, [Validators.required, Validators.maxLength(20)]],
                     quantity: [item.quantity],
                     unit: [item.unit],
+                    notes: [item.notes],
                     id: [item.id == null ? new Date().getTime() : item.id]
                 });
                 break;
