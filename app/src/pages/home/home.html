@@ -4,7 +4,7 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title *ngIf="!showSearchbar">{{queryParam?('FAVOURITE' | translate):('APP_TITLE' | translate)}}</ion-title>
-        <ion-buttons end *ngIf="!showSearchbar && error == null">
+        <ion-buttons end *ngIf="!showSearchbar">
             <button ion-button (click)="toggleSearchbar($event)">
                 <ion-icon name="search"></ion-icon>
             </button>
@@ -36,7 +36,7 @@
             </ion-infinite-scroll-content>
         </ion-infinite-scroll>
     </div>
-    <ion-fab right bottom *ngIf="!showSearchbar && error == null">
+    <ion-fab right bottom *ngIf="!showSearchbar">
         <button (click)="newRecipe()" ion-fab>
             <ion-icon name="add"></ion-icon>
         </button>
