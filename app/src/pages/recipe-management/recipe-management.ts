@@ -152,25 +152,25 @@ export class RecipeManagementPage {
         switch (input) {
             case "name": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item, Validators.required]
+                    name: [item, [item.notes, [Validators.required, Validators.maxLength(40)]]]
                 });
                 break;
             }
             case "duration": {
                 this.recipeForm = this.formBuilder.group({
-                    duration: [item, Validators.required]
+                    duration: [item, [Validators.required, Validators.min(5), Validators.max(600)]]
                 });
                 break;
             }
             case "servings": {
                 this.recipeForm = this.formBuilder.group({
-                    servings: [item, Validators.required]
+                    servings: [item, [Validators.required, Validators.min(1), Validators.max(20)]]
                 });
                 break;
             }
             case "ingredients": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item.name, Validators.required],
+                    name: [item.name, [item.notes, [Validators.required, Validators.maxLength(20)]]],
                     quantity: [item.quantity],
                     unit: [item.unit],
                     id: [item.id == null ? new Date().getTime() : item.id]
@@ -181,6 +181,13 @@ export class RecipeManagementPage {
                 this.recipeForm = this.formBuilder.group({
                     order: [item[1]],
                     description: [item[0], Validators.required]
+                });
+                break;
+            }
+            case "ingredients_notes": {
+                this.recipeForm = this.formBuilder.group({
+                    notes: [item.notes, [Validators.required, Validators.maxLength(15)]],
+                    id: item.id
                 });
                 break;
             }
@@ -337,6 +344,9 @@ export class RecipeManagementPage {
                 form.id = this.uuidv4();
                 this.recipe.ingredients.push(form);
             }
+        } else if (inputRef == "ingredients_notes") {
+            let index: number = RecipeManagementPage.indexOf(this.recipe.ingredients, form.id);
+            this.recipe.ingredients[index].notes = form.notes;
         } else if (inputRef == "instructions") {
             if (this.actionMode == EditModeType.UPDATE) {
                 this.recipe.instructions[form.order] = form.description;

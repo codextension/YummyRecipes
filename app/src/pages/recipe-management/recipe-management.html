@@ -58,11 +58,12 @@
                             <ion-item-sliding *ngFor="let ingredient of recipe.ingredients">
 
                                 <ion-item>
-                                    <ion-icon name='arrow-dropright' item-start></ion-icon>
-                                    {{ingredient.name}}
-                                    <ion-note item-end>
-                                        {{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
-                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}
+                                    <ion-icon name='basket' item-start></ion-icon>
+                                    <span style="font-weight: bold">{{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
+                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}</span>{{ingredient.name}}
+                                    <ion-note item-end
+                                              (click)="editMode?showInput(ingredient,'ingredients_notes',2):false">
+                                        {{ingredient.notes}}
                                     </ion-note>
                                 </ion-item>
                                 <ion-item-options side="right">
@@ -145,6 +146,8 @@
     <form [formGroup]="recipeForm" *ngIf="editMode && inputMode" (ngSubmit)="apply(inputRef, recipeForm.value)">
         <ion-toolbar *ngIf="editMode && inputMode">
             <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white" autofocus></ion-input>
+            <ion-input *ngIf="inputRef=='ingredients_notes'" required formControlName="notes" class="text-white"
+                       autofocus></ion-input>
             <ion-input *ngIf="inputRef=='duration'" type="number" formControlName="duration" class="text-white"
                        autofocus></ion-input>
             <ion-input *ngIf="inputRef=='servings'" type="number" formControlName="servings" class="text-white"
@@ -152,14 +155,15 @@
             <ion-grid *ngIf="inputRef=='ingredients'">
                 <ion-row>
                     <ion-col col-2>
-                        <ion-input type="number" placeholder="__" formControlName="quantity" class="text-white"
-                                   autofocus></ion-input>
+                        <ion-input type="number" placeholder="__" formControlName="quantity"
+                                   class="text-white"></ion-input>
                     </ion-col>
                     <ion-col col-2>
                         <ion-input placeholder="__" formControlName="unit" class="text-white"></ion-input>
                     </ion-col>
                     <ion-col col-8>
-                        <ion-input required placeholder="_______" formControlName="name" class="text-white"></ion-input>
+                        <ion-input required placeholder="_______" formControlName="name" class="text-white"
+                                   autofocus></ion-input>
                     </ion-col>
                 </ion-row>
             </ion-grid>
