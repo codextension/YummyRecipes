@@ -129,10 +129,10 @@ export class Neo4JService {
             let unit = ingredient.unit == null ? "" : ingredient.unit;
             let notes = ingredient.notes == null ? "" : `, notes:"${ingredient.notes}"`;
             query.push(
-                `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+                `merge(i:Ingredient {name:"${ingredient.name}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
             );
             query.push(
-                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}" ${notes}}]->(i)`
+                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {name:"${ingredient.name}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}" ${notes}}]->(i)`
             );
         }
 
@@ -150,7 +150,7 @@ export class Neo4JService {
     }
 
     public findIngredients(text: string): Promise<Ingredient[]> {
-        let query: string = `match (i:Ingredient) where lower(i.name) starts with "${text}" return i`;
+        let query: string = `match (i:Ingredient) where lower(i.name) starts with "${text.toLowerCase()}" return i`;
 
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
@@ -162,13 +162,13 @@ export class Neo4JService {
                     let output: Ingredient[] = [];
                     for (let res of queryResults[0].records) {
                         try {
-                            let ingredient: Ingredient = new Ingredient(res._fields[0].properties.id, res._fields[0].properties.name, res._fields[0].properties.quantity || null, res._fields[0].properties.unit || null, res._fields[0].properties.notes || null);
+                            let ingredient: Ingredient = new Ingredient(res._fields[0].properties.id, res._fields[0].properties.name, null, null, null);
                             output.push(ingredient);
                         } catch (ex) {
                             console.warn("wrong ingredient?");
                         }
-                        resolve(output);
                     }
+                    resolve(output);
                 }
             }).catch(err => {
                 reject(err);

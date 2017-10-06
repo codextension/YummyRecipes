@@ -201,9 +201,17 @@ export class RecipeManagementPage {
     }
 
     public filterIngredient(event: any) {
-        if (event.value != null && event.value.trim().length > 2) {
-            this.neo4jService.findIngredients(event.value).then((ingredients: Ingredient[]) => {
-                console.info(ingredients);
+        let input: any = event.currentTarget.querySelector("input");
+
+        if (event.keyCode != null && event.keyCode != 8 && input.value.length > 2) {
+            this.neo4jService.findIngredients(input.value).then((ingredients: Ingredient[]) => {
+                if (ingredients.length > 0) {
+                    let originalLength: number = input.value.length;
+                    if (originalLength < ingredients[0].name.length) {
+                        input.value = ingredients[0].name;
+                        input.setSelectionRange(originalLength, input.value.length);
+                    }
+                }
             }).catch(err => {
                 console.error(err);
             });
