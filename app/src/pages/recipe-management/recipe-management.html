@@ -163,7 +163,8 @@
                         <ion-input placeholder="__" formControlName="unit" class="text-white lowercase"></ion-input>
                     </ion-col>
                     <ion-col col-8>
-                        <ion-input required placeholder="_______" formControlName="name" class="text-white capitalize"
+                        <ion-input required placeholder="_______" formControlName="name"
+                                   (ionChange)="filterIngredient($event)" class="text-white capitalize"
                                    autofocus></ion-input>
                     </ion-col>
                 </ion-row>

@@ -40,7 +40,7 @@ export class Neo4JService {
     public ping(authInfo: any): Promise<string> {
         return new Promise((resolve, reject) => {
             this.query(["match (n) return count(n)"], authInfo).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
                     error.name = "CONN_ERROR";
                     reject(error);
@@ -54,7 +54,7 @@ export class Neo4JService {
     public select(query: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
@@ -70,7 +70,7 @@ export class Neo4JService {
 
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
@@ -138,13 +138,40 @@ export class Neo4JService {
 
         return new Promise((resolve, reject) => {
             this.query(query).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
                 } else {
                     resolve(queryResults[0].records[0]._fields[0]);
                 }
+            });
+        });
+    }
+
+    public findIngredients(text: string): Promise<Ingredient[]> {
+        let query: string = `match (i:Ingredient) where lower(i.name) starts with "${text}" return i`;
+
+        return new Promise((resolve, reject) => {
+            this.query([query]).then(queryResults => {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
+                    let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
+                    error.name = "CONN_ERROR";
+                    reject(error);
+                } else {
+                    let output: Ingredient[] = [];
+                    for (let res of queryResults[0].records) {
+                        try {
+                            let ingredient: Ingredient = new Ingredient(res._fields[0].properties.id, res._fields[0].properties.name, res._fields[0].properties.quantity || null, res._fields[0].properties.unit || null, res._fields[0].properties.notes || null);
+                            output.push(ingredient);
+                        } catch (ex) {
+                            console.warn("wrong ingredient?");
+                        }
+                        resolve(output);
+                    }
+                }
+            }).catch(err => {
+                reject(err);
             });
         });
     }

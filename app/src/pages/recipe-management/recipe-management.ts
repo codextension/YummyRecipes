@@ -200,6 +200,16 @@ export class RecipeManagementPage {
         }
     }
 
+    public filterIngredient(event: any) {
+        if (event.value != null && event.value.trim().length > 2) {
+            this.neo4jService.findIngredients(event.value).then((ingredients: Ingredient[]) => {
+                console.info(ingredients);
+            }).catch(err => {
+                console.error(err);
+            });
+        }
+    }
+
     edit() {
         this.haptic.selection(); //iOs
         this.deviceFeedback.haptic(1);
