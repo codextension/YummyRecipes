@@ -221,34 +221,38 @@ export class Neo4JService {
                             }
                         }
 
-                        let ingredientQuery: string[] = [];
-                        for (let out of output) {
-                            ingredientQuery.push(
-                                `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
-                            );
-                        }
+                        if (output.length == 0) {
+                            resolve(output);
+                        } else {
+                            let ingredientQuery: string[] = [];
+                            for (let out of output) {
+                                ingredientQuery.push(
+                                    `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
+                                );
+                            }
 
-                        this.query(ingredientQuery)
-                            .then(results => {
-                                for (let i = 0; i < results.length; i++) {
-                                    for (let res of results[i].records) {
-                                        let ing: Ingredient = new Ingredient(
-                                            res._fields[2].properties.id,
-                                            res._fields[2].properties.name,
-                                            res._fields[1].properties.quantity == null
-                                                ? ""
-                                                : res._fields[1].properties.quantity.low,
-                                            res._fields[1].properties.unit,
-                                            res._fields[1].properties.notes
-                                        );
-                                        output[i].ingredients.push(ing);
+                            this.query(ingredientQuery)
+                                .then(results => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        for (let res of results[i].records) {
+                                            let ing: Ingredient = new Ingredient(
+                                                res._fields[2].properties.id,
+                                                res._fields[2].properties.name,
+                                                res._fields[1].properties.quantity == null
+                                                    ? ""
+                                                    : res._fields[1].properties.quantity.low,
+                                                res._fields[1].properties.unit,
+                                                res._fields[1].properties.notes
+                                            );
+                                            output[i].ingredients.push(ing);
+                                        }
                                     }
-                                }
-                                resolve(output);
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
+                                    resolve(output);
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                });
+                        }
                     }
                 })
                 .catch(err => {

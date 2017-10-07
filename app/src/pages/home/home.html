@@ -29,6 +29,10 @@
             <img src="assets/imgs/no_conn.png" style="width: 50px; height: 50px">
             <br>{{error.name | translate}}
         </div>
+        <div style="text-align: center;padding-top: 10%;width: 100%"
+             *ngIf="error == null && (foundRecipes==null || foundRecipes.length==0)">
+            <img src="assets/imgs/empty_plate.jpg" style="width: 410px; height: 320px">
+        </div>
         <recipe-preview (onClick)="onClick($event)" (onFavToggle)="favouriteToggle($event)"
                         (onDeleted)="onDelete($event)" *ngFor="let recipe of foundRecipes"
                         [entity]="recipe"></recipe-preview>

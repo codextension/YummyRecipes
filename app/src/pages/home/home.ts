@@ -76,7 +76,7 @@ export class HomePage {
             .findRecipes(0,this.recipesToLoad, this.queryParam)
             .then(recipes => {
                 this.foundRecipes = recipes;
-                if (this.foundRecipes.length < this.recipesToLoad) {
+                if (this.foundRecipes != null && this.foundRecipes.length < this.recipesToLoad) {
                     this.scrollEnabled = false;
                 } else {
                     this.scrollEnabled = true;
@@ -96,7 +96,7 @@ export class HomePage {
             this.pageNumber = 0;
             this.neo4jService.findRecipes(0,this.recipesToLoad, this.queryParam).then(recipes => {
                 this.foundRecipes = recipes;
-                if (this.foundRecipes.length < this.recipesToLoad) {
+                if (this.foundRecipes != null && this.foundRecipes.length < this.recipesToLoad) {
                     this.scrollEnabled = false;
                 } else {
                     this.scrollEnabled = true;
