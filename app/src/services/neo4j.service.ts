@@ -121,15 +121,16 @@ export class Neo4JService {
         );
 
         for (let ingredient of entity.ingredients) {
+            ingredient.name = ingredient.name.toLowerCase().trim();
             let qty =
                 ingredient.quantity == null ||
                 ingredient.quantity.toString().trim().length == 0
                     ? ""
                     : "quantity:" + ingredient.quantity + ", ";
-            let unit = ingredient.unit == null ? "" : ingredient.unit;
+            let unit = ingredient.unit == null ? "" : ingredient.unit.toLowerCase().trim();
             let notes = ingredient.notes == null ? "" : `, notes:"${ingredient.notes}"`;
             query.push(
-                `merge(i:Ingredient {name:"${ingredient.name}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+                `merge(i:Ingredient {name:"${ingredient.name}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name.trim()}" return i.id`
             );
             query.push(
                 `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {name:"${ingredient.name}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}" ${notes}}]->(i)`
