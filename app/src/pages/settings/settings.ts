@@ -29,7 +29,7 @@ export class SettingsPage {
             password: [""]
         });
 
-        if (this.platform.is("core")) {
+        if (this.platform.is("core") || this.platform.is("mobileweb")) {
             this.storage
                 .get("settings")
                 .then((val: AuthInfo) => {
