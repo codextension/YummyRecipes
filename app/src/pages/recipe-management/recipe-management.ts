@@ -233,7 +233,7 @@ export class RecipeManagementPage {
             this.insomnia.allowSleepAgain()
                 .then(
                     () => console.log('success'),
-                    () => console.error('insomnia is not loaded')
+                    () => console.warn('insomnia is not loaded')
                 );
         }
     }
@@ -243,13 +243,13 @@ export class RecipeManagementPage {
             this.insomnia.keepAwake()
                 .then(
                     () => console.log('success'),
-                    () => console.error('insomnia is not loaded')
+                    () => console.warn('insomnia is not loaded')
                 );
         } else {
             this.insomnia.allowSleepAgain()
                 .then(
                     () => console.log('success'),
-                    () => console.error('insomnia is not loaded')
+                    () => console.warn('insomnia is not loaded')
                 );
         }
     }
