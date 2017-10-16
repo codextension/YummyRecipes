@@ -32,13 +32,13 @@
                         </ion-badge>
                     </ion-col>
 
-                    <ion-col col-3 (click)="editMode?showInput(recipe.duration,'duration',2):false">
-                        <ion-icon name='time'></ion-icon>
-                        <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
+                    <ion-col col-3  (click)="editMode?showInput(recipe.duration,'duration',2):false">
+                        <ion-icon style="top: 2px;position: relative;" name='time'></ion-icon>
+                        <span>{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
                     </ion-col>
                     <ion-col col-2 (click)="editMode?showInput(recipe.servings,'servings',2):false">
-                        <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
-                        <ion-icon name='people'></ion-icon>
+                        <span >{{recipe.servings==null?'--':recipe.servings}}</span>
+                        <ion-icon style="top: 2px;position: relative;" name='people'></ion-icon>
                     </ion-col>
                 </ion-row>
             </ion-grid>
