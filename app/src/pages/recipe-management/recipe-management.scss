@@ -45,11 +45,11 @@ page-recipe-management {
     opacity: 0.8;
   }
 
-  .lowercase input {
+  .lowercase input, .lowercase {
     text-transform: lowercase;
   }
 
-  .capitalize input {
+  .capitalize, .capitalize input {
     text-transform: capitalize;
   }
 

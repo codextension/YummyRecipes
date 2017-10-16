@@ -36,6 +36,18 @@
 
                     </ion-col>
                 </ion-row>
+                <ion-row>
+                    <ion-col col-11>
+                        <ion-badge (press)="deleteTag(i)" style="margin-left:5px"
+                                   *ngFor="let tag of recipe.tags; let i = index" item-end color="primary"
+                                   class="capitalize">{{tag}}
+                        </ion-badge>
+                    </ion-col>
+                    <ion-col col-1 *ngIf="editMode">
+                        <ion-badge (click)="editMode?showInput(recipe.tags,'tags',2):false" class="capitalize">+
+                        </ion-badge>
+                    </ion-col>
+                </ion-row>
             </ion-grid>
         </div>
 
@@ -59,8 +71,9 @@
 
                                 <ion-item>
                                     <ion-icon name='basket' item-start></ion-icon>
-                                    <span style="font-weight: bold">{{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
-                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}</span>{{ingredient.name}}
+                                    <span style="font-weight: bold" class="lowercase">{{(ingredient.quantity!=null? ingredient.quantity + ' ':'') +
+                                        (ingredient.unit!=null? ingredient.unit + ' ':'')}}</span><span
+                                        class="capitalize">{{ingredient.name}}</span>
                                     <ion-note item-end
                                               (click)="editMode?showInput(ingredient,'ingredients_notes',2):false">
                                         {{ingredient.notes || ("NO_NOTES" | translate)}}
@@ -68,7 +81,7 @@
                                 </ion-item>
                                 <ion-item-options side="right">
                                     <button [disabled]="!editMode" ion-button color="danger"
-                                            (click)="delete(ingredient,'ingredients')">
+                                            (click)="deleteItem(ingredient,'ingredients')">
                                         <ion-icon name="trash"></ion-icon>
                                         {{"DELETE" | translate}}
                                     </button>
@@ -93,7 +106,7 @@
                                 </ion-item>
                                 <ion-item-options *ngIf="editMode" side="right">
                                     <button ion-button color="danger"
-                                            (click)="delete(instruction,'instructions')">
+                                            (click)="deleteItem(instruction,'instructions')">
                                         <ion-icon name="trash"></ion-icon>
                                         {{"DELETE" | translate}}
                                     </button>
@@ -145,6 +158,8 @@
     </div>
     <form [formGroup]="recipeForm" *ngIf="editMode && inputMode" (ngSubmit)="apply(inputRef, recipeForm.value)">
         <ion-toolbar *ngIf="editMode && inputMode">
+            <ion-input *ngIf="inputRef=='tags'" formControlName="name" class="text-white capitalize"
+                       autofocus></ion-input>
             <ion-input *ngIf="inputRef=='name'" formControlName="name" class="text-white capitalize"
                        autofocus></ion-input>
             <ion-input *ngIf="inputRef=='ingredients_notes'" formControlName="notes" class="text-white"

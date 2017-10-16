@@ -29,8 +29,10 @@
   "IMAGE_FROM_DEVICE": "Bild von Gerät",
   "IMAGE_FROM_CAMERA": "Foto aufnehmen",
   "NO_CONNECTION": "Keine Verbindung",
+  "CONN_ERROR": "Keine Verbindung",
   "EMPTY_AUTH": "Keine Zugangdaten",
   "SAVING_WAIT": "Speichern, bitte warten ...",
   "EDIT": "Bearbeiten",
-  "NO_NOTES": "Keine Notiz"
+  "NO_NOTES": "Keine Notiz",
+  "ADD": "Hinzufügen"
 }

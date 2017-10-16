@@ -37,7 +37,7 @@ export class Neo4JService {
         return entity;
     }
 
-    public ping(authInfo: any): Promise<string> {
+    public count(authInfo: any): Promise<number> {
         return new Promise((resolve, reject) => {
             this.query(["match (n) return count(n)"], authInfo).then(queryResults => {
                 if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
@@ -45,7 +45,7 @@ export class Neo4JService {
                     error.name = "CONN_ERROR";
                     reject(error);
                 } else {
-                    resolve("pong");
+                    resolve(queryResults[0].records[0]._fields[0].low);
                 }
             });
         });
@@ -110,10 +110,14 @@ export class Neo4JService {
             entity.instructions.length > 0
                 ? 'r.instructions=["' + entity.instructions.join('","') + '"]'
                 : "r.instructions=[]";
+        let tags: string =
+            entity.tags.length > 0
+                ? 'r.tags=["' + entity.tags.join('","') + '"]'
+                : "r.tags=[]";
         let query: string[] = [
             `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
-            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
-            ""}", r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
+            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${tags}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
+            ""}", r.imageUrl="${entity.imageUrl}", ${tags}, ${instructions}, r.name="${entity.name}" return r.id`
         ];
 
         query.push(
@@ -208,7 +212,7 @@ export class Neo4JService {
                                         res._fields[0].properties.duration.low,
                                         res._fields[0].properties.notes,
                                         res._fields[0].properties.favourite,
-                                        [],
+                                        res._fields[0].properties.tags,
                                         res._fields[0].properties.instructions,
                                         [],
                                         res._fields[0].properties.imageUrl,

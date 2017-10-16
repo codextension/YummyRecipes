@@ -29,8 +29,10 @@
   "IMAGE_FROM_DEVICE": "Photo from device",
   "IMAGE_FROM_CAMERA": "Take a Photo",
   "NO_CONNECTION": "No connection",
+  "CONN_ERROR": "No connection",
   "SAVING_WAIT": "Saving, please wait ...",
   "EDIT": "Edit",
   "EMPTY_AUTH": "Authentication info not provided",
-  "NO_NOTES": "No note"
+  "NO_NOTES": "No note",
+  "ADD": "Add"
 }

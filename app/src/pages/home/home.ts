@@ -63,7 +63,6 @@ export class HomePage {
                 this.recipesToLoad = Math.ceil((width * height) / (400 * 400) + buffer);
                 this.reload();
             }).catch(err=>{
-                this.reload();
             });
         });
     }

@@ -32,7 +32,7 @@ import {Insomnia} from '@ionic-native/insomnia';
             state(
                 "shrink",
                 style({
-                    "padding-bottom": "100px"
+                    "padding-bottom": "130px"
                 })
             ),
             state(
@@ -153,6 +153,12 @@ export class RecipeManagementPage {
             case "name": {
                 this.recipeForm = this.formBuilder.group({
                     name: [item, [Validators.required, Validators.maxLength(40)]]
+                });
+                break;
+            }
+            case "tags": {
+                this.recipeForm = this.formBuilder.group({
+                    name: ["", [Validators.required, Validators.maxLength(10)]]
                 });
                 break;
             }
@@ -300,7 +306,11 @@ export class RecipeManagementPage {
         );
     }
 
-    delete(item: any, itemType: string) {
+    public deleteTag(i: number) {
+        this.recipe.tags.splice(i, 1);
+    }
+
+    public deleteItem(item: any, itemType: string) {
         if (itemType == "ingredients") {
             let index: number = this.recipe.ingredients.indexOf(item, 0);
             if (index > -1) {
@@ -314,7 +324,7 @@ export class RecipeManagementPage {
         }
     }
 
-    swipe(e: TouchEvent, when: string): void {
+    public swipe(e: TouchEvent, when: string): void {
         const coord: [number, number] = [
             e.changedTouches[0].pageX,
             e.changedTouches[0].pageY
@@ -351,6 +361,8 @@ export class RecipeManagementPage {
     apply(inputRef: string, form: any) {
         if (inputRef == "name") {
             this.recipe.name = form.name;
+        } else if (inputRef == "tags") {
+            this.recipe.tags.push(form.name);
         } else if (inputRef == "duration") {
             this.recipe.duration = form.duration;
         } else if (inputRef == "servings") {

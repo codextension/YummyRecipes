@@ -78,7 +78,7 @@ export class SettingsPage {
 
     saveSettings() {
         this.neo4jService
-            .ping(this.settingsForm.value)
+            .count(this.settingsForm.value)
             .then(() => {
                 if (this.platform.is("core") || this.platform.is("mobileweb")) {
                     if (this.settingsForm.value.serverUrl.endsWith("/")) {
