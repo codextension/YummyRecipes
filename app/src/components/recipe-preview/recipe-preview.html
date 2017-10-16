@@ -4,7 +4,9 @@
         <ion-backdrop style="opacity:0.35;" class="show-backdrop" *ngIf="showDeleteOption"></ion-backdrop>
     </div>
     <div class="card-fav">
-        <button (click)="toggleFavourite()" ion-button clear color="info" icon-start>
+        <ion-spinner class="fav-spinner" duration="1500" name="dots" *ngIf="loading"></ion-spinner>
+
+        <button *ngIf="!loading" (click)="toggleFavourite()" ion-button clear color="info" icon-start>
             <ion-icon name="{{entity.favourite==true?'heart':'heart-outline'}}"></ion-icon>
         </button>
     </div>

@@ -3,6 +3,12 @@ page-home {
     text-align: center;
   }
 
+  .centered-spinner {
+    text-align: center;
+    width: 100%;
+    margin-top: 30px;
+  }
+
   @media screen and (min-width: 576px) {
     .card-deck {
       display: -webkit-box;

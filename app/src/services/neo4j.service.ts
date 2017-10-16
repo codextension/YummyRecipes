@@ -17,15 +17,15 @@ export class Neo4JService {
 
     private static sanitize(entity: RecipeEntity): RecipeEntity {
         entity.name = entity.name.replace(/"/g, '').replace(/\\/g, "");
-        entity.notes = entity.notes.replace(/"/g, '').replace(/\\/g, "");
+        entity.notes = entity.notes != null ? entity.notes.replace(/"/g, '').replace(/\\/g, "") : null;
 
         for (let i = 0; i < entity.ingredients.length; i++) {
-            entity.ingredients[i].name = entity.ingredients[i].name
+            entity.ingredients[i].name = entity.ingredients[i].name != null ? entity.ingredients[i].name
                 .replace(/"/g, '')
-                .replace(/\\/g, "");
-            entity.ingredients[i].unit = entity.ingredients[i].unit
+                .replace(/\\/g, "") : null;
+            entity.ingredients[i].unit = entity.ingredients[i].unit != null ? entity.ingredients[i].unit
                 .replace(/"/g, '')
-                .replace(/\\/g, "");
+                .replace(/\\/g, "") : null;
         }
 
         for (let i = 0; i < entity.instructions.length; i++) {
@@ -37,15 +37,15 @@ export class Neo4JService {
         return entity;
     }
 
-    public ping(authInfo: any): Promise<string> {
+    public count(authInfo: any): Promise<number> {
         return new Promise((resolve, reject) => {
             this.query(["match (n) return count(n)"], authInfo).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
                     error.name = "CONN_ERROR";
                     reject(error);
                 } else {
-                    resolve("pong");
+                    resolve(queryResults[0].records[0]._fields[0].low);
                 }
             });
         });
@@ -54,7 +54,7 @@ export class Neo4JService {
     public select(query: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
@@ -70,12 +70,16 @@ export class Neo4JService {
 
         return new Promise((resolve, reject) => {
             this.query([query]).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
                 } else {
-                    resolve(Boolean(queryResults[0].records[0]._fields[0]));
+                    try {
+                        resolve(Boolean(queryResults[0].records[0]._fields[0]));
+                    } catch (e) {
+                        reject(e);
+                    }
                 }
             });
         });
@@ -106,10 +110,14 @@ export class Neo4JService {
             entity.instructions.length > 0
                 ? 'r.instructions=["' + entity.instructions.join('","') + '"]'
                 : "r.instructions=[]";
+        let tags: string =
+            entity.tags.length > 0
+                ? 'r.tags=["' + entity.tags.join('","') + '"]'
+                : "r.tags=[]";
         let query: string[] = [
             `merge(r:Recipe {id:"${entity.id}"}) ON CREATE SET r.id="${entity.id}", r.name="${entity.name}", r.imageUrl="${entity.imageUrl}", r.favourite=${entity.favourite}, r.notes="${entity.notes ||
-            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
-            ""}", r.imageUrl="${entity.imageUrl}", ${instructions}, r.name="${entity.name}" return r.id`
+            ""}", r.duration=${entity.duration}, r.servings=${entity.servings}, ${tags}, ${instructions} ON MATCH SET r.favourite=${entity.favourite}, r.servings=${entity.servings}, r.duration=${entity.duration}, r.notes="${entity.notes ||
+            ""}", r.imageUrl="${entity.imageUrl}", ${tags}, ${instructions}, r.name="${entity.name}" return r.id`
         ];
 
         query.push(
@@ -117,23 +125,25 @@ export class Neo4JService {
         );
 
         for (let ingredient of entity.ingredients) {
+            ingredient.name = ingredient.name.toLowerCase().trim();
             let qty =
                 ingredient.quantity == null ||
                 ingredient.quantity.toString().trim().length == 0
                     ? ""
                     : "quantity:" + ingredient.quantity + ", ";
-            let unit = ingredient.unit == null ? "" : ingredient.unit;
+            let unit = ingredient.unit == null ? "" : ingredient.unit.toLowerCase().trim();
+            let notes = ingredient.notes == null ? "" : `, notes:"${ingredient.notes}"`;
             query.push(
-                `merge(i:Ingredient {id:"${ingredient.id}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name}" return i.id`
+                `merge(i:Ingredient {name:"${ingredient.name}"}) ON CREATE SET i.id="${ingredient.id}", i.name="${ingredient.name}" ON MATCH SET i.name="${ingredient.name.trim()}" return i.id`
             );
             query.push(
-                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {id:"${ingredient.id}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}"}]->(i)`
+                `match (r:Recipe {id:"${entity.id}"}) match(i:Ingredient {name:"${ingredient.name}"}) create (r)-[:CONTAINS {${qty} unit:"${unit}" ${notes}}]->(i)`
             );
         }
 
         return new Promise((resolve, reject) => {
             this.query(query).then(queryResults => {
-                if (queryResults == undefined) {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
                     let error: InternalError = new InternalError(`something is wrong with your query <${query}>`, ErrorType.QUERY_ERROR);
                     error.name = "QUERY_ERROR";
                     reject(error);
@@ -144,16 +154,43 @@ export class Neo4JService {
         });
     }
 
-    public findRecipes(page: number, text?): Promise<RecipeEntity[]> {
+    public findIngredients(text: string): Promise<Ingredient[]> {
+        let query: string = `match (i:Ingredient) where lower(i.name) starts with "${text.toLowerCase()}" return i`;
+
+        return new Promise((resolve, reject) => {
+            this.query([query]).then(queryResults => {
+                if (queryResults == undefined || (queryResults.ok != null && !queryResults.ok)) {
+                    let error: InternalError = new InternalError("cannot connect to server.", ErrorType.CONN_ERROR);
+                    error.name = "CONN_ERROR";
+                    reject(error);
+                } else {
+                    let output: Ingredient[] = [];
+                    for (let res of queryResults[0].records) {
+                        try {
+                            let ingredient: Ingredient = new Ingredient(res._fields[0].properties.id, res._fields[0].properties.name, null, null, null);
+                            output.push(ingredient);
+                        } catch (ex) {
+                            console.warn("wrong ingredient?");
+                        }
+                    }
+                    resolve(output);
+                }
+            }).catch(err => {
+                reject(err);
+            });
+        });
+    }
+
+    public findRecipes(page: number, size: number = 5, text?): Promise<RecipeEntity[]> {
         let query: string = `match(r:Recipe) return r order by ID(r) skip ${page *
-        5} limit 5`;
+        size} limit ${size}`;
         if (text != null) {
             if (typeof text === "string") {
-                query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r order by ID(r) skip ${page *
-                5} limit 5`;
+                query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}') or '${text.toLowerCase()}' in(r.tags)  return r order by ID(r) skip ${page *
+                size} limit ${size}`;
             } else if (typeof text === "boolean" && text == true) {
                 query = `match(r:Recipe {favourite:${text}}) return r order by ID(r) skip ${page *
-                5} limit 5`;
+                size} limit ${size}`;
             }
         }
 
@@ -168,49 +205,58 @@ export class Neo4JService {
                         let output: RecipeEntity[] = [];
                         if (queryResults != null && queryResults.length > 0) {
                             for (let res of queryResults[0].records) {
-                                let re: RecipeEntity = new RecipeEntity(
-                                    res._fields[0].properties.id,
-                                    res._fields[0].properties.name,
-                                    res._fields[0].properties.duration.low,
-                                    res._fields[0].properties.notes,
-                                    res._fields[0].properties.favourite,
-                                    [],
-                                    res._fields[0].properties.instructions,
-                                    [],
-                                    res._fields[0].properties.imageUrl,
-                                    res._fields[0].properties.servings.low
-                                );
-                                output.push(re);
+                                try {
+                                    let re: RecipeEntity = new RecipeEntity(
+                                        res._fields[0].properties.id,
+                                        res._fields[0].properties.name,
+                                        res._fields[0].properties.duration.low,
+                                        res._fields[0].properties.notes,
+                                        res._fields[0].properties.favourite,
+                                        res._fields[0].properties.tags,
+                                        res._fields[0].properties.instructions,
+                                        [],
+                                        res._fields[0].properties.imageUrl,
+                                        res._fields[0].properties.servings.low
+                                    );
+                                    output.push(re);
+                                } catch (e) {
+                                    console.error(e);
+                                }
                             }
                         }
 
-                        let ingredientQuery: string[] = [];
-                        for (let out of output) {
-                            ingredientQuery.push(
-                                `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
-                            );
-                        }
+                        if (output.length == 0) {
+                            resolve(output);
+                        } else {
+                            let ingredientQuery: string[] = [];
+                            for (let out of output) {
+                                ingredientQuery.push(
+                                    `match(r:Recipe{id:"${out.id}"})-[c:CONTAINS]->(i:Ingredient) return r.id, c, i`
+                                );
+                            }
 
-                        this.query(ingredientQuery)
-                            .then(results => {
-                                for (let i = 0; i < results.length; i++) {
-                                    for (let res of results[i].records) {
-                                        let ing: Ingredient = new Ingredient(
-                                            res._fields[2].properties.id,
-                                            res._fields[2].properties.name,
-                                            res._fields[1].properties.quantity == null
-                                                ? ""
-                                                : res._fields[1].properties.quantity.low,
-                                            res._fields[1].properties.unit
-                                        );
-                                        output[i].ingredients.push(ing);
+                            this.query(ingredientQuery)
+                                .then(results => {
+                                    for (let i = 0; i < results.length; i++) {
+                                        for (let res of results[i].records) {
+                                            let ing: Ingredient = new Ingredient(
+                                                res._fields[2].properties.id,
+                                                res._fields[2].properties.name,
+                                                res._fields[1].properties.quantity == null
+                                                    ? ""
+                                                    : res._fields[1].properties.quantity.low,
+                                                res._fields[1].properties.unit,
+                                                res._fields[1].properties.notes
+                                            );
+                                            output[i].ingredients.push(ing);
+                                        }
                                     }
-                                }
-                                resolve(output);
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
+                                    resolve(output);
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                });
+                        }
                     }
                 })
                 .catch(err => {

@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams, Platform, ToastController} from "ionic-angular";
+import {NavController, Platform, ToastController} from "ionic-angular";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TranslateService} from "@ngx-translate/core";
 import {Neo4JService} from "../../services/neo4j.service";
@@ -16,7 +16,6 @@ export class SettingsPage {
     public settingsForm: FormGroup;
 
     constructor(public navCtrl: NavController,
-                public navParams: NavParams,
                 private formBuilder: FormBuilder,
                 public toastCtrl: ToastController,
                 private translate: TranslateService,
@@ -30,7 +29,7 @@ export class SettingsPage {
             password: [""]
         });
 
-        if (this.platform.is("core")) {
+        if (this.platform.is("core") || this.platform.is("mobileweb")) {
             this.storage
                 .get("settings")
                 .then((val: AuthInfo) => {
@@ -77,15 +76,14 @@ export class SettingsPage {
     ionViewDidLoad() {
     }
 
-    back() {
-        return this.navCtrl.getPrevious();
-    }
-
     saveSettings() {
         this.neo4jService
-            .ping(this.settingsForm.value)
+            .count(this.settingsForm.value)
             .then(() => {
-                if (this.platform.is("core")) {
+                if (this.platform.is("core") || this.platform.is("mobileweb")) {
+                    if (this.settingsForm.value.serverUrl.endsWith("/")) {
+                        this.settingsForm.value.serverUrl = this.settingsForm.value.serverUrl.substr(0, this.settingsForm.value.serverUrl.lastIndexOf("/"));
+                    }
                     this.storage
                         .set("settings", this.settingsForm.value)
                         .then(v => {

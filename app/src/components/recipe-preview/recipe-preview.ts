@@ -1,9 +1,10 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {Haptic, NavController} from "ionic-angular";
+import {Haptic} from "ionic-angular";
 import {RecipeEntity} from "../../entities/recipe-entity";
 import {DomSanitizer} from "@angular/platform-browser";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {SocialSharing} from "@ionic-native/social-sharing";
+import {Neo4JService} from "../../services/neo4j.service";
 
 @Component({
     selector: "recipe-preview",
@@ -16,13 +17,15 @@ export class RecipePreviewComponent {
     @Output() onClick: EventEmitter<RecipeEntity> = new EventEmitter();
 
     public showDeleteOption: boolean;
+    public loading: boolean;
 
-    constructor(public navCtrl: NavController,
-                private sanitizer: DomSanitizer,
+    constructor(private sanitizer: DomSanitizer,
                 private haptic: Haptic,
                 private deviceFeedback: DeviceFeedback,
-                private socialSharing: SocialSharing) {
+                private socialSharing: SocialSharing,
+                private neo4jService: Neo4JService) {
         this.showDeleteOption = false;
+        this.loading = false;
     }
 
     getBackground(image) {
@@ -46,6 +49,13 @@ export class RecipePreviewComponent {
 
     toggleFavourite() {
         this.onFavToggle.emit(this.entity);
+        this.loading = true;
+        this.neo4jService.setFavourite(this.entity.id, !this.entity.favourite).then(v => {
+            this.entity.favourite = v;
+            this.loading = false;
+        }).catch(err => {
+            this.loading = false;
+        });
     }
 
     displayDeleteOption() {

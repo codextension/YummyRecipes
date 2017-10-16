@@ -4,7 +4,7 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title *ngIf="!showSearchbar">{{queryParam?('FAVOURITE' | translate):('APP_TITLE' | translate)}}</ion-title>
-        <ion-buttons end *ngIf="!showSearchbar && error == null">
+        <ion-buttons end *ngIf="!showSearchbar">
             <button ion-button (click)="toggleSearchbar($event)">
                 <ion-icon name="search"></ion-icon>
             </button>
@@ -15,14 +15,19 @@
 
 </ion-header>
 <ion-content>
+
     <ion-refresher (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
-    <div card-group>
-        <div style="text-align: center;padding-top: 10%;width: 100%" *ngIf="error != null && error.type==2">
+    <div class="card-deck">
+        <div class="ym-spinner" *ngIf="reloading">
+            <ion-spinner class="centered-spinner"></ion-spinner>
+        </div>
+        <div style="text-align: center;padding-top: 10%;width: 100%"
+             *ngIf="error != null && (error.type==2 || error.type==1)">
             <img src="assets/imgs/no_conn.png" style="width: 50px; height: 50px">
-            <br>{{"NO_CONNECTION" | translate}}
+            <br>{{error.name | translate}}
         </div>
         <recipe-preview (onClick)="onClick($event)" (onFavToggle)="favouriteToggle($event)"
                         (onDeleted)="onDelete($event)" *ngFor="let recipe of foundRecipes"
@@ -32,7 +37,7 @@
             </ion-infinite-scroll-content>
         </ion-infinite-scroll>
     </div>
-    <ion-fab right bottom *ngIf="!showSearchbar && error == null">
+    <ion-fab right bottom *ngIf="!showSearchbar">
         <button (click)="newRecipe()" ion-fab>
             <ion-icon name="add"></ion-icon>
         </button>

@@ -1,11 +1,13 @@
 import {NgModule} from "@angular/core";
-import {CardGroupDirective} from "./card-group/card-group";
 import {FocuserDirective} from "./focuser/focuser";
+import {SelectTextDirective} from './select-text/select-text';
 
 @NgModule({
-    declarations: [CardGroupDirective, FocuserDirective],
+    declarations: [FocuserDirective,
+        SelectTextDirective],
     imports: [],
-    exports: [CardGroupDirective, FocuserDirective]
+    exports: [FocuserDirective,
+        SelectTextDirective]
 })
 export class DirectivesModule {
 }

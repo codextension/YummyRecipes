@@ -4,6 +4,8 @@ import {
     Content,
     Events,
     Haptic,
+    Loading,
+    LoadingController,
     NavController,
     NavParams,
     Popover,
@@ -11,7 +13,7 @@ import {
     Toast,
     ToastController
 } from "ionic-angular";
-import {RecipeEntity} from "../../entities/recipe-entity";
+import {Ingredient, RecipeEntity} from "../../entities/recipe-entity";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CameraPopoverComponent} from "../../components/camera-popover/camera-popover";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -19,6 +21,7 @@ import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {ImagesService} from "../../services/images.service";
 import {Neo4JService} from "../../services/neo4j.service";
 import {TranslateService} from "@ngx-translate/core";
+import {Insomnia} from '@ionic-native/insomnia';
 
 @Component({
     selector: "page-recipe-management",
@@ -29,7 +32,7 @@ import {TranslateService} from "@ngx-translate/core";
             state(
                 "shrink",
                 style({
-                    "padding-bottom": "100px"
+                    "padding-bottom": "130px"
                 })
             ),
             state(
@@ -51,16 +54,19 @@ export class RecipeManagementPage {
     public inputRef: string;
     public recipeContent: string;
     public recipeForm: FormGroup;
-    public tempImageUrl: string;
     @ViewChild(Content) content: Content;
     private actionMode: EditModeType;
     private swipeCoord?: [number, number];
     private swipeTime?: number;
     private popover: Popover;
     private toast: Toast;
+    private imageFile: File;
 
     constructor(public navCtrl: NavController,
                 public navParams: NavParams,
+                private insomnia: Insomnia,
+                public events: Events,
+                private loadingCtrl: LoadingController,
                 private popoverCtrl: PopoverController,
                 private sanitizer: DomSanitizer,
                 private haptic: Haptic,
@@ -69,11 +75,16 @@ export class RecipeManagementPage {
                 private imagesService: ImagesService,
                 private neo4jService: Neo4JService,
                 private toastCtrl: ToastController,
-                public events: Events,
                 private translate: TranslateService) {
         this.recipeContent = "ingredients";
-        this.recipe = this.navParams.get("entity");
-        this.tempImageUrl = this.recipe.imageUrl;
+        let tempRecipe: RecipeEntity = this.navParams.get("entity");
+        let tempInstructions: string[] = [];
+        tempInstructions = tempInstructions.concat(tempRecipe.instructions);
+        let tempTags: string[] = [];
+        tempTags = tempTags.concat(tempRecipe.tags);
+        let tempIngredients: Ingredient[] = [];
+        tempIngredients = tempIngredients.concat(tempRecipe.ingredients);
+        this.recipe = new RecipeEntity(tempRecipe.id, tempRecipe.name, tempRecipe.duration, tempRecipe.notes, tempRecipe.favourite, tempTags, tempInstructions, tempIngredients, tempRecipe.imageUrl, tempRecipe.servings);
         this.imgState = "shrink";
         this.inputMode = false;
         this.editMode = this.navParams.get("editMode") || false;
@@ -83,8 +94,15 @@ export class RecipeManagementPage {
         });
 
         this.popover.onDidDismiss((data, role) => {
-            if (data != null) {
-                this.tempImageUrl = data;
+            if (data != null && (typeof data === "string")) {
+                this.recipe.imageUrl = data;
+            } else if (data != null) {
+                let reader: FileReader = new FileReader();
+                reader.readAsDataURL(data);
+                this.imageFile = data;
+                reader.addEventListener("load", ev => {
+                    this.recipe.imageUrl = reader.result;
+                }, false);
             }
         });
 
@@ -94,7 +112,24 @@ export class RecipeManagementPage {
         });
     }
 
+    private static indexOf(objs: any[], id: number) {
+        for (let i = 0; i < objs.length; i++) {
+            if (objs[i].id == id) {
+                return i;
+            }
+        }
+    }
+
     ionViewDidLoad() {
+
+    }
+
+    ionViewWillLeave() {
+        this.insomnia.allowSleepAgain()
+            .then(
+                () => console.log('success'),
+                () => console.error('insomnia is not loaded')
+            );
     }
 
     getBackground(image) {
@@ -112,34 +147,41 @@ export class RecipeManagementPage {
     }
 
     showInput(item: any, input: string, mode: EditModeType) {
-        this.toggleMode(true);
+        this.inputMode = true;
         this.inputRef = input;
         this.actionMode = mode;
 
         switch (input) {
             case "name": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item, Validators.required]
+                    name: [item, [Validators.required, Validators.maxLength(40)]]
+                });
+                break;
+            }
+            case "tags": {
+                this.recipeForm = this.formBuilder.group({
+                    name: ["", [Validators.required, Validators.maxLength(8)]]
                 });
                 break;
             }
             case "duration": {
                 this.recipeForm = this.formBuilder.group({
-                    duration: [item, Validators.required]
+                    duration: [item, [Validators.required, Validators.min(5), Validators.max(600)]]
                 });
                 break;
             }
             case "servings": {
                 this.recipeForm = this.formBuilder.group({
-                    servings: [item, Validators.required]
+                    servings: [item, [Validators.required, Validators.min(1), Validators.max(20)]]
                 });
                 break;
             }
             case "ingredients": {
                 this.recipeForm = this.formBuilder.group({
-                    name: [item.name, Validators.required],
+                    name: [item.name, [Validators.required, Validators.maxLength(20)]],
                     quantity: [item.quantity],
                     unit: [item.unit],
+                    notes: [item.notes],
                     id: [item.id == null ? new Date().getTime() : item.id]
                 });
                 break;
@@ -151,6 +193,13 @@ export class RecipeManagementPage {
                 });
                 break;
             }
+            case "ingredients_notes": {
+                this.recipeForm = this.formBuilder.group({
+                    notes: [item.notes, [Validators.maxLength(15)]],
+                    id: item.id
+                });
+                break;
+            }
             case "notes": {
                 this.recipeForm = this.formBuilder.group({
                     notes: item
@@ -159,36 +208,95 @@ export class RecipeManagementPage {
         }
     }
 
+    public filterIngredient(event: any) {
+        let input: any = event.currentTarget.querySelector("input");
+        let value: string = input.value.substr(0, input.selectionStart) + event.data;
+        if (value.length > 2 && event.data.length > 0) {
+            this.neo4jService.findIngredients(value).then((ingredients: Ingredient[]) => {
+                if (ingredients.length > 0) {
+                    let originalLength: number = value.length;
+                    if (originalLength < ingredients[0].name.length) {
+                        input.value = ingredients[0].name;
+                        input.setSelectionRange(originalLength, input.value.length);
+                    }
+                }
+            }).catch(err => {
+                console.error(err);
+            });
+        }
+    }
+
     edit() {
         this.haptic.selection(); //iOs
         this.deviceFeedback.haptic(1);
 
         this.editMode = !this.editMode;
+        if (this.editMode) {
+            this.insomnia.allowSleepAgain()
+                .then(
+                    () => console.log('success'),
+                    () => console.warn('insomnia is not loaded')
+                );
+        }
     }
 
-    save() {
-        this.editMode = false;
-        this.toggleMode(false);
-
-        if (
-            this.tempImageUrl.indexOf("no_image.jpg") > -1 ||
-            this.tempImageUrl.startsWith("http")
-        ) {
-            this.recipe.imageUrl = this.tempImageUrl;
-            this.neo4jService.saveRecipe(this.recipe).then(v => {
-                this.showToast("DATA_SAVED");
-                this.events.publish("recipe:saved", this.recipe);
-            });
+    public toggleLock(event: any) {
+        if (event.value) {
+            this.insomnia.keepAwake()
+                .then(
+                    () => console.log('success'),
+                    () => console.warn('insomnia is not loaded')
+                );
         } else {
-            this.recipe.imageUrl = this.tempImageUrl;
-            this.imagesService.save(this.recipe.imageUrl).then(res => {
-                this.recipe.imageUrl = res;
-                this.neo4jService.saveRecipe(this.recipe).then(v => {
-                    this.showToast("DATA_SAVED");
-                    this.events.publish("recipe:saved", this.recipe);
-                });
-            });
+            this.insomnia.allowSleepAgain()
+                .then(
+                    () => console.log('success'),
+                    () => console.warn('insomnia is not loaded')
+                );
         }
+    }
+
+    async save() {
+        let saving_wait = await this.getTranslation("SAVING_WAIT");
+        let loading: Loading = this.loadingCtrl.create({content: saving_wait});
+        loading.present();
+        if (
+            this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
+            this.recipe.imageUrl.startsWith("http")
+        ) {
+            this.saveRecipe(loading);
+        } else {
+            if (this.imageFile != null) {
+                this.imagesService
+                    .upload(this.imageFile)
+                    .then(res => {
+                        this.recipe.imageUrl = res;
+                        this.saveRecipe(loading);
+                    })
+                    .catch(err => {
+                        loading.dismissAll();
+                    });
+            } else {
+                this.imagesService.save(this.recipe.imageUrl).then(res => {
+                    this.recipe.imageUrl = res;
+                    this.saveRecipe(loading);
+                }).catch(err => {
+                    loading.dismissAll();
+                });
+            }
+        }
+    }
+
+    private saveRecipe(loading: Loading) {
+        this.neo4jService.saveRecipe(this.recipe).then(v => {
+            this.showToast("DATA_SAVED");
+            this.editMode = false;
+            this.toggleMode(false);
+            loading.dismissAll();
+            this.events.publish("recipe:saved", this.recipe);
+        }).catch(err => {
+            loading.dismissAll();
+        });
     }
 
     public canSave(): boolean {
@@ -200,34 +308,11 @@ export class RecipeManagementPage {
         );
     }
 
-    apply(inputRef: string, form: any) {
-        if (inputRef == "name") {
-            this.recipe.name = form.name;
-        } else if (inputRef == "duration") {
-            this.recipe.duration = form.duration;
-        } else if (inputRef == "servings") {
-            this.recipe.servings = form.servings;
-        } else if (inputRef == "ingredients") {
-            if (this.actionMode == EditModeType.UPDATE) {
-                let index: number = this.indexOf(this.recipe.ingredients, form.id);
-                this.recipe.ingredients[index] = form;
-            } else {
-                form.id = this.uuidv4();
-                this.recipe.ingredients.push(form);
-            }
-        } else if (inputRef == "instructions") {
-            if (this.actionMode == EditModeType.UPDATE) {
-                this.recipe.instructions[form.order] = form.description;
-            } else {
-                this.recipe.instructions.push(form.description);
-            }
-        } else if (inputRef == "notes") {
-            this.recipe.notes = form.notes;
-        }
-        this.toggleMode(false);
+    public deleteTag(i: number) {
+        this.recipe.tags.splice(i, 1);
     }
 
-    delete(item: any, itemType: string) {
+    public deleteItem(item: any, itemType: string) {
         if (itemType == "ingredients") {
             let index: number = this.recipe.ingredients.indexOf(item, 0);
             if (index > -1) {
@@ -241,7 +326,7 @@ export class RecipeManagementPage {
         }
     }
 
-    swipe(e: TouchEvent, when: string): void {
+    public swipe(e: TouchEvent, when: string): void {
         const coord: [number, number] = [
             e.changedTouches[0].pageX,
             e.changedTouches[0].pageY
@@ -275,6 +360,43 @@ export class RecipeManagementPage {
         }
     }
 
+    apply(inputRef: string, form: any) {
+        if (inputRef == "name") {
+            this.recipe.name = form.name;
+        } else if (inputRef == "tags") {
+            this.recipe.tags.push(form.name.toLowerCase());
+        } else if (inputRef == "duration") {
+            this.recipe.duration = form.duration;
+        } else if (inputRef == "servings") {
+            this.recipe.servings = form.servings;
+        } else if (inputRef == "ingredients") {
+            if (this.actionMode == EditModeType.UPDATE) {
+                let index: number = RecipeManagementPage.indexOf(this.recipe.ingredients, form.id);
+                this.recipe.ingredients[index] = form;
+            } else {
+                form.id = this.uuidv4();
+                this.recipe.ingredients.push(form);
+            }
+        } else if (inputRef == "ingredients_notes") {
+            let index: number = RecipeManagementPage.indexOf(this.recipe.ingredients, form.id);
+            this.recipe.ingredients[index].notes = form.notes;
+        } else if (inputRef == "instructions") {
+            if (this.actionMode == EditModeType.UPDATE) {
+                this.recipe.instructions[form.order] = form.description;
+            } else {
+                this.recipe.instructions.push(form.description);
+            }
+        } else if (inputRef == "notes") {
+            this.recipe.notes = form.notes;
+        }
+        this.toggleMode(false);
+    }
+
+    private async getTranslation(key: string): Promise<string> {
+        let response = await this.translate.get(key).first().toPromise();
+        return response;
+    }
+
     private showToast(message: string) {
         this.translate.get(message).subscribe(value => {
             this.toast.setMessage(value);
@@ -282,17 +404,9 @@ export class RecipeManagementPage {
         });
     }
 
-    private indexOf(objs: any[], id: number) {
-        for (let i = 0; i < objs.length; i++) {
-            if (objs[i].id == id) {
-                return i;
-            }
-        }
-    }
-
     private uuidv4(): string {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-            var r = (Math.random() * 16) | 0,
+            let r = (Math.random() * 16) | 0,
                 v = c == "x" ? r : (r & 0x3) | 0x8;
             return v.toString(16);
         });

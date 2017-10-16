@@ -15,7 +15,7 @@ export class ConnectionService {
     public withCredentials(): Promise<AuthInfo> {
         return new Promise((resolve, reject) => {
             let authInfo: AuthInfo;
-            if (this.platform.is("core")) {
+            if (this.platform.is("core") || this.platform.is("mobileweb")) {
                 this.storage
                     .get("settings")
                     .then((val: AuthInfo) => {
@@ -27,7 +27,9 @@ export class ConnectionService {
                             resolve(val);
                         }
                     })
-                    .catch(err => {
+                    .catch(ex => {
+                        let err: InternalError = new InternalError("empty authentication not allowed", ErrorType.EMPTY_AUTH);
+                        err.name = "EMPTY_AUTH";
                         reject(err);
                     });
             } else {

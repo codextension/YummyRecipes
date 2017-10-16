@@ -15,7 +15,7 @@ export class MyApp {
 
     rootPage: any = HomePage;
 
-    pages: Array<{ title: string; icon: string; component: any }>;
+    pages: Array<{ title: string; icon: string; component: any, favourite: boolean }>;
 
     constructor(private platform: Platform,
                 private translate: TranslateService,
@@ -26,9 +26,9 @@ export class MyApp {
         this.translate.use(window.navigator.language);
         // used for an example of ngFor and navigation
         this.pages = [
-            {title: "HOME", icon: "home", component: HomePage},
-            {title: "FAVOURITE", icon: "heart", component: HomePage},
-            {title: "SETTINGS", icon: "settings", component: SettingsPage}
+            {title: "HOME", icon: "home", component: HomePage, favourite: null},
+            {title: "FAVOURITE", icon: "heart", component: HomePage, favourite: true},
+            {title: "SETTINGS", icon: "settings", component: SettingsPage, favourite: null}
         ];
     }
 
@@ -36,18 +36,14 @@ export class MyApp {
         this.platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
-            this.statusBar.styleDefault();
+            this.statusBar.backgroundColorByHexString("#bf2608");
             this.splashScreen.hide();
         });
     }
 
     openPage(page) {
         if (page.component == HomePage) {
-            if (page.title == "FAVOURITE") {
-                this.nav.setRoot(page.component, {favourites: true});
-            } else {
-                this.nav.setRoot(page.component);
-            }
+            this.nav.setRoot(page.component, {favourites: page.favourite});
         } else {
             this.nav.push(page.component);
         }
