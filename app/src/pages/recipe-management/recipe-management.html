@@ -37,13 +37,13 @@
                     </ion-col>
                 </ion-row>
                 <ion-row>
-                    <ion-col col-11>
-                        <ion-badge (press)="deleteTag(i)" style="margin-left:5px"
+                    <ion-col>
+                        <ion-badge (press)="editMode?deleteTag(i):false" style="margin-left:5px"
                                    *ngFor="let tag of recipe.tags; let i = index" item-end color="primary"
                                    class="capitalize">{{tag}}
                         </ion-badge>
                     </ion-col>
-                    <ion-col col-1 *ngIf="editMode">
+                    <ion-col col-1 *ngIf="editMode && recipe.tags != null && recipe.tags.length<4">
                         <ion-badge (click)="editMode?showInput(recipe.tags,'tags',2):false" class="capitalize">+
                         </ion-badge>
                     </ion-col>
