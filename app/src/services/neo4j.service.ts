@@ -186,7 +186,7 @@ export class Neo4JService {
         size} limit ${size}`;
         if (text != null) {
             if (typeof text === "string") {
-                query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}')  return r order by ID(r) skip ${page *
+                query = `match(r:Recipe) where lower(r.name) contains('${text.toLowerCase()}') or lower(r.description) contains('${text.toLowerCase()}') or '${text.toLowerCase()}' in(r.tags)  return r order by ID(r) skip ${page *
                 size} limit ${size}`;
             } else if (typeof text === "boolean" && text == true) {
                 query = `match(r:Recipe {favourite:${text}}) return r order by ID(r) skip ${page *

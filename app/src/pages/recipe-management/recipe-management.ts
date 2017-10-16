@@ -364,7 +364,7 @@ export class RecipeManagementPage {
         if (inputRef == "name") {
             this.recipe.name = form.name;
         } else if (inputRef == "tags") {
-            this.recipe.tags.push(form.name);
+            this.recipe.tags.push(form.name.toLowerCase());
         } else if (inputRef == "duration") {
             this.recipe.duration = form.duration;
         } else if (inputRef == "servings") {
