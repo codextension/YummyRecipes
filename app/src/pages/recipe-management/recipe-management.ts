@@ -160,7 +160,7 @@ export class RecipeManagementPage {
             }
             case "tags": {
                 this.recipeForm = this.formBuilder.group({
-                    name: ["", [Validators.required, Validators.maxLength(10)]]
+                    name: ["", [Validators.required, Validators.maxLength(8)]]
                 });
                 break;
             }

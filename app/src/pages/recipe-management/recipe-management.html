@@ -20,32 +20,25 @@
              [style.background-image]="getBackground(recipe.imageUrl)">
             <ion-grid class="bottom-of-div">
                 <ion-row>
-                    <ion-col col-5>
 
-                    </ion-col>
-
-                    <ion-col col-4 (click)="editMode?showInput(recipe.duration,'duration',2):false">
-                        <ion-icon name='time'></ion-icon>
-                        <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
-                    </ion-col>
-                    <ion-col col-2 (click)="editMode?showInput(recipe.servings,'servings',2):false">
-                        <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
-                        <ion-icon name='people'></ion-icon>
-                    </ion-col>
-                    <ion-col col-1>
-
-                    </ion-col>
-                </ion-row>
-                <ion-row>
                     <ion-col>
                         <ion-badge (press)="editMode?deleteTag(i):false" style="margin-left:5px"
                                    *ngFor="let tag of recipe.tags; let i = index" item-end color="primary"
                                    class="capitalize">{{tag}}
                         </ion-badge>
                     </ion-col>
-                    <ion-col col-1 *ngIf="editMode && recipe.tags != null && recipe.tags.length<4">
+                    <ion-col col-1 *ngIf="editMode && recipe.tags != null && recipe.tags.length<2">
                         <ion-badge (click)="editMode?showInput(recipe.tags,'tags',2):false" class="capitalize">+
                         </ion-badge>
+                    </ion-col>
+
+                    <ion-col col-3 (click)="editMode?showInput(recipe.duration,'duration',2):false">
+                        <ion-icon name='time'></ion-icon>
+                        <span class="label">{{recipe.duration==null?'--':(recipe.duration|time)}}</span>
+                    </ion-col>
+                    <ion-col col-2 (click)="editMode?showInput(recipe.servings,'servings',2):false">
+                        <span class="label">{{recipe.servings==null?'--':recipe.servings}}</span>
+                        <ion-icon name='people'></ion-icon>
                     </ion-col>
                 </ion-row>
             </ion-grid>
