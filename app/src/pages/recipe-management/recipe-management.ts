@@ -80,9 +80,11 @@ export class RecipeManagementPage {
         let tempRecipe: RecipeEntity = this.navParams.get("entity");
         let tempInstructions: string[] = [];
         tempInstructions = tempInstructions.concat(tempRecipe.instructions);
+        let tempTags: string[] = [];
+        tempTags = tempTags.concat(tempRecipe.tags);
         let tempIngredients: Ingredient[] = [];
         tempIngredients = tempIngredients.concat(tempRecipe.ingredients);
-        this.recipe = new RecipeEntity(tempRecipe.id, tempRecipe.name, tempRecipe.duration, tempRecipe.notes, tempRecipe.favourite, tempRecipe.tags, tempInstructions, tempIngredients, tempRecipe.imageUrl, tempRecipe.servings);
+        this.recipe = new RecipeEntity(tempRecipe.id, tempRecipe.name, tempRecipe.duration, tempRecipe.notes, tempRecipe.favourite, tempTags, tempInstructions, tempIngredients, tempRecipe.imageUrl, tempRecipe.servings);
         this.imgState = "shrink";
         this.inputMode = false;
         this.editMode = this.navParams.get("editMode") || false;
