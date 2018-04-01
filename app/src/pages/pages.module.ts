@@ -1,8 +1,6 @@
 import {NgModule} from "@angular/core";
 import {IonicModule} from "ionic-angular";
-import {Http, HttpModule, JsonpModule} from "@angular/http";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {TranslateHttpLoader} from "../app/http-loader";
+import {HttpClientJsonpModule, HttpClientModule} from "@angular/common/http";
 import {PipesModule} from "../pipes/pipes.module";
 import {DirectivesModule} from "../directives/directives.module";
 import {HomePage} from "./home/home";
@@ -16,16 +14,9 @@ import {ComponentsModule} from "../components/components.module";
         PipesModule,
         DirectivesModule,
         IonicModule,
-        HttpModule,
+        HttpClientModule,
         ComponentsModule,
-        JsonpModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [Http]
-            }
-        })
+        HttpClientJsonpModule
     ],
     entryComponents: [HomePage, SettingsPage, RecipeManagementPage],
     exports: [HomePage, SettingsPage, RecipeManagementPage]
@@ -33,6 +24,3 @@ import {ComponentsModule} from "../components/components.module";
 export class PagesModule {
 }
 
-export function createTranslateLoader(http: Http) {
-    return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
-}

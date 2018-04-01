@@ -1,5 +1,5 @@
 import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig} from "@angular/platform-browser";
-import {ErrorHandler, NgModule} from "@angular/core";
+import {ErrorHandler, LOCALE_ID, NgModule} from "@angular/core";
 import {IonicApp, IonicErrorHandler, IonicModule} from "ionic-angular";
 import {IonicStorageModule} from "@ionic/storage";
 import {Camera} from "@ionic-native/camera";
@@ -10,9 +10,7 @@ import {StatusBar} from "@ionic-native/status-bar";
 import {SplashScreen} from "@ionic-native/splash-screen";
 import {ScreenOrientation} from "@ionic-native/screen-orientation";
 import {PagesModule} from "../pages/pages.module";
-import {Http, HttpModule, JsonpModule} from "@angular/http";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {TranslateHttpLoader} from "./http-loader";
+import {HttpClientJsonpModule, HttpClientModule} from "@angular/common/http";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {Insomnia} from '@ionic-native/insomnia';
 import {PipesModule} from "../pipes/pipes.module";
@@ -32,8 +30,8 @@ export class MyHammerConfig extends HammerGestureConfig {
 @NgModule({
     declarations: [MyApp],
     imports: [
-        HttpModule,
-        JsonpModule,
+        HttpClientModule,
+        HttpClientJsonpModule,
         PagesModule,
         BrowserModule,
         BrowserAnimationsModule,
@@ -45,13 +43,6 @@ export class MyHammerConfig extends HammerGestureConfig {
         IonicStorageModule.forRoot({
             name: "__yr",
             driverOrder: ["indexeddb", "sqlite", "websql"]
-        }),
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [Http]
-            }
         })
     ],
     bootstrap: [IonicApp],
@@ -68,7 +59,8 @@ export class MyHammerConfig extends HammerGestureConfig {
         {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig},
         StatusBar,
         SplashScreen,
-        {provide: ErrorHandler, useClass: IonicErrorHandler}
+        {provide: ErrorHandler, useClass: IonicErrorHandler},
+        {provide: LOCALE_ID, useValue: 'en-US'}
     ]
 })
 export class AppModule {
@@ -77,8 +69,4 @@ export class AppModule {
             console.warn("cannot lock the screen rotation");
         });
     }
-}
-
-export function createTranslateLoader(http: Http) {
-    return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }

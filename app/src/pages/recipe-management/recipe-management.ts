@@ -20,7 +20,6 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {ImagesService} from "../../services/images.service";
 import {Neo4JService} from "../../services/neo4j.service";
-import {TranslateService} from "@ngx-translate/core";
 import {Insomnia} from '@ionic-native/insomnia';
 
 @Component({
@@ -74,8 +73,7 @@ export class RecipeManagementPage {
                 private formBuilder: FormBuilder,
                 private imagesService: ImagesService,
                 private neo4jService: Neo4JService,
-                private toastCtrl: ToastController,
-                private translate: TranslateService) {
+                private toastCtrl: ToastController) {
         this.recipeContent = "ingredients";
         let tempRecipe: RecipeEntity = this.navParams.get("entity");
         let tempInstructions: string[] = [];
@@ -257,7 +255,7 @@ export class RecipeManagementPage {
     }
 
     async save() {
-        let saving_wait = await this.getTranslation("SAVING_WAIT");
+        let saving_wait = "--" // await this.getTranslation("SAVING_WAIT");
         let loading: Loading = this.loadingCtrl.create({content: saving_wait});
         loading.present();
         if (
@@ -392,16 +390,16 @@ export class RecipeManagementPage {
         this.toggleMode(false);
     }
 
-    private async getTranslation(key: string): Promise<string> {
-        let response = await this.translate.get(key).first().toPromise();
-        return response;
-    }
+    // private async getTranslation(key: string): Promise<string> {
+    //     let response = await this.translate.get(key).first().toPromise();
+    //     return response;
+    // }
 
     private showToast(message: string) {
-        this.translate.get(message).subscribe(value => {
-            this.toast.setMessage(value);
-            this.toast.present();
-        });
+        // this.translate.get(message).subscribe(value => {
+        //     this.toast.setMessage(value);
+        //     this.toast.present();
+        // });
     }
 
     private uuidv4(): string {

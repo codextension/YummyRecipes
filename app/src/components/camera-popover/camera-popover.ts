@@ -1,14 +1,12 @@
 import {Component} from "@angular/core";
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {NavParams, Platform, ViewController} from "ionic-angular";
-import {RecipeEntity} from "../../entities/recipe-entity";
 
 @Component({
     selector: "camera-popover",
     templateUrl: "camera-popover.html"
 })
 export class CameraPopoverComponent {
-    private recipe: RecipeEntity;
 
     private cameraOptions: CameraOptions = {
         quality: 60,
@@ -38,7 +36,6 @@ export class CameraPopoverComponent {
                 public navParams: NavParams,
                 public view: ViewController,
                 public platform: Platform) {
-        this.recipe = navParams.data.recipe;
     }
 
     public makeScreenshot() {

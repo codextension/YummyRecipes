@@ -1,4 +1,4 @@
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Ingredient, RecipeEntity} from "../entities/recipe-entity";
@@ -11,7 +11,7 @@ import {ErrorType, InternalError} from "./internal-error";
 
 @Injectable()
 export class Neo4JService {
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private connectionService: ConnectionService) {
     }
 
@@ -295,13 +295,13 @@ export class Neo4JService {
 
     private postData(val: AuthInfo, q: string[]): Promise<any> {
         return new Promise((resolve, reject) => {
-            let _headers = new Headers({
+            let _headers = new HttpHeaders({
                 "Content-Type": "application/json",
                 authorization: "Basic " + window.btoa(val.username + ":" + val.password)
             });
-            let options = new RequestOptions({
+            let options = {
                 headers: _headers
-            });
+            };
             this.http
                 .post(val.serverUrl + "/db/query", {query: q}, options)
                 .timeout(5000)
@@ -315,7 +315,7 @@ export class Neo4JService {
         });
     }
 
-    private queryResuts(response: Response): string {
-        return response.json();
+    private queryResuts(response: HttpResponse<any>): string {
+        return response.body.json();
     }
 }

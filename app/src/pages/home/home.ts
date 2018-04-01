@@ -18,7 +18,7 @@ export class HomePage {
     private pageNumber: number = 0;
     private recipesToLoad:number=5;
     private queryParam: any;
-    private error: InternalError;
+    public error: InternalError;
     public reloading: boolean;
 
     constructor(public navCtrl: NavController,
