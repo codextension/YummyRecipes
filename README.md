@@ -4,4 +4,4 @@ https://github.com/codeXtension/YummyRecipes/wiki
 
 
 api parameters: 
---store <store_location> --api_user <username> --api_pwd <pwd> --neo_user <username> --neo_pwd <pwd>
+--store /home/elie/store --api_user elie --api_pwd elie --neo_user neo4j --neo_pwd neo4j

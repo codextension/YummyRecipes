@@ -5,6 +5,7 @@ import {Neo4JService} from "../../services/neo4j.service";
 import {AuthInfo} from "../../services/auth-info";
 import {SecureStorage, SecureStorageObject} from "@ionic-native/secure-storage";
 import {Storage} from "@ionic/storage";
+import {LocalisationService} from "../../services/localisation.service";
 
 @Component({
     selector: "page-settings",
@@ -18,6 +19,7 @@ export class SettingsPage {
                 private formBuilder: FormBuilder,
                 public toastCtrl: ToastController,
                 private secureStorage: SecureStorage,
+                private translate: LocalisationService,
                 private neo4jService: Neo4JService,
                 private storage: Storage,
                 private platform: Platform) {
@@ -85,15 +87,15 @@ export class SettingsPage {
                     this.storage
                         .set("settings", this.settingsForm.value)
                         .then(v => {
-                            // this.translate.get("SETTINGS_SAVED_SUCCESS").subscribe(value => {
-                            //     this.showToast(value);
-                            //     return this.navCtrl.goToRoot(null);
-                            // });
+                            this.translate.get("SETTINGS_SAVED_SUCCESS").then(value => {
+                                this.showToast(value);
+                                return this.navCtrl.goToRoot(null);
+                            });
                         })
                         .catch(err => {
-                            // this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
-                            //     this.showToast(value);
-                            // });
+                            this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                                this.showToast(value);
+                            });
                         });
                 } else {
                     this.secureStorage
@@ -103,33 +105,33 @@ export class SettingsPage {
                                 .set("settings", JSON.stringify(this.settingsForm.value))
                                 .then(
                                     data => {
-                                        // this.translate
-                                        // .get("SETTINGS_SAVED_SUCCESS")
-                                        // .subscribe(value => {
-                                        //     this.showToast(value);
-                                        //     return this.navCtrl.goToRoot(null);
-                                        // });
+                                        this.translate
+                                            .get("SETTINGS_SAVED_SUCCESS")
+                                            .then(value => {
+                                                this.showToast(value);
+                                                return this.navCtrl.goToRoot(null);
+                                            });
                                     },
                                     error => {
-                                        // this.translate
-                                        //     .get("SETTINGS_SAVED_FAILED")
-                                        //     .subscribe(value => {
-                                        //         this.showToast(value);
-                                        //     });
+                                        this.translate
+                                            .get("SETTINGS_SAVED_FAILED")
+                                            .then(value => {
+                                                this.showToast(value);
+                                            });
                                     }
                                 );
                         })
                         .catch(err => {
-                            // this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
-                            //     this.showToast(value);
-                            // });
+                            this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                                this.showToast(value);
+                            });
                         });
                 }
             })
             .catch(err => {
-                // this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
-                //     this.showToast(value);
-                // });
+                this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                    this.showToast(value);
+                });
             });
     }
 }

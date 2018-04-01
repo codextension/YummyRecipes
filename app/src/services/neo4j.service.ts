@@ -315,7 +315,7 @@ export class Neo4JService {
         });
     }
 
-    private queryResuts(response: HttpResponse<any>): string {
-        return response.body.json();
+    private queryResuts(response: HttpResponse<any>): any {
+        return response;
     }
 }

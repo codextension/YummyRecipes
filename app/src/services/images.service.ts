@@ -75,7 +75,7 @@ export class ImagesService {
                 let options = {headers: headers};
                 this.http
                     .post(val.serverUrl + "/images/upload", formData, options)
-                    .map((res: HttpResponse<any>) => res.body.json())
+                    .map((res: HttpResponse<any>) => res)
                     .catch(error => Observable.throw(error))
                     .subscribe(
                         data => {
