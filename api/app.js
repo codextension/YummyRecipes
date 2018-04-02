@@ -84,7 +84,7 @@ app.use(
 
 passport.use(
     new BasicStrategy(function(username, password, done) {
-        if (username == API_USERNAME) {
+        if (username == API_USERNAME && password == API_PASSWORD) {
             return done(null, username, API_PASSWORD);
         } else {
             return done("Wrong credentials.");
