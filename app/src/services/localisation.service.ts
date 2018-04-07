@@ -4,26 +4,33 @@ import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class LocalisationService {
+    private localisationMap: Map<string, any>;
 
     constructor(private http: HttpClient) {
+        this.localisationMap = new Map<string, any>();
     };
 
     public get(value: string): Promise<string> {
         let lang: string = navigator.language;
 
         return new Promise<string>((accept, reject) => {
-            this.getJSON(lang).toPromise().then(localisations => {
-                    accept(localisations.value[value]);
-                }
-                , error => {
-                    this.getJSON('en-US').toPromise().then(localisations => {
+            if (!this.localisationMap.has(lang)) {
+                this.getJSON(lang).toPromise().then(localisations => {
+                        this.localisationMap.set(lang, localisations.value);
                         accept(localisations.value[value]);
-                    }, error2 => {
-                        reject(value);
-                        console.error(error2);
-                    });
-                }
-            )
+                    }
+                    , error => {
+                        this.getJSON('en-US').toPromise().then(localisations => {
+                            accept(localisations.value[value]);
+                        }, error2 => {
+                            reject(value);
+                            console.error(error2);
+                        });
+                    }
+                )
+            } else {
+                accept(this.localisationMap.get(lang)[value]);
+            }
         });
     }
 
