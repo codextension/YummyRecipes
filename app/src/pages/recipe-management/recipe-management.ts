@@ -105,11 +105,6 @@ export class RecipeManagementPage {
                 }, false);
             }
         });
-
-        this.toast = this.toastCtrl.create({
-            duration: 2000,
-            position: "top"
-        });
     }
 
     private static indexOf(objs: any[], id: number) {
@@ -264,14 +259,18 @@ export class RecipeManagementPage {
             this.recipe.imageUrl.indexOf("no_image.jpg") > -1 ||
             this.recipe.imageUrl.startsWith("http")
         ) {
-            this.saveRecipe(loading);
+            this.saveRecipe()
+                .then(success => loading.dismissAll(),
+                    failure => loading.dismissAll());
         } else {
             if (this.imageFile != null) {
                 this.imagesService
                     .upload(this.imageFile)
                     .then(res => {
                         this.recipe.imageUrl = res;
-                        this.saveRecipe(loading);
+                        this.saveRecipe()
+                            .then(success => loading.dismissAll(),
+                                failure => loading.dismissAll());
                     })
                     .catch(err => {
                         loading.dismissAll();
@@ -279,7 +278,9 @@ export class RecipeManagementPage {
             } else {
                 this.imagesService.save(this.recipe.imageUrl).then(res => {
                     this.recipe.imageUrl = res;
-                    this.saveRecipe(loading);
+                    this.saveRecipe()
+                        .then(success => loading.dismissAll(),
+                            failure => loading.dismissAll());
                 }).catch(err => {
                     loading.dismissAll();
                 });
@@ -287,15 +288,17 @@ export class RecipeManagementPage {
         }
     }
 
-    private saveRecipe(loading: Loading) {
-        this.neo4jService.saveRecipe(this.recipe).then(v => {
-            this.showToast("DATA_SAVED");
-            this.editMode = false;
-            this.toggleMode(false);
-            loading.dismissAll();
-            this.events.publish("recipe:saved", this.recipe);
-        }).catch(err => {
-            loading.dismissAll();
+    private saveRecipe(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.neo4jService.saveRecipe(this.recipe).then(v => {
+                this.showToast("DATA_SAVED");
+                this.editMode = false;
+                this.toggleMode(false);
+                this.events.publish("recipe:saved", this.recipe);
+                resolve(true);
+            }).catch(err => {
+                reject(false);
+            });
         });
     }
 
@@ -398,6 +401,11 @@ export class RecipeManagementPage {
     }
 
     private showToast(message: string) {
+        this.toast = this.toastCtrl.create({
+            duration: 2000,
+            position: "top"
+        });
+
         this.translate.get(message).subscribe(value => {
             this.toast.setMessage(value);
             this.toast.present();

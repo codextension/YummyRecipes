@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Ingredient, RecipeEntity} from "../entities/recipe-entity";
@@ -295,10 +295,10 @@ export class Neo4JService {
 
     private postData(val: AuthInfo, q: string[]): Promise<any> {
         return new Promise((resolve, reject) => {
-            let _headers = new HttpHeaders({
+            let _headers = {
                 "Content-Type": "application/json",
                 authorization: "Basic " + window.btoa(val.username + ":" + val.password)
-            });
+            };
             let options = {
                 headers: _headers
             };

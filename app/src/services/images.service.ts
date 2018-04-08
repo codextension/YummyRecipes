@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Rx";
 import "rxjs/add/operator/catch";
@@ -67,11 +67,10 @@ export class ImagesService {
             this.connectionService.withCredentials().then((val: AuthInfo) => {
                 let formData: FormData = new FormData();
                 formData.append("recipe_img", file, file.name);
-                let headers = new HttpHeaders();
-                headers.append(
-                    "authorization",
+                let headers = {
+                    "authorization":
                     "Basic " + window.btoa(val.username + ":" + val.password)
-                );
+                };
                 let options = {headers: headers};
                 this.http
                     .post(val.serverUrl + "/images/upload", formData, options)

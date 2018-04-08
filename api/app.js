@@ -18,11 +18,13 @@ const NEO_PASSWORD = argv.neo_pwd;
 var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require("fs");
+
 var https = require("https"); // http://blog.mgechev.com/2014/02/19/create-https-tls-ssl-application-with-express-nodejs/
 var privateKey = fs.readFileSync("sslcert/server.key", "utf8");
 var certificate = fs.readFileSync("sslcert/server.crt", "utf8");
-
 var credentials = { key: privateKey, cert: certificate };
+
+var http = require('http');
 
 var util = require("util");
 var path = require("path");
@@ -141,8 +143,10 @@ schedule.scheduleJob("0 0 * * 0", function() {
 
 var routes = require("./routes.js")(app, passport, upload, fs, driver, argv);
 
-var httpsServer = https.createServer(credentials, app);
+//var httpsServer = https.createServer(credentials, app);
+var httpServer = http.createServer(app);
 
-httpsServer.listen(API_PORT_NB, function() {
+//httpsServer.listen(API_PORT_NB, function() {
+httpServer.listen(8383, function () {
     console.log("Listening on port %s...", httpsServer.address().port);
 });
