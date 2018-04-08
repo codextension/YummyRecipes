@@ -20,8 +20,8 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {DeviceFeedback} from "@ionic-native/device-feedback";
 import {ImagesService} from "../../services/images.service";
 import {Neo4JService} from "../../services/neo4j.service";
+import {TranslateService} from "@ngx-translate/core";
 import {Insomnia} from '@ionic-native/insomnia';
-import {LocalisationService} from "../../services/localisation.service";
 
 @Component({
     selector: "page-recipe-management",
@@ -73,9 +73,9 @@ export class RecipeManagementPage {
                 private deviceFeedback: DeviceFeedback,
                 private formBuilder: FormBuilder,
                 private imagesService: ImagesService,
-                private translate: LocalisationService,
                 private neo4jService: Neo4JService,
-                private toastCtrl: ToastController) {
+                private toastCtrl: ToastController,
+                private translate: TranslateService) {
         this.recipeContent = "ingredients";
         let tempRecipe: RecipeEntity = this.navParams.get("entity");
         let tempInstructions: string[] = [];
@@ -393,12 +393,12 @@ export class RecipeManagementPage {
     }
 
     private async getTranslation(key: string): Promise<string> {
-        let response = await this.translate.get(key);
+        let response = await this.translate.get(key).first().toPromise();
         return response;
     }
 
     private showToast(message: string) {
-        this.translate.get(message).then(value => {
+        this.translate.get(message).subscribe(value => {
             this.toast.setMessage(value);
             this.toast.present();
         });

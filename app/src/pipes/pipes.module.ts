@@ -1,13 +1,10 @@
 import {NgModule} from "@angular/core";
 import {TimePipe} from "./time/time";
-import {TranslatePipe} from './translate/translate';
 
 @NgModule({
-    declarations: [TimePipe,
-        TranslatePipe],
+    declarations: [TimePipe],
     imports: [],
-    exports: [TimePipe,
-        TranslatePipe]
+    exports: [TimePipe]
 })
 export class PipesModule {
 }

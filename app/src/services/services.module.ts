@@ -5,13 +5,12 @@ import {ConnectionService} from "./connection.service";
 import {Neo4JService} from "./neo4j.service";
 import {ImagesService} from "./images.service";
 import {SecureStorage} from "@ionic-native/secure-storage";
-import {LocalisationService} from "./localisation.service";
 
 @NgModule({
     declarations: [],
     imports: [IonicModule, HttpClientModule, HttpClientJsonpModule],
     exports: [],
-    providers: [ConnectionService, Neo4JService, ImagesService, LocalisationService, SecureStorage]
+    providers: [ConnectionService, Neo4JService, ImagesService, SecureStorage]
 })
 export class ServicesModule {
 }

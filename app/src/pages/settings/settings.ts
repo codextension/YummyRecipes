@@ -1,11 +1,11 @@
 import {Component} from "@angular/core";
 import {NavController, Platform, ToastController} from "ionic-angular";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {TranslateService} from "@ngx-translate/core";
 import {Neo4JService} from "../../services/neo4j.service";
 import {AuthInfo} from "../../services/auth-info";
 import {SecureStorage, SecureStorageObject} from "@ionic-native/secure-storage";
 import {Storage} from "@ionic/storage";
-import {LocalisationService} from "../../services/localisation.service";
 
 @Component({
     selector: "page-settings",
@@ -18,8 +18,8 @@ export class SettingsPage {
     constructor(public navCtrl: NavController,
                 private formBuilder: FormBuilder,
                 public toastCtrl: ToastController,
+                private translate: TranslateService,
                 private secureStorage: SecureStorage,
-                private translate: LocalisationService,
                 private neo4jService: Neo4JService,
                 private storage: Storage,
                 private platform: Platform) {
@@ -87,13 +87,13 @@ export class SettingsPage {
                     this.storage
                         .set("settings", this.settingsForm.value)
                         .then(v => {
-                            this.translate.get("SETTINGS_SAVED_SUCCESS").then(value => {
+                            this.translate.get("SETTINGS_SAVED_SUCCESS").subscribe(value => {
                                 this.showToast(value);
                                 return this.navCtrl.goToRoot(null);
                             });
                         })
                         .catch(err => {
-                            this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                            this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
                                 this.showToast(value);
                             });
                         });
@@ -107,7 +107,7 @@ export class SettingsPage {
                                     data => {
                                         this.translate
                                             .get("SETTINGS_SAVED_SUCCESS")
-                                            .then(value => {
+                                            .subscribe(value => {
                                                 this.showToast(value);
                                                 return this.navCtrl.goToRoot(null);
                                             });
@@ -115,21 +115,21 @@ export class SettingsPage {
                                     error => {
                                         this.translate
                                             .get("SETTINGS_SAVED_FAILED")
-                                            .then(value => {
+                                            .subscribe(value => {
                                                 this.showToast(value);
                                             });
                                     }
                                 );
                         })
                         .catch(err => {
-                            this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                            this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
                                 this.showToast(value);
                             });
                         });
                 }
             })
             .catch(err => {
-                this.translate.get("SETTINGS_SAVED_FAILED").then(value => {
+                this.translate.get("SETTINGS_SAVED_FAILED").subscribe(value => {
                     this.showToast(value);
                 });
             });
