@@ -147,6 +147,8 @@ var routes = require("./routes.js")(app, passport, upload, fs, driver, argv);
 var httpServer = http.createServer(app);
 
 //httpsServer.listen(API_PORT_NB, function() {
+//    console.log("Listening on port %s...", httpsServer.address().port);
+//});
 httpServer.listen(8383, function () {
-    console.log("Listening on port %s...", httpsServer.address().port);
+    console.log("Listening on port %s...", httpServer.address().port);
 });
