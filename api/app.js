@@ -1,11 +1,10 @@
 const API_PORT_NB = 3443;
 
-var argv = require('minimist')(process.argv.slice(2));
-
-var valid = argv.api_user && argv.api_pwd && argv.neo_user && argv.api_pwd && argv.store;
+var argv = process.env;
+var valid = (argv.api_user != null) && (argv.api_pwd != null) && (argv.neo_user != null) && (argv.api_pwd != null) && (argv.store != null);
 
 if (!valid) {
-    throw new Error("you need to provide the following paramters: \n--store <store_location> --api_user <username> --api_pwd <pwd> --neo_user <username> --neo_pwd <pwd>");
+    throw new Error("you need to provide the following environment variables: \nstore=<store_location> api_user=<username> api_pwd=<pwd> neo_user=<username> neo_pwd=<pwd>");
 }
 
 const API_USERNAME = argv.api_user;
