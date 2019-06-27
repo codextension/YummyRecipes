@@ -1,7 +1,0 @@
-{
-  "name": "web",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
