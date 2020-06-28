@@ -4,12 +4,13 @@ var argv = process.env;
 var valid = (argv.api_user != null) && (argv.api_pwd != null) && (argv.neo_user != null) && (argv.api_pwd != null) && (argv.store != null);
 
 if (!valid) {
-    throw new Error("you need to provide the following environment variables: \nstore=<store_location> api_user=<username> api_pwd=<pwd> neo_user=<username> neo_pwd=<pwd>");
+    throw new Error("you need to provide the following environment variables: \nstore=<store_location> api_user=<username> api_pwd=<pwd> neo_user=<username> neo_pwd=<pwd> neo_server=localhost");
 }
 
 const API_USERNAME = argv.api_user;
 const API_PASSWORD = argv.api_pwd;
 
+const NEO_SERVER = argv.neo_server;
 const NEO_USERNAME = argv.neo_user;
 const NEO_PASSWORD = argv.neo_pwd;
 
@@ -94,7 +95,7 @@ passport.use(
 );
 
 var driver = neo4j.driver(
-    "bolt://localhost",
+    "bolt://"+NEO_SERVER,
     neo4j.auth.basic(NEO_USERNAME, NEO_PASSWORD)
 );
 
